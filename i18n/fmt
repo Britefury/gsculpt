@@ -1,0 +1,1 @@
+msgfmt -o ../locale/$1/LC_MESSAGES/gSculpt.mo $1.po

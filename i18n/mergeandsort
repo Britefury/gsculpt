@@ -1,0 +1,6 @@
+msgmerge --no-wrap -N -o $1_merged.po $1.po messages.pot
+python sortmergedpo.py $1_merged.po $1_sorted.po
+rm $1_merged.po
+mv $1.po $1.po~
+mv $1_sorted.po $1.po
+

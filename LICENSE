@@ -1,0 +1,19 @@
+gSculpt is licensed under the GNU GPL (General Public License) v2, the full text of which can be found in the file 'COPYING'.
+
+
+The Win32 binary builds of gSculpt contain components from the following projects:
+
+
+
+Python					Licensed under the Python Software Foundation License, see 'doc/License-Python.txt'
+Boost					Licensed under the Boost License, see 'doc/License-Boost.txt'
+Py-lib; greenlets			Licensed under the Py-lib MIT License, see 'doc/License-PyLib.txt'
+GTK+					Licensed under the LGPL, see 'doc/License-LGPL.txt'
+PyGTK					Licensed under the LGPL, see 'doc/License-LGPL.txt'
+GTKGLExt				Licensed under the LGPL, see 'doc/License-LGPL.txt'
+PyGTKGLExt				Licensed under the LGPL, see 'doc/License-LGPL.txt'
+PyOpenGL				Licensed under the PyOpenGL Licenses, see 'doc/License-PyOpenGL.html'
+Python Imaging Library		Licensed under the PIL License, see 'doc/License-PIL.txt'
+PyConsole				Licensed under the GPU, see 'COPYING'
+
+

@@ -1,0 +1,100 @@
+Additional tools:
+	constrained edge loop/ring/boundary selection
+	edge ring/loop next/prev
+
+
+Further investigate bug that can occur while using tweak tool; something to do with picking acceleration
+Help system
+Handle image loading errors
+Passing Array<Matrix4> as result parameter in computePathMatrices() in PolylinePath; look into using a custom malloc()/free() for array allocator.
+Look into tooltips for the viewport layout combo box, and node view settings button.
+UI action system
+Try to come up with a way of handling exceptions during saving, that a) warns the user b) still gives a stack dump
+Project authorship / copyright and modification info. (include a change log?)
+Request: Default name for new nodes
+Request: Paint-selection
+Request: Editable mouse (?)
+Request: path extrusion
+Tool errors.
+Multi-layer rendering and backface-culling toggles.
+Mark region shapes.
+Camera navigation mode.
+Make shortcuts editor warn user of existing shortcuts using a key.
+Pick compression; add hashing to gSculpt.Math.Projection so that repeated projections can be detected and compressed out.
+Tooltips for the picture icons.
+Highlight non-quad faces.
+Pick highlights sometimes remain.
+ImageError exception not handled; load an indexed image.
+Look into the navigation event handler grab on button presses.
+Combine path pick into the pick tools.
+Combine pick edge loops+rings into pick edges tool.
+Prev/next ring/loop.
+New context menu system.
+Wings/Blender style workflow.
+Hypertweak tool.
+Use numeric keypad keys for switching views; top, left, front, etc.
+Fix GSProduct memory usage tracking system. It does not work properly due to the live subdivision system changing memory usage after objects have been cached.
+
+Check manipulators:
+	_o_setUISensitivity on the following:
+		Knife tool
+		Mark region
+		Surface tweak
+		Tweak
+		Template tweak
+	It is not implemented. Check other manipulators that derive from manipulator helpers that implement this functionality.
+
+
+
+
+
+
+
+
+HACK: Bug in scene view: 1. Create a node   2. Zoom out   3. Create a second node   4. Zoom in   => node is not visible
+	Hack-fix in SceneEditorTools.py: SceneEditorTools.p_onZoomToggled()
+
+
+FEATURE REQUESTS:
+
+Selection modes (vertex/edge/face/body) on toolbar at the top									[ Eric Bob ]
+Lathe curves																				[ Eric Bob ]
+Path extrusion																			[ Dimitri Lalushi ]
+Universal manipulator																		[ Gary Rose ]
+Full screen mode																			[ Gergely (Greg) Gaal ]
+Shortcuts for view directions																[ Gergely (Greg) Gaal ]
+Paint selection																			[ Gergely (Greg) Gaal / Kursad Karatas / Vince Jennings / marcinwuu ]
+Black box crash handling system															[ Gergely (Greg) Gaal ]
+Add segments option to bevel																[ Gergely (Greg) Gaal ]
+Rounded bevel edges with segments														( god64 )
+Duplicate shapes at faces/edges/vertices (multiple mesh clones)									[ Gergely (Greg) Gaal ]
+Make deformation tools more interactive														[ Kursad Karatas ]
+Shortcuts; assign globally; the same functions in all modes; assign all at once						[ Kursad Karatas ]
+Wings/Blender style workflow (shortcut/menu/button results in immediate manipulate mode)		[ Gergely (Greg) Gaal ]
+Faster extrude-face tool, probably extrude edge too (pick+extrude in one)							[ Gary Rose ]
+Rendering; could use http://www.softlab.ntua.gr/~jpanta/Graphics/Kerkythea/ [renderer]			[ Gary Rose ]
+UI layout; tools and toolsets in separate areas													[ Kursad Karatas / Papa Lazarou (CGTalk) ]
+Highlight overlapping edges																[ ^Lele^ (CGTalk) ]
+Edit limit surface with live subdivision														[ Igor Donevski / macrinwuu ]
+Procedural editing for tools with target lists													[ Igor Donevski ]
+Make handle size configurable.																[ Kursad Karatas ]
+Modify rotation handle so that rotation around view direction is easier.							[ Gergely (Greg) Gaal ]
+Smooth / relax																			[ Gergely (Greg) Gaal ]
+Project shape onto faces																	[ Gergely (Greg) Gaal ]
+Booleans																				[ Gergely (Greg) Gaal ]
+UV mapping																				[ Gergely (Greg) Gaal ]
+Shapes, with SVG import																	[ Gary Rose ]
+Handle alpha correctly for png, tga, etc when loading background images								[ Gergely (Greg) Gaal ]
+Material application																	[ Vince Jennings ]
+Export at various points throughout the plan													[ Vince Jennings ]
+Shortcut to enable live subdivision														[ marcinwuu ]
+Allow top toolbar to be hidden															[ marcinwuu ]
+Lock mirror seam (fix vertices onto mirror plane)												[ marcinwuu ]
+Switch edit modes with mouse wheel like in the tweak tool										[ marcinwuu ]
+Extrude and inset operations should not create 'extra' face when on the mirror seam				[ marcinwuu ]
+Key shortcuts in tooltips																	[ marcinwuu ]
+Set vertex position by entering co-ords														[ marcinwuu ]
+Allow the colour of the viewport highlight to be changed.										[ Aldrik Dunbar ]
+Add smoothing information to export. Possibility: export model as blender script to get all info -> blender	[ Aldrik Dunbar ]
+OBJ exporter - axis direction choice - y=backward/forward, z=up
+

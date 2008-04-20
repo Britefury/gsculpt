@@ -1,0 +1,1182 @@
+- Implemented virtual mirror.
+  C++ VisualPlane class implemented; stores visual plane information (rotation/normal, position, size) for virtual mirror, drawing plane, etc.
+  GSProductModel modified to store virtual mirror plane. MeshPainter modified to paint the reflected geometry when virtual mirror is active.
+  ToolVirtualMirror implemented which allows the user to enable and edit the virtual mirror.
+  MrMeanie / Britefury (23/03/2006)
+
+- Implemented mesh mirror tool. Gets reflection plane form virtual mirror settings.
+  MrMeanie / Britefury (24/03/2006)
+
+- Unified Variable and ObjectSource class hierarchies; GenericReadOnlyVarInterface now implements the ObjectSource interface.
+  ObjectSource.invalidatedSignal renamed to ObjectSource.changedSignal; GenericReadOnlyVarInterface.changedSignal removed.
+  BasicObjectSource renamed to CachedObjectSource.
+  MrMeanie / Britefury (24/03/2006)
+
+- Implemented unsaved data warning dialog that is invoked when the user attempts to create a new project, open a project, or quit the
+  application, when there is unsaved data.
+  MrMeanie / Britefury (24/03/2006)
+
+- SceneNode name now handled by a FieldColumn, rather than using hand-written code. This ensures that the command history will track
+  changes to the node name without specific code having to be written to do this.
+  MrMeanie / Britefury (25/03/2006)
+
+- Renamed 'Connect edges' tool to 'N-Connect edges', renamed 'Parametric connect edges' tool to 'Connect edges'.
+  MrMeanie / Britefury (25/03/2006)
+
+- Renamed 'Split edges' tool to 'N-Split'.
+  MrMeanie / Britefury (25/03/2006)
+
+- Implemented 'Split edges' tool; the user specifies the points at which the edges are split.
+  MrMeanie / Britefury (25/03/2006)
+
+- Implemented possible/hack fix for a bug that caused nodes in the scene view to be hidden incorrectly.
+  MrMeanie / Britefury (25/03/2006)
+
+- Exposed the BackFaceCull C++ class hierarchy and the mesh knife functionality to Python in preparation for the implementation of the
+  knife tool.
+  MrMeanie / Britefury (25/03/2006)
+
+- Implemented the knife tool.
+  MrMeanie / Britefury (26/03/2006)
+
+- Fixed inset faces adjustment limits bug.
+  MrMeanie / Britefury (01/04/2006)
+
+- Implemented pick edge loop path and pick edge ring path tools.
+  MrMeanie / Britefury (01/04/2006 - 02/04/2006)
+
+- Fixed bugs that prevented composite fields and row reference fields from loading and saving.
+  MrMeanie / Britefury (02/04/2006)
+
+- Tested all procedures to ensure that they load and save correctly. Several bugs were found and fixed.
+  MrMeanie / Britefury (02/04/2006)
+
+- Fixed a bug that caused the unsaved data dialog to be displayed even when all changes have been saved.
+  MrMeanie / Britefury (02/04/2006)
+
+- Modified the MainApp.p_writeFile() method so that the XML document is built before opening the file to write. This prevents the case
+  where a file is truncated to zero length, the document creation process fails due to error, and as a result the existing contents of
+  the file are lost.
+  MrMeanie / Britefury (02/04/2006)
+
+- Implemented 'overwrite existing file' warning/confirmation dialog box.
+  MrMeanie / Britefury (02/04/2006)
+
+- Changed MMesh::computeExpansionVector(); the least-sum-of-square-error method of computing an expansion vector is
+  conceptually elegant, however can produce ugly results in practice. The new method computes the average of the normals,
+  and then scales the average normal so that the dot product of the average normal, and each normal, is kept closest to 1.0 on average.
+  MrMeanie / Britefury (07/04/2006)
+
+- Modified the 'connect marked edges' tool so that terminal vertices can be chosen.
+  MrMeanie / Britefury (08/04/2006)
+
+- Discovered and fixed a bug in the graph view. When the current scene is destroy by creating a new scene, or loading one from a file,
+  the graph view selection maintained references to some of the old nodes. This caused stack dumps and unpredictable behavior when
+  selecting nodes in the graph view. The graph node selection was modified so that when the current GSGraph is detached, all selection
+  information is cleared.
+  MrMeanie / Britefury (08/04/2006)
+
+- Discovered and fixed a bug in the scene command tracker which prevented changes to nodes that were loaded from a file from being
+  tracked. This was due to the fact that when the scene command tracker started to track a scene, it did not start tracking all of the
+  nodes within the scene; tracking was only started for newly created nodes.
+  MrMeanie / Britefury (08/04/2006)
+
+- Modified gsculpt.py so that a project file can be loaded by specifying its path at the command line.
+  MrMeanie / Britefury (08/04/2006)
+
+- Replaced custom image loading system with the Python Imaging Library. This removes any issues with linking to libjpeg which can
+  occur on some systems (e.g. Cygwin or MinGW), and adds support for a significant number of image file formats.
+  MrMeanie / Britefury (08/04/2006)
+
+- Moved Python source hierarchy into the gSculpt directory.
+  MrMeanie / Britefury (11/04/2006)
+
+- Fixed a bug in the 2d scale and translation handles which caused a stack dump upon use, due to the mis-handling of constraints.
+  MrMeanie / Britefury (13/04/2006)
+
+- Changed the description of that 'target weld vertices' tool so that it appears as 'Target weld vertices' instead of 'Cut'.
+  MrMeanie / Britefury (13/04/2006)
+
+- Changed default value of the 'per region' parameter of the flatten vertices tool to 'off'.
+  MrMeanie / Britefury (13/04/2006)
+
+- Added a shortcut to the edge toolset for clean dissolve (normal dissolve with 'clean dissolve' enabled); it can be accessed
+  with <shift>-V.
+  MrMeanie / Britefury (13/04/2006)
+
+- Discovered and fixed a bug in the translation handle that caused NaNs to appear in the translation vector, when the initial
+  pointer position and the current pointer position are the same. It was caused by attempting to normalise the delta vector
+  (0,0,0) to the length of the delta vector transformed by a matrix. This divide by zero caused the NaNs. This condition is now
+  checked for.
+  MrMeanie / Britefury (13/04/2006)
+
+- Added the 'gsculpt' shell script which sets the necessary environment variables before running gSculpt. This is required for
+  gSculpt to run on Ubuntu systems. Thanks to Rory Yorke for his assistance in this matter.
+  MrMeanie / Britefury (16/04/2006)
+
+- Modified C++ files so that classes and functions are exported in order to produce Windows DLLs.
+  MrMeanie / Britefury (17/04/2006)
+
+- Modified SConstruct so that gSculpt can be built on the Win32 platform in addition to the Linux platform.
+  MrMeanie / Britefury (17/04/2006)
+
+- Discovered and fixed bugs that caused gSculpt to crash on the Win32 platform. This was caused by classes that had 'Array'
+  objects as member variables, and declared inline methods that would cause 'Array' to allocate and free memory. This resulted
+  in a situation where memory was allocated within one DLL and freed within another. This seems to be a dangerous practice,
+  so all classes that have 'Array' objects as members, or derive from 'Array', had their method implementations moved into .cpp
+  modules, rather than declared inline inside header files.
+  MrMeanie / Britefury (19/04/2006)
+
+- Model layer system implemented; background layers can be created, renamed and deleted, via the new layer editor window.
+  Scene nodes can be added to the layers from the scene graph window. Layers and nodes can be hidden from the layer editor
+  window. Visible nodes in visible layers are painted in the background. A command tracker was implemented so that operations
+  performed on the layers can be undone.
+  MrMeanie / Britefury (22/04/2006)
+
+- Implemented default layer selection combo box to go into the top left corner of the scene editor window, so that a default layer
+  can be chosen into which new scene nodes are placed.
+  MrMeanie / Britefury (22/04/2006)
+
+- Implemented the 'GL resource guard'. It is a small widget that appears in the bottom right corner of the main window. It is a
+  small GL drawing area which uses the same 'sharing manager' as the viewports, thus ensuring that OpenGL objects such
+  as textures and display lists are not destroyed and re-created when the viewport layout is changed.
+  MrMeanie / Britefury (23/04/2006)
+
+- Added a layout accelerator; '<ctrl>-W' switches between quad and single viewport layouts.
+  MrMeanie / Britefury (23/04/2006)
+
+- All background layers were effectively 'live'; the 'product' of each node displayed in the background layers was kept up
+  to date at each 'tick'. This caused performance problems when editing produces that are not at the end of a procedure list,
+  when the node is visible in a background layer, as each editing operation would cause the background layer system to
+  execute the subsequent procedures. This caused performance problems. The problem was resolved by modifying the
+  background layer painter system so that it only refreshes the 'product' of a node when the visible node list changes,
+  or the current (current editing) node is changed.
+  MrMeanie / Britefury (23/04/2006)
+
+- Implemented Wavefront .OBJ format exporter.
+  MrMeanie / Britefury (23/04/2006)
+
+- Fixed a bug in the background model layer painter that caused a stack dump when trying to display a blank node. This
+  was caused by the painter factory returning 'None' when asked to create a painter for a blank node. Attempting to
+  call methods on this object raised an exception.
+  MrMeanie / Britefury (24/04/2006)
+
+- Implemented rectangular region selection tool.
+  MrMeanie / Britefury (28/04/2006)
+
+- Fixed some crash bugs caused by the 'freeing memory in one so/dll that was allocated in another' problem. Fixed by
+  de-inlining Python wrapper methods in GSProductMesh.
+  MrMeanie / Britefury (28/04/2006)
+
+- Moved MMesh so that it is a subdirectory of Mesh. MMesh is now linked into the Mesh so/dll.
+  MrMeanie / Britefury (29/04/2006)
+
+- The 'pick edge rings' tool appeared as 'pick edges' in the plan list.
+  MrMeanie / Britefury (30/04/2006)
+
+- Discovered and fixed a bug in the 'connect marked edges' mesh operation. Some vertices were 'secondary marked'
+  during the operation, and left that way after the operation was finished, causing subsequent operations to fail.
+  The 'secondary marking' was found to be unnecessary, so that piece of code was removed.
+  MrMeanie / Britefury (30/04/2006)
+
+- Discovered and fixed a bug in the model layer painter. ModelLayerBackgroundPainer.forceRefreshLayers() attempted
+  to iterate over the entries list without refreshing it. In the case where changes to the node list resulted in the entry list
+  being invalidated by setting it to 'None', this resulted in attempting to iterate over a non-sequence. Fixed by checking
+  if the entry list is valid before attempting to iterate over it.
+  MrMeanie / Britefury (02/05/2006)
+
+- Implemented the extrude edges tool.
+  MrMeanie / Britefury (02/05/2006)
+
+- Added short cuts for inset faces and bevel faces with 'flow through marked edges' enabled.
+  MrMeanie / Britefury (02/05/2006)
+
+- Changed shortcuts for modify and remove plan actions from <shift>-M and <shift>-Delete respectively, to
+  <control>-M and <control>-Delete.
+  MrMeanie / Britefury (02/05/2006)
+
+- Discovered and fixed a bug in the ProjectionRegion3d serialisation code.
+  MrMeanie / Britefury (03/05/2006)
+
+- Fixed Win32 version. Thanks to Rob Marriott (350kilotons) for his help in tracking down these issues.
+  MrMeanie / Britefury (04/05/2006)
+
+- Discovered and fixed a bug in the Field/Object field system. An ObjectField can have its 'value' set to None. However,
+  Field.setValue() which ObjectField inherited, did not allow this and failed an assert. This resulted in a stack dump when
+  undo is invoked on procedures that contain object fields (e.g. Knife) when the value is reset to None. Solved by
+  adding the o_checkValueType() method to Field that checks the type of the value. ObjectField overloads this to
+  allow None to be accepted.
+  MrMeanie / Britefury (04/05/2006)
+
+- Added instructions to tool panels.
+  MrMeanie / Britefury (04/05/2006)
+
+- Rob Marriott discovered a bug on the Win32 version where using the viewport type (perspective/orthographic/etc)
+  selection combo box causes the application to freeze. The combo popup refuses to disappear, and keeps its lock
+  on mouse input. This is due to the combo being de-parented in response to the combo box 'changed' signal.
+  Calling GtkComboBox.popdown() in the ComboBox response method forces the popup to disappear, thus resolving
+  the issue. It would initially seem that redesigning the viewports may seem to be the better solution, however, having
+  the combo boxes limited in that they cannot be de-parented or re-parented in response the 'changed' signal makes
+  them more difficult to use, so modifying ComboBox was the solution eventually used.
+  MrMeanie / Britefury (05/05/2006)
+
+- Discovered and fixed a bug with the view layout short cut; the layout is changed, however, the layout selection
+  combo box does not change to reflect this.
+  MrMeanie / Britefury (05/05/2006)
+
+- Added tooltips to the tools in the top toolbar.
+  MrMeanie / Britefury (05/05/2006)
+
+- Changed the default value for the 'ignore back-facing' setting on the mesh mark region tools to 'off'.
+  MrMeanie / Britefury (05/05/2006)
+
+- Changed the title of the selection tools in the mesh tool sets from 'Mark' to 'Select', for consistency.
+  MrMeanie / Britefury (05/05/2006)
+
+- Implemented tabbed/notebook viewport layout.
+  MrMeanie / Britefury (06/05/2006)
+
+- Changed the default value of the 'weld linked vertices' option in the weld vertices tool to 'off'.
+  MrMeanie / Britefury (07/05/2006)
+
+- Discovered and fixed a bug that prevented region select from saving correctly; XML IO had not been implemented
+  for BBox2 and BBox3.
+  MrMeanie / Britefury (08/05/2006)
+
+- Implemented initial version of the new tweak tool.
+  MrMeanie / Britefury (10/05/2006)
+
+- Attempted to fix manipulator/handle bug which causes a (harmless, so far) traceback. Unknown if this will fix it
+  though.
+  MrMeanie / Britefury (11/05/2006)
+
+- Added a target list editor to the tweak tool UI.
+  MrMeanie / Britefury (11/05/2006)
+
+- Modified the tweak tool manipulator so that the middle button can be used to perform fine adjustments.
+  MrMeanie / Britefury (11/05/2006)
+
+- Added the capability to use positive indices to the OBJ exporter. It is presented to the user as an export option.
+  MrMeanie / Britefury (13/05/2006)
+
+- Added safe mesh import functionality to MMesh; faces which cause problems (e.g. faces which would result
+  in an edge having more than 2 incident faces, or inconsistent face direction) are ignored, rather than causing
+  an assert to fail.
+  MrMeanie / Britefury (13/05/2006)
+
+- Implemented an S-expression tree generator and parser. This allows arbitrary data structures to be serialised
+  into an ASCII format which can be used as character data to pass to the XML generator.
+  MrMeanie / Britefury (13/05/2006)
+
+- Added IO methods to the GSProduct class hierarchy to allow them to be serialised to and de-serialised from
+  S-exression trees.
+  MrMeanie / Britefury (13/05/2006)
+
+- Implemented an OBJ importer. An 'imported model' procedure and tool was added so that imported models
+  can be added to a plan. The importer takes each model from an OBJ file and creates a scene node for it.
+  MrMeanie / Britefury (14/05/2006)
+
+- Modified the OBJ exporter so that it defaults to writing positive indices, instead of negative.
+  MrMeanie / Britefury (14/05/2006)
+
+- Implemented the flip tool.
+  MrMeanie / Britefury (14/05/2006)
+
+- Fixed bug in OBJ importer which would allow faces with duplicate/repeated vertices to be imported. These faces
+  are now split so that no face has any duplicate/repeated vertices.
+  MrMeanie / Britefury (15/05/2006)
+
+- Improved compatibility of OBJ importer by allowing it to handle indices with a value of 0, by ignoring them.
+  MrMeanie / Britefury (16/05/2006)
+
+- Added 'merge' option to OBJ importer so that the file can be imported into one scene node, rather than one
+  for each object.
+  MrMeanie / Britefury (16/05/2006)
+
+- Modified MMesh so that face planes, face tesselation, and vertex normals are now computed on demand.
+  MrMeanie / Britefury (18/05/2006)
+
+- Export OBJ dialog correctly sets the initial filename now.
+  MrMeanie / Britefury (19/05/2006)
+
+- The 'open', 'save as', 'import OBJ', and 'export OBJ' dialogs now have file format filters.
+  MrMeanie / Britefury (19/05/2006)
+
+- Improved the BBox3->Segment3 intersection test routine by using the algorithm from David Eberly's
+  Geometric Tools website (http://www.geometrictools.com).
+  MrMeanie / Britefury (20/05/2006)
+
+- Implemented bounding box tree raytrace acceleration system, that is used to accelerate picking.
+  This considerably improves the performance of picking vertices, edges, and faces.
+  MrMeanie / Britefury (20/05/2006)
+
+- Fixed a bug in the target weld vertices tool. Discovered by Maximlian Eham. It was due to the manipulator
+  attempting to use both 'None' and '-1' (inconsistently) as values used to indicate an invalid index. Fixed
+  by standardising on '-1', as '-1' is returned by the GSProductMesh (C++) methods to indicate an invalid
+  index.
+  MrMeanie / Britefury (25/05/2006)
+
+- A confirmation dialog is presented to the user when they attempt to export and OBJ file when the file
+  already exists.
+  MrMeanie / Britefury (27/05/2006)
+
+- Fixed a bug in the mesh importer (used by the OBJ importer) which can cause the import operation to
+  fail an assertion for certain meshes. The crash occurred when some faces had to be flipped in order to ensure
+  face direction consistency. This was due to the MMesh::flipFaceRegion() method asserting that the mesh
+  is finalised. The assertion failed due to the import operation being incomplete. MMesh::flipFaceRegion()
+  no longer asserts that the mesh is finalised.
+  MrMeanie / Britefury (27/05/2006)
+
+- Implemented scripting window.
+  MrMeanie / Britefury (27/05/2006)
+
+- Downloaded PyConsole, written by Yevgen Muntyan, from http://www.berlios.de. This is now included
+  in the gSculpt distribution, as a replacement for ScriptArea, the gSculpt scripting area widget. It offers
+  additional features such as command history, and command completion.
+  MrMeanie / Britefury (28/05/2006)
+
+- Renamed 'icons' directory to 'gsimages'.
+  MrMeanie / Britefury (28/05/2006)
+
+- Yevgen Muntyan merged the changes that I made into pyconsole. Incorporated the new version into gSculpt.
+  MrMeanie / Britefury (29/05/2006)
+
+- Added a 'Run script' menu item to the script menu, which allows the user to run a Python script file.
+  MrMeanie / Britefury (29/05/2006)
+
+- Added exportProduct() and exportProducts() functions to ObjExport. This will be useful for scripting.
+  MrMeanie / Britefury (31/05/2006)
+
+- Yevgen Muntyan made some further changes to pyconsole. They have been incorporated into gSculpt.
+  MrMeanie / Britefury (31/05/2006)
+
+- Modified attribute and method naming to be consistent with Python conventions.
+  MrMeanie / Britefury (31/05/2006)
+
+- Fixed some bugs in the mesh importer that failed to handle certain cases where faces had duplicate vertices.
+  Any faces with less than 3 vertices are now skipped.
+  MrMeanie / Britefury (02/06/2006)
+
+- Discovered and fixed a bug in the target weld tool that caused gSculpt to abort. It was due to the fact that MMesh::pickFace()
+  did not ignore faces that were marked as destroyed, resulting in destroyed faces (and therefore destroyed edges or vertices)
+  being picked to operate on.
+  MrMeanie / Britefury (03/06/2006)
+
+- The greenlets coroutines system that is part of pylib was downloded from http://codespeak.net/py/current/doc/home.html and
+  has been incorporated into gSculpt. Coroutines/greenlets can simplify event-driven code by allowing algorithms to be written
+  in an imperative manner, rather than having to convert them to an event driven form. The target weld manipulator was refactored
+  to use greenlets as a proof of concept.
+  MrMeanie / Britefury (03/06/2006)
+
+- Discovered and fixed a crash bug in the connect marked edges tool. It was due to the fact that code did not check the picked
+  seed edge to see if it was NULL.
+  MrMeanie / Britefury (04/06/2006)
+
+- Discovered and fixed a bug in the mesh bounding box tree.
+  MrMeanie / Britefury (04/06/2006)
+
+- Added constraints (axis/plane) to the tweak tool.
+  MrMeanie / Britefury (05/06/2006)
+
+- Implemented the new 'tweak components' tool that replaces the old tweak tool. This tool allows the user to tweak vertices,
+  edges, edge rings, edge loops, and faces, all from within one tool, easily switching between the component types.
+  MrMeanie / Britefury (07/06/2006)
+
+- Fixed a bug in the mesh bounding box tree that could cause crashes. It was due to accessing an uninitialised part of the
+  face index array.
+  MrMeanie / Britefury (07/06/2006)
+
+- Improved the workflow of the target weld vertices tool so that you click the source and drag to the target, rather than clicking
+  on the source and then clicking on the target. Also, a line is now drawn from the source to the highlighted target.
+  MrMeanie / Britefury (07/06/2006)
+
+- Visibility of cut segments (for cut manipulators) improved.
+  MrMeanie / Britefury (07/06/2006)
+
+- Optimised bounding box tree due to performace problems with the tweak tool. The bounding box tree is no longer rebuilt after
+  each change. It is rebuilt when the mesh topology changes. If the only changes made are to vertex positions, then it is
+  'refreshed'. This is done by recomputing the bounding boxes of the tree nodes, but leaving the tree structure as it is. This is
+  faster then rebuilding the tree, but the box tree will not be as optimal (for ray-trace queries) as a newly built one. A query cost
+  heuristic is computed after each refresh, and compared with a threshold (the cost after a the last rebuild, multiplied by a
+  factor). If the threshold is reached, the tree is rebuilt from scratch.
+  MrMeanie / Britefury (10/06/2006)
+
+- Fixed a bug in the OBJ exporter.
+  MrMeanie / Britefury (16/06/2006)
+
+- Fixed a performance problem in the XML IO system that was triggerred by nodes with large content strings, such as nodes
+  that contain imported mesh data. This was due to the fact that the content is presented by the XML parser in small chunks.
+  The response function would append this chunk to the content string of the current node. When the overall content is 2MB
+  in size for example, these append operations take a long time, as 2MB has to be copied in order to append a few hundred
+  bytes. This was replaced by a system that builds up a list of chunks, and upon receiving notification of the end of the node
+  being reached, the list is joined using the str.join() function. This is much faster.
+  MrMeanie / Britefury (16/06/2006)
+
+- Improved the performance of the tweak tool.
+  MrMeanie / Britefury (16/06/2006)
+
+- Discovered and fixed a bug that caused the command history (undo system) to misbehave. It was caused by a call to
+  CommandHistory.freeze() without a matching call to CommandHistory.thaw().
+  MrMeanie / Britefury (17/06/2006)
+
+- Reversed the scroll direction of the tweak tool when using the scroll wheel to change the tweak target type, or the axis
+  constraints. This ensures that moving the wheel downward moves the radio selection downward.
+  MrMeanie / Britefury (17/06/2006)
+
+- The Win32 version of gSculpt can now be built using py2exe, resulting in gSculpt needing only a single installer now.
+  MrMeanie / Britefury (17/06/2006)
+
+- When the tweak tool is invoked, the target type is initialised to either vertices, edges, or faces, depending upon which tool
+  set was used to invoke it.
+  MrMeanie / Britefury (18/06/2006)
+
+- Dissolve marked faces tool will now mark the merged faces by default.
+  MrMeanie / Britefury (23/06/2006)
+
+- Removed 'smart' texture co-ordinate generation from the collapse edges function, as the 'smart' texture co-ordinates are
+  probably not that useful.
+  MrMeanie / Britefury (24/06/2006)
+
+- Fixed the texture co-ordinate generation in the collapse faces function.
+  MrMeanie / Britefury (24/06/2006)
+
+- Implemented collapse faces tool.
+  MrMeanie / Britefury (24/06/2006)
+
+- Implemented an FPU precision control module. This allows the FPU precision to be limited to double-precision (as opposed to the
+  x86 default of extended/long double). There are some cases in which the extra precision causes a model building procedure to
+  be interpreted incorrectly. This used to be fixed with the -ffloat-store flag when compiling with GCC. This caused the intermediate
+  results of computations to be stored and read back, resulting in the unnecessary precision being truncated. This was a problem
+  due to there being no equivalent flag on MSVC (as far as I know). This could result in versions of gSculpt compiled using different
+  compilers being incompatible with one another. The FPU precision control module should fix this. gSculpt now sets the precision
+  to double-precision on startup.
+  MrMeanie / Britefury (01/07/2006)
+
+- Implemented the 'Create' menu which provides a fast way of creating a new node with a primitive object.
+  MrMeanie / Britefury (01/07/2006)
+
+- Refactored model layer system so that the default layer for new nodes is stored by the model layer table. By responding to the
+  'scene node added' signal emitted by a scene object, nodes are placed in this layer. This removes the need for having to
+  go through the SceneEditorTools.addSceneNode() method to ensure that a new node is added to the default layer.
+  In order to support this change, an object variable class (ObjectVar) was added to the Kernel/Variable module, and a combo-box
+  variable editor class (ChoiceVarEditComboBox) was added to the VarEdit module.
+  MrMeanie / Britefury (01/07/2006)
+
+- Implemented spin edges tool.
+  MrMeanie / Britefury (01/07/2006)
+
+- Implemented rewire edges tool.
+  MrMeanie / Britefury (02/07/2006)
+
+- Discovered and fixed a bug in the model layer command tracker that caused a stack dump when undoing the creation of a scene node.
+  MrMeanie / Britefury (06/07/2006)
+
+- Modified command trackers and their respective data/model classes so that they are informed directly of changes, instead of via the
+  signals and slots system. Sometimes, listeners that respond to signals will make modifications to other data. These changes in turn
+  could generate commands to be placed on the command history. The sequence in which  these modifications are made, and the changes
+  are tracked by the command tracker is important, as the data/model needs to be in the correct state for the commands from the
+  command history to work properly when executed or unexecuted during a redo or undo operation. This ordering cannot be ensured using
+  only the signals and slots sytem.
+  MrMeanie / Britefury (06/07/2006)
+
+- Fixed a bug in the plan / plan command tracker interaction that caused a stack dump when undoing an action that appended a
+  procedure to a plan.
+  MrMeanie / Britefury (07/07/2006)
+
+- Maximlian Eham discovered a bug in the mesh subdivision system which resulted in crashes due to vertex normals not being generated.
+  Fixed by modifying MVertex::clearLinks() so that it calls MVertex::topologyModified(), and modifying MVertex::topologyModified() so
+  that it sets the 'normalsRequireRefresh' flag.
+  MrMeanie / Britefury (13/07/2006)
+
+- Maximlian Eham discovered a bug which caused gSculpt to crash when vertices are deselected using the shortcut, while the move tool
+  is active (and has been used) with smooth rendering active. It occurred when attempting to copy a mesh. It resulted from attempting to
+  compute a vertex normal when the mesh was not yet complete, in that all faces had not yet been copied. A crash resulted from
+  attempting to access fields from a face that had not yet been initialised.
+  MrMeanie / Britefury (13/07/2006)
+
+- Made the following modifications to the rewire edges tool:
+  1. Rewire edges now works when the two faces incident to the edge being rewired share more than one edge
+  2. Better feedback given to the user when the proposed selection is invalid
+  3. Fixed a bug in the UI code that could cause a stack dump
+  *Note: could cause compatibility issues.
+  MrMeanie / Britefury (20/07/2006)
+
+- Implemented scene node view settings system. Used it to implement live subdivision.
+  MrMeanie / Britefury (20/07/2006)
+
+- Fixed a bug in the component transform code which could cause crashes. Calls to MMesh::finalise() had been omitted.
+  MrMeanie / Britefury (20/07/2006)
+
+- Discovered and fixed a bug in the Manipulator/Handle module that caused stack dumps during a drag operation, when the 'switch
+  viewport layout' short-cut is activated during the drag operation. This was due to the pointer leaving the original viewport, and entering
+  a new one during the drag operation. This would result in attempting to continue the drag operation with a viewport for which handle
+  data had not been initialised.
+  MrMeanie / Britefury (27/07/2006)
+
+- Implemented new graph view system that uses Cairo to render the scene graph, rather than GTK button widgets. This has resulted in
+  the following improvements:
+  1. User placed nodes.
+  2. Improved visual appearance.
+  3. A scene graph with thousands of nodes could deplete GDI resources on the Win32 platform due to the creation of thousands of
+     windows for all the GTK button widgets.
+  4. Improved zooming and panning; basically the same as viewport zooming and panning.
+  GTK+ v2.8 and above is now a requirement for gSculpt.
+  MrMeanie / Britefury (11/08/2006)
+
+- Refactored the graph handling code out of GSSceneNode and GSScene into two new classes (GSFunctionGraphNode and
+  GSFunctionGraph), that make up the new GSFunctionGraph module. These classes manage a GSGraph. The node class derives from
+  GSFunction, thus it adds support for the database system provided by the Kernel.Row class, and method parameter extraction system
+  provided by GSFunction. Sinks and sources can be declared as columns in classes that derive from GSFunctionGraphNode.
+  Graph serialisation is supported, which is not provided by GSGraph.
+  These changes will ease the implementation of new uses of the graph system.
+  MrMeanie / Britefury (12/08/2006)
+
+- Implemented a new scene node type; the procedure node.
+  MrMeanie / Britefury (13/08/2006)
+
+- Implemented the 'New Node Menu'; the new node menu pops up when the 'New' button in the scene editor window is clicked. It allows the
+  user to choose one of a number of different types of node to create.
+  MrMeanie / Britefury (13/08/2006)
+
+- Discovered and fixed bugs in the BBox2::intersects(Segment2) and BBox3::intersects(Segment3) methods, which were due to a
+  mis-interpretation of David Eberly's code at http://www.geometrictools.com.
+  MrMeanie / Britefury (19/08/2006)
+
+- Implemented a graph view control menu. The menu contains options that allow the user to focus on the origin, zoom to 1:1, zoom to view
+  extents of all nodes, and zoom to view extents of selected nodes.
+  MrMeanie / Britefury (19/08/2006)
+
+- Fixed all C++ code that uses boost::python to acquire values from Python objects. The use of the boost::python::extract system was
+  incorrect and prone to crashing.
+  MrMeanie / Britefury (20/08/2006)
+
+- Discovered and fixed a bug in the mesh importing code that caused a crash when a texture co-ordinate is not specified for a vertex.
+  This was due to the lack of texture co-ordinate not being handled.
+  MrMeanie / Britefury (23/08/2006)
+
+- Implemented a bug work-around to fix two crashes that affect the Win32 version of gSculpt. Calling glDeleteTextures() causes a crash.
+  This results in gSculpt crashing on exit, and crashing when the image file of a background image is changed. Fixed by creating a new
+  boost::python based wrapper for glDeleteTextures. It is loaded to replace the glDeleteTextures provided by pyOpenGL.
+  MrMeanie / Britefury (26/08/2006)
+
+- Implemented bug work-arounds to fixed issues with the Win32 version of Cairo. Passing empty strings to either cairo.Context.text_extents()
+  or cairo.Context.show_text() causes a MemoryError exception to be raised. Wrapper functions were implemented to handle this case.
+  MrMeanie / Britefury (26/08/2006)
+
+- Fixed a bug in the graph view that resulted in newly created nodes having their positions initialised such that they occupied the same spot.
+  MrMeanie / Britefury (26/08/2006)
+
+- Fixed a bug in GSFunctionGraph that resulted in old files loading to produces nodes with unnamed pins. Fixed by ensuring that pins that
+  are 'instances' of pin columns have their name set by their respective columns at load time.
+  MrMeanie / Britefury (26/08/2006)
+
+- Implemented transformations/deformations
+  MrMeanie / Britefury (23/09/2006)
+
+- Redesigned the function tool and procedure tool data source system. The old system was too limited, as it simply took the input object/product
+  and applied a function to it to get the data required (for positioning a manipulator). The new transformation/deformation tools require additional
+  information from the row/function/procedure being edited (e.g. the target (points or body), transformation/deformation frame rotation, etc).
+  The new system works using a decorated function. The decorator uses the GSFunction method invokation system, so that parameters for the
+  decorated function are automatically supplied by acquiring them from the fields of the attached function. To use the data source, simply get
+  the attribute from the tool object, that has the same name as the declaration. This will be a CachedObjectSource subclass. The data is acquired
+  by calling the requestObject() method, or calling the data source itself.
+  The declaration can be used as a parameter for column manipulator declarations.
+  MrMeanie / Britefury (23/09/2006)
+
+- Creating a primitive from the 'Create' menu now selects and modifies the primitive procedure (e.g. opens the tool).
+  MrMeanie / Britefury (23/09/2006)
+
+- Creating a primitive from the 'Create' menu is now correctly tracked by the command history system.
+  MrMeanie / Britefury (23/09/2006)
+
+- Node view settings are now tracked by the command history.
+  MrMeanie / Britefury (23/09/2006)
+
+- Modified gSculpt so that all UI text strings use the gettext system to allow internationalisation.
+  MrMeanie / Britefury (15/10/2006)
+
+- Node name above plan changes when the node is renamed in the scene window.
+  MrMeanie / Britefury (19/10/2006)
+
+- Integrated Turkish translation into gSculpt. Thanks to Gulden Leventoglu for providing this translation.
+  MrMeanie / Britefury, Gulden Leventoglu (02/11/2006)
+
+- Fixed a bug in the tweak tool which caused incorrect edge ring and edge loop highlights to be displayed.
+  MrMeanie / Britefury (05/11/2006)
+
+- Fixed a bug in the model layer painter system that would cause nodes to be incorrectly hidden when a project is loaded into memory
+  over an existing one.
+  MrMeanie / Britefury (05/11/2006)
+
+- Discovered and fixed a bug that could cause the inset faces tool to crash in certain conditions when the 'flow through marked edges'
+  option is enabled. It was caused by the MVertex::insetFacesSplitInternalEdges() method attempting to call MEdge::getRay(), passing
+  a vertex to MEdge::getRay() that was not incident to the edge. This was a result of invoking MEdge::getRay() on an edge that had
+  undergone an edge split, which results in the situation where it is no longer incident to one of the end points. MEdge::getRay() was
+  invoked by MVertex::computeExpandEdgeScaleFactor(), invoked by MVertex::insetFacesSplitInternalEdges(), to compute
+  the split-scale-factor necessary to 'expand' the face mark boundary edges. When the 'flow through marked edges' option is enabled,
+  these boundary edges are split as well as the internal ones. The solution was to  work on the (face mark) boundary edges (thereby
+  splitting them), handling them specially, after having worked on the (face mark) internal edges.
+  MrMeanie / Britefury (09/11/2006)
+
+- Implemented the new surface tweak tool.
+  MrMeanie / Britefury (09/12/2006)
+
+- Discovered and fixed a bug that prevented the <alt>+<num> notebook viewport layout shortcuts from working.
+  MrMeanie / Britefury (10/12/2006)
+
+- Integrated Hungarian translation into gSculpt. Thanks to Gergely (Greg) Gaal for providing this translation.
+  MrMeanie / Britefury, Gergely (Greg) Gaal (10/12/2006)
+
+- Replaced the signals and slots module with a new version that supports class signals, and uses an improved system for tracking
+  blocked slots, and mapping slots to incoming signals.
+  MrMeanie / Britefury (10/12/2006)
+
+- Discovered and fixed a crash bug in the surface-tweak tool.
+  MrMeanie / Britefury (10/12/2006)
+
+- Discovered and fixed a bug in the surface-tweak tool that prevented vertices on straight edges (a vertex with two edges whose
+  directions directly oppose one another) from being tweaked correctly.
+  MrMeanie / Britefury (13/12/2006)
+
+- Improved performance of XML IO system.
+  MrMeanie / Britefury (13/12/2006)
+
+- Added string variable interface and string varible types.
+  MrMeanie / Britefury (13/12/2006)
+
+- Replaced the GSMeta module with the KMeta module. KMeta provides additional functionality in the shape of meta-members,
+  a more general system for handling columns (field columns from in DB/database, etc.), etc.
+  MrMeanie / Britefury (13/12/2006)
+
+- Replaced the DB (database) module with a new version that is somewhat simpler. It uses KMeta instead of GSMeta to handle
+  columns, etc. GSFunctionGraph was modified to use the new hierarchy.
+  MrMeanie / Britefury (13/12/2006)
+
+- Modified DBEdit to use KMeta instead of GSMeta.
+  MrMeanie / Britefury (13/12/2006)
+
+- Discovered and fixed a bug in the new signals and slots module. Chain-connecting into a signal that was declared as a class
+  signal, and not connected to any slots, resulted in a chain-connection to a temporary signal. This was due to the instance signal
+  only being entered into the weak-ref signal tracking dictionary, when out-going connections were made. Instance signals are
+  not entered into the tracking dictionary on creation.
+  MrMeanie / Britefury (13/12/2006)
+
+- Removed the GSMeta module.
+  MrMeanie / Britefury (13/12/2006)
+
+- Fine adjustment did not work when moving components along their normal when using the surface-tweak tool.
+  MrMeanie / Britefury (16/12/2006)
+
+- Discovered and fixed a bug in the surface-tweak tool that would produce different results when using the tool from when the
+  procedure is applied as part of the node plan. This was a result of the fact that the tweak list contained references to the
+  view-vector taken from the viewport camera, as opposed to copies. Since the value of this vector could change through
+  viewport navigation, the references would point to this new value, as opposed to the value at the time that the tweak was
+  made by the user. This was fixed by taking a copy of the view-vector when recording it.
+  MrMeanie / Britefury (16/12/2006)
+
+- Refactored all invoke() methods in subclasses of GSProcedure to access their field values by 'self.field', rather than using the
+  field-value-to-method-argument extraction system. Due to the fact that decorators are not longer required for the invoke()
+  methods, all these methods have been renamed to procedureInvoke(). This was due to the fact that invoke() needs to check
+  the input product to see if it can be processed. GSProcedure.invoke() now calls procedureInvoke() after performing these
+  checks.
+  MrMeanie / Britefury (19/12/2006)
+
+- Refactored all adjustable invokers to access values from GSProcedure fields by 'self._proc.field', rather than using the
+  field-value-to-method-argument extraction system. Modified GSFunctionAdjustableInvoker to use the 'Row' class 'get value'
+  listener/notification system to determine which fields in a procedure are accessed, rather than the
+  field-value-to-method-argument extraction system. This simplified GSFunctionAdjustableInvoker somewhat.
+  MrMeanie / Britefury (20/12/2006)
+
+- Renamed ObjectSource.requestObject() and ObjectSource.requestObjectAsClass() to getValue() and getValueAsClass().
+  MrMeanie / Britefury (20/12/2006)
+
+- Implemented ObjectSourceProxy, a read-only version of VarProxy. Modified VarProxy to derive from ObjectSourceProxy.
+  MrMeanie / Britefury (20/12/2006)
+
+- Modified ColumnEditor so that it derives from KMetaMember, and RowEditor so that it derives from Row.
+  MrMeanie / Britefury (21/12/2006)
+
+- Refactored all RowEditor subclasses to access field columns through a row-reference column (called 'row') that references
+  the corresponding row class. All data source methods were refactored to use FieldColumn. The result of these modifications
+  is a simplified and unified architecture. Also, the KFunction module was left unused as a result, so it was removed.
+  MrMeanie / Britefury (21/12/2006)
+
+- Improved 'slide edges' tool.
+  MrMeanie / Britefury (23/12/2006)
+
+- Discovered and fixed a bug in the class/object version Xml IO code in the Row class.
+  MrMeanie / Britefury (23/12/2006)
+
+- Removed hack in the tweak, surface tweak, bandsaw, and n-bandsaw tools. These tools required some extra parameters
+  to control the operation of the manipulators (target and constraints, target, stop at marked edges, stop are marked edges
+  and number of cuts respectively). The variables representing these parameters were members of the manipulators. The
+  respective column manipulators would expose them using a special declaration. This system was a hack. It has been
+  replaced; since RowEditor (and therefore all tool classes) is a subclass of Row, the parameters can now be represented/
+  managed by fields in the tool class. The manipulators and UI now operate on these fields.
+  MrMeanie / Britefury (23/12/2006)
+
+- Modified ColumnEditor such that column editors can only edit columns that are members of the class in which the
+  column editor is declared.
+  MrMeanie / Britefury (23/12/2006)
+
+- Implemented the 'draw quad mesh' tool.
+  MrMeanie / Britefury (24/12/2006)
+
+- Implemented the 'camera focus' tool.
+  MrMeanie / Britefury (26/12/2006)
+
+- Discovered and fixed a bug in the edge slide adjustments which prevented changes from being made when the slide
+  factor was changed from a non-zero value to zero. This caused undo operations to give the appearance of not working.
+  MrMeanie / Britefury (26/12/2006)
+
+- Implemented the drawing templates interface.
+  MrMeanie / Britefury (26/12/2006)
+
+- Implemented the drawing plane and drawing plane tool.
+  MrMeanie / Britefury (26/12/2006)
+
+- Improved the usability of the rotation manipulator by modifying the ring handles so that you drag them in the direction of
+  the ring, rather than always right and left.
+  MrMeanie / Britefury (26/12/2006)
+
+- Improved the usability of the rotation manipulator by allowing the sphere component of the handle to be moved by
+  dragging outside the bounds of the manipulator.
+  MrMeanie / Britefury (26/12/2006)
+
+- The rotation handles now snap properly; it used to be the case that the value was snapped, but the rotation of the visual
+  handle itself was not.
+  MrMeanie / Britefury (26/12/2006)
+
+- Discovered and fixed a bug in the 3D scale manipulator that caused a stack dump when snapping was used. This was
+  due to ManipulatorSnapping.snapVector2() method being used to snap a Vector3, instead of
+  ManipulatorSnapping.snapVector3().
+  MrMeanie / Britefury (26/12/2006)
+
+- Implemented background model drawing templates.
+  MrMeanie / Britefury (27/12/2006)
+
+- Implemented transparent rendering of background models.
+  MrMeanie / Britefury (27/12/2006)
+
+- Discovered and fixed a bug in the Kernel.DB module that caused a stack dump when trying to read or write a row that
+  contained function columns to an XML file.
+  MrMeanie / Britefury (27/12/2006)
+
+- Implemented 'Template tweak vertices' tool.
+  MrMeanie / Britefury (27/12/2006)
+
+- Discovered and bug in the background model drawing template system. It would have resulted in being able to 'draw' onto
+  an out of date version of the model currently being edited. Fixed by modifying the background model layer painter to
+  handle drawing template responsibilities.
+  MrMeanie / Britefury (27/12/2006)
+
+- Discovered and fixed a crash bug in the 'draw quad mesh' tool.
+  MrMeanie / Britefury (27/12/2006)
+
+- Marked edges are now highlighted with a sea-green colour to make it easier to discern them from unmarked ones.
+  MrMeanie / Britefury (27/12/2006)
+
+- Discovered and fixed a crash bug in the 'draw quad mesh' tool.
+  MrMeanie / Britefury (28/12/2006)
+
+- Implemented the 'draw face' tool.
+  MrMeanie / Britefury (29/12/2006)
+
+- Implemented the 'select node' (presented to the user as 'choose model') tool.
+  MrMeanie / Britefury (29/12/2006)
+
+- Fixed a bug in the mesh import code that can result in isolated vertices being present in a mesh.
+  MrMeanie / Britefury (29/12/2006)
+
+- Fixed a bug in the OBJ import code that can result in unused vertices being added to a model.
+  MrMeanie / Britefury (29/12/2006)
+
+- Discovered and fixed a bug in the 'Save as' dialog box that would result in the file being saved even if the 'Cancel' button
+  was pressed.
+  MrMeanie / Britefury (29/12/2006)
+
+- Refactored the UI action system so that editable accelerators will be easier to add to gSculpt.
+  MrMeanie / Britefury (30/12/2006)
+
+- Implemented the shortcut management and editing system.
+  MrMeanie / Britefury (31/12/2006)
+
+- Converted all uses of UIAction and accelerators to use the new UI action system. All shortcuts can now be configured by the user.
+  MrMeanie / Britefury (31/12/2006)
+
+- Discovered and fixed a bug; all variable editors start in the sensitive state, before having any variables attached.
+  This is incorrect. All variable editors have been modified to start in the insensitive state.
+  MrMeanie / Britefury (31/12/2006)
+
+- Modified FunctionField so that it tracks and responds to changes in fields belonging to rows that are external to the row that
+  owns the function field.
+  MrMeanie / Britefury (01/01/2007)
+
+- Reorganised shortcut hierarchy.
+  MrMeanie / Britefury (06/01/2007)
+
+- Integrated updated Hungarian translation into gSculpt. Thanks to Gergely (Greg) Gaal for providing this translation.
+  MrMeanie / Britefury, Gergely (Greg) Gaal (06/01/2007)
+
+- Fixed a bug in the focus tool that prevented the viewport from being updated when the focus function was used.
+  MrMeanie / Britefury (06/01/2007)
+
+- Made the drawing templates icon more distinct from the drawing plane icon, by changing colours.
+  MrMeanie / Britefury (06/01/2007)
+
+- Shortcuts window now has a title.
+  MrMeanie / Britefury (07/01/2007)
+
+- Changed default shortcuts for shrink and grow selection from '-' and '+' to '[' and ']', to avoid interfering with numeric
+  entry boxes.
+  MrMeanie / Britefury (07/01/2007)
+
+- Bug: the scale and rotate transformation tools (in body mode) used the origin as the pivot point, rather than the centre.
+  MrMeanie / Britefury (07/01/2007)
+
+- Discovered and fixed a bug in the rotation handle that would cause rotation angle text and the sphere rotation indicators
+  to remain in the viewport after a rotation finishes.
+  MrMeanie / Britefury (07/01/2007)
+
+- Modified the shortcuts editor so that scrolling the shortcuts tree view does not scroll the column titles out of view.
+  MrMeanie / Britefury (09/01/2007)
+
+- Added 'Apply drawing templates' buttons to the draw face and draw quad mesh tools.
+  MrMeanie / Britefury (09/01/2007)
+
+- Exposed the MainApp object to scripts through the scripting environment.
+  MrMeanie / Britefury (10/01/2007)
+
+- Component picking now works when the pointer is outside the bounds of a mesh. Thanks to Isaac Mensah for
+  suggesing this.
+  MrMeanie / Britefury (12/01/2007)
+
+- Picking now supports non-solid picking; when solid rendering is turned off, edges and vertices are picked by distance to
+  the pointer, rather than through an incident face.
+  MrMeanie / Britefury (13/01/2007)
+
+- Improved the workflow of the extrude edges tool. Thanks to Gergely (Greg) Gaal for this suggestion.
+  MrMeanie / Britefury (14/01/2007)
+
+- Modified default shortcuts for extrude edges and expand edges, from nothing and 'x', to 'x' and 'shift-x', respectively.
+  MrMeanie / Britefury (14/01/2007)
+
+- Integrated updated Hungarian translation into gSculpt. Thanks to Gergely (Greg) Gaal for providing this translation.
+  MrMeanie / Britefury, Gergely (Greg) Gaal (14/01/2007)
+
+- Discovered and fixed a bug in the bandsaw and n-bandsaw tools which caused a stack dump. The bug was introduced
+  when out-of-bounds picking was implemented. It occured due to the fact that the bandsaw and n-bandsaw tools require
+  a seed-face as well as a seed-edge to start from. Since picking an edge always used to produce a seed-face, the lack
+  of one was never checked for, resulting in the bug.
+  MrMeanie / Britefury (17/01/2007)
+
+- Realised that the modifications to the bandsaw tool would make it inoperable when solid picking is not used, e.g. when
+  solid rendering is off. This is a problem. Fixed by making sure that picking and edge or vertex ALWAYS returns a
+  face that is incident to the edge, even when out of bounds picking is used. It chooses the face that is closest to the pointer.
+  MrMeanie / Britefury (18/01/2007)
+
+- Discovered and fixed a bug which caused the viewport type menu to be visible in viewports when the notebook view
+  layout is active.
+  MrMeanie / Britefury (20/01/2007)
+
+- Discovered and fixed a crash bug in the MVertex::replaceVertexAttrib() method which would result in incorrect vertex
+  attribute reference counts, and vertex attributes being destroyed when they shouldn't be. This occurred when a vertex
+  attribute was being replaced with itself. This case is now checked for.
+  MrMeanie / Britefury (22/01/2007)
+
+- Improved texture co-ordinate generation of vertex weld operations. Previously, the mid-point was used for the texture
+  co-ordinates. Now it uses one of the end points if this is required.
+  MrMeanie / Britefury (22/01/2007)
+
+- Discovered and fixed a bug in the draw quad mesh texture co-ordinate generation.
+  MrMeanie / Britefury (22/01/2007)
+
+- Implemented the fill edges tool. Thanks to Gergely (Greg) Gaal for this suggestion.
+  MrMeanie / Britefury (23/01/2007)
+
+- Model origin is not drawn any longer, as it has no use.
+  MrMeanie / Britefury (27/01/2007)
+
+- Modified the ModelPainter, MeshPainter, and ModelDraw modules so that the model drawing colours can be altered.
+  MrMeanie / Britefury (27/01/2007)
+
+- Discovered and fixed a bug in the draw face, draw quad mesh, target weld, and rewire edge tools that can cause
+  the context menu to become in-operable when the tool is terminated using undo. Invoking undo would cause the tool
+  (and therefore its manipulator) to be terminated before the edit/user-interaction cycle was completed. In this case,
+  a context button listener was not removed, resulting in a dead listener blocking lower priority listeners, such as the
+  toolset whose responsibility it is to manage context menus. The manipulators for these tools have been modified
+  so that the context button listener is removed when the manipulator is detached from the view.
+  MrMeanie / Britefury (30/01/2007)
+
+- Fixed a bug in the GLUploadImage module that caused a stack dump and impared functionality if a paletted image
+  was loaded as a background image. This was due to the ImageError exception not being defined. Fixed by
+  converting palleted images to non-paletted, and raising a ValueError if the image mode cannot be handled.
+  The ValueError is now handled in the Texture class.
+  MrMeanie / Britefury (30/01/2007)
+
+- Moved all colour constants into the ModelDraw module, so that they can be modified from one module.
+  MrMeanie / Britefury (02/02/2007)
+
+- Discovered and fixed a stack dump bug in the knife tool.
+  MrMeanie / Britefury (02/02/2007)
+
+- Discovered and fixed a bug in the rewire edges tool; was caused by the fact that MMesh::pickVertexThruEdge
+  was rendered non-operational.
+  MrMeanie / Britefury (03/02/2007)
+
+- Gergely (Greg) Gaal reported a bug in which caused a stack dump, when File->New is used, when tabbed view
+  layout is active. Triggered by attempting to remove a drawing template from a viewport, where the drawing
+  template has not been added to the viewport previously; since DT's were stored as a set, attempting to remove
+  it resulted in a KeyError being raised; it was not handled. This exception is now caught. In addition, ModellerView
+  was not adding and removing DT's from viewports that are added to or removed from the view.
+  MrMeanie / Britefury (03/02/2007)
+
+- Integrated updated Hungarian translation into gSculpt. Thanks to Gergely (Greg) Gaal for providing this translation.
+  MrMeanie / Britefury, Gergely (Greg) Gaal (03/02/2007)
+
+- Gergely (Greg) Gaal reported a crash bug, caused by enabling live subdivision. Fixed.
+  MrMeanie / Britefury (03/02/2007)
+
+- Implemented view drawing settings (colours, sizes, etc.) user interface, and editor window. Added menu item to
+  the 'Edit' menu to invoke the view drawing settings window. View drawing settings are loaded and saved at startup
+  and shutdown respectively. Thanks to Gary Rose for the suggestion.
+  MrMeanie / Britefury (07/02/2007)
+
+- gSculpt windows now use the new gSculpt icon, and the new splash screen is displayed at start up. Many thanks
+  to Gary Rose for designing the icons and splash screen.
+  MrMeanie / Britefury, Gary Rose (08/02/2007)
+
+- Shortcut and view drawing settings configurations can now be imported and exported.
+  MrMeanie / Britefury (09/02/2007)
+
+- Shortcut key collisions are now displayed in the shortcuts editor.
+  MrMeanie / Britefury (09/02/2007)
+
+- Modified the Win32 build routines and installer so that the new gSculpt icons supplied by Gary Rose are used for
+  the executable program, and the start menu and desktop shortcuts.
+  MrMeanie / Britefury (09/02/2007)
+
+- Gergely (Greg) Gaal spotted some untranslated strings. This was due to gettext not being used everywhere. Fixed.
+  MrMeanie / Britefury (09/02/2007)
+
+- Integrated updated Hungarian translation into gSculpt. Thanks to Gergely (Greg) Gaal for providing this translation.
+  MrMeanie / Britefury, Gergely (Greg) Gaal (10/02/2007)
+
+- Gergely (Greg) Gaal discovered a bug with the view drawing settings system that resulted in changes to the grid
+  colours only being applied to viewports that are currently visible. Fixed by having ModellerView store the grid
+  colours when they are set, and applying them to any viewports that are added.
+  MrMeanie / Britefury (11/02/2007)
+
+- Maarten van Limburg (Maali) discovered a bug in the rift edges tool.Fixed.
+  MrMeanie / Britefury (11/02/2007)
+
+- Gergely (Greg) Gaal noticed a performance problem with the Win32 version of gSculpt when using the notebook
+  view layout; gSculpt appears to slow down. It was caused by 'redraws' being sent to all of the viewports in the
+  notebook, including all the hidden ones. The notebook pages that are hidden do not get unrealised, so there is
+  no immediate way of telling whether a page is visible or not, so redraws get sent (resulting in rendering) whether
+  this is necessary or not. In order to remedy this, DrawingAreas can now be 'frozen', in which case redraw requests
+  are ignored. Viewports can also be frozen (by passing the request onto the drawing area). The notebook view
+  layout keeps track of which viewport is visible, an ensures that all the others are frozen.
+  MrMeanie / Britefury (14/02/2007)
+
+- rw discovered a bug in the draw quad mesh tool. If 'close columns' and 'close rows' are enabled before drawing any
+  quads, gSculpt crashes when the pointer is moved into the viewport. It was traced to an array out-of-bounds access.
+  Fixed.
+  MrMeanie / Britefury (19/02/2007)
+
+- Gary Rose and Gergely (Greg) Gaal reported a memory leak. It was caused by the RequestPainter module calling
+  ObjectPainter.setObject() to supply a new product to a painter. In this case, the Python garbage collector would
+  not destroy a product that had been supplied to the painter via setObject() as it considered the painter to be
+  a referrer of the product, as there was no way of breaking the association. This would prevent many product
+  objects from being garbage collected; hence the memory leak.
+  MrMeanie / Britefury (21/02/2007)
+
+- Gary Rose reported a BAD bug. It seemed to result in models being saved incorrectly. The cause was tracked down
+  to the imported module procedure. It was caused by ProcImportedModel.procedureInvoke() returning the
+  imported model, instead of a copy. This could result in procedures further down altering the model stored in
+  the imported model procedure, instead of working on a copy.
+  MrMeanie / Britefury (23/02/2007)
+
+- Implemented duplicate faces tool.
+  MrMeanie / Britefury (24/02/2007)
+
+- Gary Rose reported a VERY BAD bug. It resulted in corrupted models. It was due to MMesh bounding box trees
+  being refreshed incorrectly, due to the BBTree not being notified of modifications to the mesh. It was due to the fact
+  that MFace::faceModified() only called MMesh::faceModified() (which notifies the BBTree that the face has been
+  modified) when the faces' plane did *not* require a refresh. Sometimes, the face plane would be flagged as
+  needing a refresh, so a notification would be blocked.
+  MrMeanie / Britefury (26/02/2007)
+
+- Modified include order of all C++ source files that include 'boost/python.hpp' so that it is included first. This
+  allows gSculpt to compile on BSD systems. Thanks to Martin Tournoij for his help in developing this fix.
+  MrMeanie / Britefury (03/03/2007)
+
+- Discovered and fixed bugs in the model layer system. The first bug caused visibility signals from nodes loaded
+  from a project file to be emitted twice. This was as a result of ModelLayerTable._p_clear() not clearing each layer
+  individually, resulting in signals from nodes reaching listeners. The second bug caused nodes to be hidden or
+  shown incorrectly. This was as a result of the list of the indices of hidden nodes (e.g. the current node is hidden)
+  not being kept in sync with the list of visible nodes, resulting in the indices being incorrect.
+  MrMeanie / Britefury (03/03/2007)
+
+- Modified the UI.GtkAccelEntry module, and the shortcuts editor, so that the accelerator name displayed to the
+  user is the 'more-human-readable' name resulting from gtk.accelerator_get_label(), rather than the GTK
+  parseable accelerator name. This will mean that accelerators will be translated correctly.
+  MrMeanie / Britefury (03/03/2007)
+
+- Discovered and fixed a bug which caused the choose model tool to fail, such that clicking on a model would not
+  select it.
+  MrMeanie / Britefury (03/03/2007)
+
+- Gergely (Greg) Gaal discovered a bug in the background layer system that resulted in the current node being
+  drawn in the background, as well as in the foreground. It was due to the list of indices of the hidden nodes that
+  is maintained by ModelLayerBackgroundPainter not being refreshed when a node is hidden or shown.
+  MrMeanie / Britefury (04/03/2007)
+
+- Implemented and integrated new cell based data storage model. gSculpt now uses active value propagation
+  throughout the system. This makes gSculpt internals much more flexible, and simplifies many problems.
+  MrMeanie / Britefury (29/04/2007)
+
+- Implemented a plugin loading and management system.
+  MrMeanie / Britefury (29/04/2007)
+
+- Fixed quaternion <-> euler angle conversion. Used
+  http://www.euclideanspace.com/maths/geometry/rotations/conversions/quaternionToEuler/index.htm
+  as a reference.
+  MrMeanie / Britefury (29/04/2007)
+
+- Incorporated Group product code from the C++ version of gSculpt. It will need updating. The merge operations
+  should be modified so that merging is not done one model at a time.
+  MrMeanie / Britefury (05/05/2007)
+
+- Implemented a new merge method for MMesh (MMesh::mergeWith()) which merges a mesh with the contents
+  of an array of other meshes. This will result in improved performance.
+  MrMeanie / Britefury (05/05/2007)
+
+- Finished integrating the Group product code into gSculpt. A toolset for editing groups, which contains the
+  deformation toolset, and a 'merge contents' tool has been implementd.
+  MrMeanie / Britefury (06/05/2007)
+
+- Implemented the 'Create Group' tool, which provides a quick way to create a group, by selecting the models that form
+  the group.
+  MrMeanie / Britefury (07/05/2007)
+
+- Integrated updated Hungarian translation into gSculpt. Thanks to Gergely (Greg) Gaal for providing this translation.
+  MrMeanie / Britefury, Gergely (Greg) Gaal (07/05/2007)
+
+- Incorporated a new version of the greenlets library from Py lib, that is fully compatible with Python 2.5.
+  MrMeanie / Britefury (07/05/2007)
+
+- Modified SConstruct, so that paths for include files and libraries are determined automatically on the Win32 platform,
+  getting information from the system environment.
+  MrMeanie / Britefury (07/05/2007)
+
+- Incorporated changes to the SConstruct build file, and the new SConstruct-install build file, contributed by Martin Tournoij.
+  MrMeanie / Britefury, Martin Tournoij (12/05/2007)
+
+- Bug fix - tools shut down properly now.
+  MrMeanie / Britefury (12/05/2007)
+
+- Gergely (Greg) Gaal discovered a number of bugs, which have now been fixed.
+  MrMeanie / Britefury (12/05/2007)
+
+- Gergely (Greg) Gaal discovered yet more bugs, which have now been fixed.
+  MrMeanie / Britefury (12/05/2007)
+
+- Integrated updated Hungarian translation into gSculpt. Thanks to Gergely (Greg) Gaal for providing this translation.
+  MrMeanie / Britefury, Gergely (Greg) Gaal (12/05/2007)
+
+- Implemented the mesh attach tool, and the detach mesh faces operation. In order to implement the attach tool,
+  methods for getting, setting, and deleting slices in GSPlan objects had to be implemented.
+  Features suggested by Gary Rose.
+  MrMeanie / Britefury (13/05/2007)
+
+- Integrated updated Hungarian translation into gSculpt. Thanks to Gergely (Greg) Gaal for providing this translation.
+  MrMeanie / Britefury, Gergely (Greg) Gaal (13/05/2007)
+
+- Gergely (Greg) Gaal discovered a bug which caused manipulators to be initially unresponsive. This was due to the fact
+  that attaching a cell to the manipulator, causes it to make its underlying handle sensitive. This does not result in the
+  handle determining which handle component is highlighted. This will result in events not reaching the handle component,
+  hence the unresponsiveness. Fixed by refreshing the highlighted handle component when the sensitivity is changed.
+  MrMeanie / Britefury (16/05/2007)
+
+- Added a subdivide button to the face editing tool group. It creates a subdivide procedure, and initialises the 'marked
+  faces only' option to true.
+  MrMeanie / Britefury (21/05/2007)
+
+- The target list editor did not notify the command history each time a target was removed, resulting in all 'remove' operations
+  being reversed with a single undo.
+  MrMeanie / Britefury (26/05/2007)
+
+- Integrated the pick edge loops, pick edge rings, and pick edge boundaries tools into the pick edges tool.
+  MrMeanie / Britefury (26/05/2007)
+
+- The pick edge loops, rings, and boundaries tools are now depracated, so they were removed. Their procedure classes
+  were moved into the pick edges tool module, and modified so that they convert to the new pick edge procedurs when
+  they are loaded from a project file.
+  MrMeanie / Britefury (26/05/2007)
+
+- Incorporated the VRML 97 exporter that was contributed by Joerg Scheurich.
+  MrMeanie / Britefury, Joerg Scheurich (26/05/2007)
+
+- Integrated updated Hungarian translation into gSculpt. Thanks to Gergely (Greg) Gaal for providing this translation.
+  MrMeanie / Britefury, Gergely (Greg) Gaal (26/05/2007)
+
+- Added explanations to the vertex, edge, and face toolsets, telling the user how to select components.
+  MrMeanie / Britefury (27/05/2007)
+
+- Implemented crease and normal sharpness tools.
+  MrMeanie / Britefury (27/05/2007)
+
+- Integrated updated Hungarian translation into gSculpt. Thanks to Gergely (Greg) Gaal for providing this translation.
+  MrMeanie / Britefury, Gergely (Greg) Gaal (27/05/2007)
+
+- Implemented the new proportional tweak tool.
+  MrMeanie / Britefury (03/06/2007)
+
+- Integrated updated Hungarian translation into gSculpt. Thanks to Gergely (Greg) Gaal for providing this translation.
+  MrMeanie / Britefury, Gergely (Greg) Gaal (05/06/2007)
+
+- Fixed a bug in the mesh system that could prevent the bounding box tree from being updated correctly.
+  MrMeanie / Britefury (09/06/2007)
+
+- Added falloff shape option to the proportional tweak tool.
+  MrMeanie / Britefury (10/06/2007)
+
+- The proportional tweak tool now remembers settings (operation, falloff, radius) between uses.
+  MrMeanie / Britefury (10/06/2007)
+
+- Integrated updated Hungarian translation into gSculpt. Thanks to Gergely (Greg) Gaal for providing this translation.
+  MrMeanie / Britefury, Gergely (Greg) Gaal (10/06/2007)
+
+- Gergely (Greg) Gaal discovered a crash bug that becomes apparent when using the extrude face and tweak tools.
+  It was caused by MFace::copyFrom() attempting to copy vertex normal information from the source face, even when the
+  source face did not have up to date vertex normal information. It was solved by only trying to copy vertex normal
+  information if the vertex normal information in the source face is up to date.
+  MrMeanie / Britefury (30/06/2007)
+
+- PengYou discovered a bug in the bandsaw tool. The bandsaw and n-bandsaw tools do not work correctly when the
+  bandsaw path self-intersects.
+  Fixed in the bandsaw tool, but not n-bandsaw.
+  MrMeanie / Britefury (30/06/2007)
+
+- Fixed the bug in the n-bandsaw tool mentioned above; n-bandsaw correctly handles situations where the cut-path
+  self-intersects.
+  MrMeanie / Britefury (01/07/2007)
+
+- The crash bug mentioned in the 30/06/2007 entry (in MFace::copyFrom()) still not quite fixed yet; now checks if
+  the source vertex's normal information is up to date before copying.
+  MrMeanie / Britefury (07/07/2007)
+
+- Discovered and fixed a bug that caused some procedures to be interpreted incorrectly when played back step by
+  step. This was due to the MBBTree::copyFrom() method not copying over some flags.
+  MrMeanie / Britefury (07/07/2007)
+
+- Disabled interactive searching on the plan view list; it is of no use here, and it gets in the way when it is activated.
+  MrMeanie / Britefury (21/07/2007)
+
+- Small bug fixes to the MBBTree.
+  MrMeanie / Britefury (19/04/2008)
+
+  
+  
+  

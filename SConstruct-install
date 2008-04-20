@@ -1,0 +1,98 @@
+import py_compile
+import os
+import glob
+import sys
+import stat
+
+
+prefix = os.path.join( '/usr', 'local' )
+pysitelibdir = os.path.join( prefix, 'lib', 'python%d.%d' % ( sys.version_info[0], sys.version_info[1] ), 'site-packages' )
+gSculptLibDir = os.path.join( prefix, 'lib', 'gSculpt' )
+gSculptImagesDir = os.path.join( prefix, 'share', 'gSculpt', 'gsimages' )
+gSculptStartPath = os.path.join( prefix, 'bin', 'gsculpt' )
+gSculptStartDir = os.path.join( prefix, 'bin', 'gSculpt' )
+
+
+
+def _findFiles(dir, filenameSpec):
+	def f(x, dirname, names):
+		x.extend( glob.glob( os.path.join( dirname, filenameSpec ) ) )
+	filenames = []
+	os.path.walk( dir, f, filenames )
+	return filenames
+
+
+# Python source compilation builder
+def compilePythonSource(target, source, env):
+	for src, tgt in zip( source, target ):
+		py_compile.compile( str( src ), str( tgt ) )
+	return None
+
+compilePyBuilder = Builder( action=compilePythonSource, suffix='.pyc', src_suffix='.py' )
+
+
+
+# Start script modification builder
+def customiseStartScript(target, source, env):
+	for src, tgt in zip( source, target ):
+		contents = open( str( src ), 'r' ).read()
+		contents = contents.replace( '#GSCULPT_LIBRARY_PATH#', gSculptLibDir ).replace( '#GSCULPT_START#', os.path.join( gSculptStartDir, 'gsculpt.py' ) )
+		open( str( tgt ), 'w' ).write( contents )
+		os.chmod( str( tgt ), stat.S_IRWXU | stat.S_IRWXG | stat.S_IROTH | stat.S_IXOTH )
+	return None
+
+customiseStartBuilder = Builder( action=customiseStartScript, suffix='.installedstart' )
+
+
+# Build environment
+env = Environment()
+env.Append( BUILDERS={ 'CompilePy' : compilePyBuilder,  'CustomiseStartScript' : customiseStartBuilder } )
+
+
+
+
+# Find all the python sources under 'Britefury', compile, and install them
+pythonSourceFiles = _findFiles( 'Britefury', '*.py' )
+
+for f in pythonSourceFiles:
+	compiledF = env.CompilePy( f )
+	env.Install( os.path.join( pysitelibdir, os.path.split( f )[0] ), compiledF )
+
+
+
+# Find all the python extensions under 'Britefury' and install them
+pythonExtensionFiles = _findFiles( 'Britefury', '*.so' )
+
+for f in pythonExtensionFiles:
+	env.Install( os.path.join( pysitelibdir, os.path.split( f )[0] ), f )
+
+
+
+# Find all the library files under '.' and install them
+libFiles = _findFiles( '.', 'lib*.so' )
+
+for f in libFiles:
+	env.Install( gSculptLibDir, f )
+
+
+
+# Find all the PNG and xpm images under 'gsimages' and install them
+imageFiles = _findFiles( 'gsimages', '*.png' )  +  _findFiles( 'gsimages', '*.xpm' )
+
+for f in imageFiles:
+	env.Install( gSculptImagesDir, f )
+
+
+
+# Install the gsculpt script
+customisedStart = env.CustomiseStartScript( os.path.join( 'posixbuild', 'gsculpt' ) )
+env.InstallAs( gSculptStartPath, customisedStart )
+
+
+
+# Install the gsculpt start source
+env.Install( gSculptStartDir, 'gsculpt.py' )
+
+
+# install target
+env.Alias( 'install', prefix )

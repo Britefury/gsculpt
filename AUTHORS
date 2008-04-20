@@ -1,0 +1,35 @@
+AUTHORS
+=======
+
+
+The gSculpt distribution includes the following libraries:
+
+PyConsole	Found in Britefury/extlibs/pyconsole	By Yevgen Muntyan							http://mooedit.sourceforge.net
+greenlet		Found in cpp/extlibs/greenlet			By Armin Rigo, Christian Tismer, et al				http://codespeak.net/py/dist/home.html
+
+
+
+The gSculpt application was written by Geoffrey French (MrMeanie / Britefury).
+The gSculpt icons and splash screen was designed and created by Gary Rose.
+gSculpt is (C)copyright Geoffrey French 1999-2006.
+gSculpt icons and splash screen (C)copyright Gary Rose 2006-2007.
+PyConsole is (C)copyright Yevgen Muntyan 2004-2006, and (C)copyright Geoffrey French 2006.
+greenlet is part of Py-lib and is (C)copyright Armin Rigo, Christian Tismet, et al 2002-2007.
+Part of the gSculpt build files (SConstruct and SConstruct-install) were created by Martin Tournoij.
+The VRML 97 exporter is (C)copyright 2007 Joerg Scheurich and Geoffrey French.
+
+
+
+TRANSLATIONS
+=============
+Please see the file AUTHORS_TRANSLATIONS for the list of language translators.
+
+
+
+
+FROM THE GSCULPT WIN32 DISTRUBUTION
+===================================
+boost_python.dll is from boost::python, from the Boost libraries. It was written by Dave Abrahams. http://www.boost.org
+The gdkglext and gtkglext DLLs are from the GtkGLExt package, by Naofumi Yasufuku. http://gtkglext.sourceforge.net
+The MSVC CRT redistributable DLLs are by Microsoft (R) Corporation. http://www.microsoft.com
+

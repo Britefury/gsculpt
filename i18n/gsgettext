@@ -1,0 +1,1 @@
+pygettext `find ../Britefury -name "*.py"` ../gsculpt.py
