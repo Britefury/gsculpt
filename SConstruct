@@ -1,6 +1,9 @@
 import os
 import sys
 
+import os
+import sys
+
 import re
 
 
@@ -121,7 +124,7 @@ if platform == PLATFORM_WIN32:
 	_vc8LibPaths = os.environ['LIB'].split( ';' )
 
 
-	# Attempt to get the boost path
+	# Attempt to get the Platform SDK path
 	try:
 		_platformSDKRootPath = os.environ['MSSDK']
 	except KeyError:
@@ -146,8 +149,8 @@ if platform == PLATFORM_WIN32:
 
 	assert os.path.exists( _boostRootPath ), 'Could not get path for Boost, tried %s, you can set the environment variable \'BOOST\' to the boost install path'  %  ( _boostRootPath, )
 
-	_boostIncPath = os.path.join( _boostRootPath, 'boost_1_33_1' )
-	_boostLibPath = os.path.join( _boostRootPath, 'boost_1_33_1\\libs\\python\\build\\bin-stage' )
+	_boostIncPath = _boostRootPath
+	_boostLibPath = os.path.join( _boostRootPath, 'libs\\python\\build\\bin-stage' )
 
 	assert os.path.exists( _boostIncPath ), 'Could not get path for Boost include files, tried %s'  %  ( _boostIncPath, )
 	assert os.path.exists( _boostLibPath ), 'Could not get path for Boost include files, tried %s'  %  ( _boostLibPath, )
@@ -170,6 +173,8 @@ if platform == PLATFORM_WIN32:
 
 	envPath = os.environ['PATH'].split( ';' )
 
+	pathSplitChar = ';'
+
 	pyExtSuffix = '.pyd'
 elif platform == PLATFORM_LINUX:
 	_pythonVersion = '%d.%d'  %  ( sys.version_info[0], sys.version_info[1] )
@@ -191,12 +196,16 @@ elif platform == PLATFORM_LINUX:
 
 	envPath = None
 
+	pathSplitChar = ':'
+
 	pyExtSuffix = '.so'
 
 incPaths = localIncPaths + pyIncPaths + boostPyIncPaths + standardIncPaths
 libPaths = localLibPaths + pyLibPaths + boostPyLibPaths + standardLibPaths
 
 extLibs = pyLibs + boostPyLibs + glLibs
+
+
 
 env = Environment( ENV=os.environ )
 
@@ -212,9 +221,13 @@ for key in [ 'CC', 'CXX', 'CCACHE_DIR' ]:
     env.Replace( **{key: os.environ[key]})
 
 # Append the values of CCFLAGS, CXXFLAGS, CPPPATH, LINKFLAGS, LIBPATH in the OS environment to @env
-for key in [ 'CCFLAGS', 'CXXFLAGS', 'CPPPATH', 'LINKFLAGS', 'LIBPATH',]:
+for key in [ 'CCFLAGS', 'CXXFLAGS', 'LINKFLAGS' ]:
   if os.environ.has_key(key):
     env.Append( **{key: os.environ[key].split(' ')} )
+
+for key in [ 'CPPPATH', 'LIBPATH' ]:
+  if os.environ.has_key(key):
+    env.Append( **{key: os.environ[key].split( pathSplitChar )} )
 
 # Append @incPaths to CPPPATH, @ccFlags to CCFLAGS
 env.Append(CPPPATH = incPaths)
