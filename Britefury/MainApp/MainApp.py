@@ -1233,7 +1233,7 @@ if __name__ == '__main__':
 
 	from Britefury.Math.Math import Point3, Matrix4
 
-	from OpenGL.GL import *
+	from Britefury.GL.GL import *
 
 	from Britefury.UI.FormLayout import FormLayoutFactory
 

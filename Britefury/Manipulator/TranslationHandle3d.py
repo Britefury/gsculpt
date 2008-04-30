@@ -7,7 +7,7 @@
 ##-*************************
 from copy import copy
 
-from OpenGL.GL import *
+from Britefury.GL.GL import *
 
 from Britefury.Util.SignalSlot import ClassSignal
 

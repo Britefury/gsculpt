@@ -521,8 +521,8 @@ class ModellerView (object):
 
 
 if __name__ == '__main__':
-	from OpenGL.GL import *
-	from OpenGL.GLU import *
+	from Britefury.GL.GL import *
+	from Britefury.GL.GLU import *
 	from Britefury.Math import Math
 	from Britefury.Math.Math import Point2
 

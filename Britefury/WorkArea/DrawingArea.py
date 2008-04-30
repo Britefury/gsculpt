@@ -15,8 +15,8 @@ import gtk.gtkgl
 import gobject
 import pango
 
-from OpenGL.GL import *
-from OpenGL.GLU import *
+from Britefury.GL.GL import *
+from Britefury.GL.GLU import *
 
 
 from Britefury.Math import Math
@@ -556,7 +556,7 @@ class DrawingArea (object):
 
 
 if __name__ == '__main__':
-	from OpenGL.GLU import *
+	from Britefury.GL.GLU import *
 	from Britefury.Math import Math
 	from Britefury.Math.Math import Point2
 	from Britefury.Graphics import Graphics

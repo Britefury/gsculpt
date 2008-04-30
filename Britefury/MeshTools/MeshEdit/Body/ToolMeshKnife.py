@@ -7,8 +7,8 @@
 ##-*************************
 from copy import copy, deepcopy
 
-from OpenGL.GL import *
-from OpenGL.GLU import *
+from Britefury.GL.GL import *
+from Britefury.GL.GLU import *
 
 from Britefury.Math.Math import Colour3f, Point3, Segment3
 

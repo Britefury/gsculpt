@@ -9,8 +9,8 @@ from copy import copy, deepcopy
 
 import math
 
-from OpenGL.GL import *
-from OpenGL.GLU import *
+from Britefury.GL.GL import *
+from Britefury.GL.GLU import *
 
 from Britefury.Math.Math import Point3
 
@@ -70,7 +70,7 @@ class TweakSphereQuadric (object):
 	s_globalQuadric = None
 
 	def __init__(self):
-		self._sphere = gluNewQuadric()
+		self._sphere = GLUquadric()
 		gluQuadricDrawStyle( self._sphere, GLU_FILL )
 		gluQuadricNormals( self._sphere, GLU_SMOOTH )
 

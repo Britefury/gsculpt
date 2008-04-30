@@ -7,7 +7,7 @@
 ##-*************************
 import sys
 
-from OpenGL.GL import *
+from Britefury.GL.GL import *
 
 import Image
 

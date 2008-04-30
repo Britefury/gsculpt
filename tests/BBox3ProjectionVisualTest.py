@@ -3,8 +3,8 @@ import math
 import random
 from copy import copy
 
-from OpenGL.GL import *
-from OpenGL.GLU import *
+from Britefury.GL.GL import *
+from Britefury.GL.GLU import *
 
 from Britefury.Math.Math import Vector3, Point3, Matrix4, BBox3, BBox2, Vector2, Point2, EulerRotation
 

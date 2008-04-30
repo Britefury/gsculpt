@@ -11,8 +11,8 @@ from copy import copy
 
 import math
 
-from OpenGL.GL import *
-from OpenGL.GLU import *
+from Britefury.GL.GL import *
+from Britefury.GL.GLU import *
 
 from Britefury.Util.SignalSlot import ClassSignal
 
@@ -59,7 +59,7 @@ class RotationHandleQuadric (object):
 	s_globalQuadric = None
 
 	def __init__(self):
-		self._sphere = gluNewQuadric()
+		self._sphere = GLUquadric()
 		gluQuadricDrawStyle( self._sphere, GLU_FILL )
 		gluQuadricNormals( self._sphere, GLU_SMOOTH )
 

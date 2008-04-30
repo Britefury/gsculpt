@@ -5,7 +5,7 @@
 ##-* version 2 can be found in the file named 'COPYING' that accompanies this
 ##-* program. This source code is (C)copyright Geoffrey French 1999-2007.
 ##-*************************
-from OpenGL.GL import *
+from Britefury.GL.GL import *
 
 import pygtk
 pygtk.require( '2.0' )
@@ -36,7 +36,7 @@ class GLResourceGuard (DrawingAreaListener):
 
 	def evPaint(self, drawingArea):
 		super( GLResourceGuard, self ).evPaint( drawingArea )
- 		glClearColor( self._backgroundColour.r, self._backgroundColour.g, self._backgroundColour.b, 0.0 )
+		glClearColor( self._backgroundColour.r, self._backgroundColour.g, self._backgroundColour.b, 0.0 )
 		glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT )
 
 		glEnable( GL_DEPTH_TEST )

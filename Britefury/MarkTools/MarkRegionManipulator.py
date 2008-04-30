@@ -5,7 +5,7 @@
 ##-* version 2 can be found in the file named 'COPYING' that accompanies this
 ##-* program. This source code is (C)copyright Geoffrey French 1999-2007.
 ##-*************************
-from OpenGL.GL import *
+from Britefury.GL.GL import *
 
 from Britefury.Graphics.Graphics import Region3d
 

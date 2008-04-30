@@ -8,7 +8,7 @@
 import sys
 
 
-gSculptNumericVersionString = '0.99.46.1'
+gSculptNumericVersionString = '0.99.46.2'
 gSculptVersionSuffix = '-alpha'
 gSculptVersionString = gSculptNumericVersionString + gSculptVersionSuffix
 
