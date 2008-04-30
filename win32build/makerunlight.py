@@ -10,4 +10,7 @@ import os
 from Britefury.gSculptConfig import gSculptConfig
 
 
-open( os.path.join( 'win32build', 'runlight.bat' ), 'w' ).writelines( [ 'light -out gSculpt-%s-win32.msi gSculpt.wixobj C:\Software\Wix\wixui.wixlib -loc C:\Software\Wix\WixUI_en-us.wxl'  %  ( gSculptConfig.gSculptVersionString, ) ] )
+_lineTemplate = 'light -out gSculpt-%s-win32.msi gSculpt.wixobj C:\Software\Wix\wixui.wixlib -loc C:\Software\Wix\WixUI_en-us.wxl'
+
+
+open( os.path.join( 'win32build', 'runlight.bat' ), 'w' ).writelines( [ _lineTemplate  %  ( gSculptConfig.gSculptVersionString, ) ] )

@@ -2,7 +2,7 @@ BUILDING gSculpt ON THE WIN32 PLATFORM
 ======================================
 
 
-Install Microsoft Visual C++ Express Edition.
+Install Microsoft Visual C++ Express Edition. The 2008 version should work.
 
 Install the Microsoft Windows Platform SDK.
 	Set the environment variable 'MSSDK' to the install path of the Microsoft Windows Platform SDK. (e.g. 'C:\Program Files\Microsoft Platform SDK')
@@ -12,13 +12,13 @@ Install the Boost libraries. (http://www.boost.org)
 
 Install Wix. (http://wix.sourceforge.net)
 
-Install the Microsoft Visual C++ v8.0 redistributable DLLs.
+Install the Microsoft Visual C++ v9.0 redistributable DLLs.
 
 Find the Boost::python Visual Studio project and build it.
 
-Edit the line of buildwin32msi.bat that reads:
- "light -out gSculpt.msi".......
-  And change the last two paths (which start with \wix\) to point to the location of your Wix installation.
+Edit the line of win32build\makerunlight.py that reads:
+ "_lineTemplate = 'light -out gSculpt.msi.......' "
+  And change the last two paths (which start with C:\Software\Wix\) to point to the location of your Wix installation.
 
 
 
@@ -33,7 +33,7 @@ Edit the line of buildwin32msi.bat that reads:
    This has to be done, as unfortunately, Scons 0.96.1 does not deal with the manifest files created by Visual C++ v8.
 4. Copy the boost_python.dll built by the Boost::python project into the gSculpt directory.
 5. Copy libgdkglext-win32-1.0-0.dll and libgtkglext-win32-1.0-0.dll from the GdkGLExt package into the gSculpt directory.
-6. Copy msvcr80.dll, msvcp80.dll, and msvcm80.dll from the MS redistributable package into the gSculpt directory.
+6. Copy msvcr90.dll, msvcp90.dll, and msvcm90.dll from the MS redistributable package into the gSculpt directory.
 6. At the prompt type:
 	> buildwin32msi
    This will build the gSculpt MSI installer, which will be placed in the win32build subdirectory.
