@@ -80,15 +80,6 @@ def deltree(path):
                 os.rmdir( os.path.join( root, name ) )
         os.rmdir( path )
 
-# Copy the OpenGL source dir
-for p in sys.path:
-    openGLPath = os.path.join( p, 'OpenGL' )
-    if os.path.exists( openGLPath ):
-        deltree( os.path.join( distDir, 'OpenGL' ) )
-        copyTree( openGLPath, os.path.join( distDir, 'OpenGL' ), True, None, [ '.pyo', '.py' ], [ 'Demo', 'scripts', 'Doc' ] )
-        break
-
-
 # Copy the GTK resources
 for rsc in gtkResources:
     deltree( os.path.join( distDir, rsc ) )

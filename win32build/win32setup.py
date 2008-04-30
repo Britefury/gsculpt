@@ -8,9 +8,6 @@
 from distutils.core import setup
 import py2exe
 
-import py2exeeggs
-py2exeeggs.loadEggs()
-
 import os
 import sys
 
@@ -31,7 +28,7 @@ setup(
 	options = {
 		'py2exe': {
 			'packages' : 'encodings',
-			'includes' : 'cairo, pango, pangocairo, atk, gobject, gtk.gdkgl, ctypes',
+			'includes' : 'cairo, pango, pangocairo, atk, gobject, gtk.gdkgl',
 		}
 	}
 )

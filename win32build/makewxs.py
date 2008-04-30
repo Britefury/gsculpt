@@ -111,6 +111,8 @@ componentIds = {
 	'dist\\OpenGL\\Tk\\win32-tk8.4':                               '08eaf311-fe38-11da-92e3-0800200c9a66',
 	'dist\\etc':                                                 '08eaf312-fe38-11da-92e3-0800200c9a66',
 	'dist\\etc\\fonts':                                           '08ec0480-fe38-11da-92e3-0800200c9a66',
+        'dist\\etc\\fonts\\conf.avail':                                           '1abbb1c1-ddad-11da-8ad9-0800200c9a66',
+	'dist\\etc\\fonts\\conf.d':                                           '1abbb1c2-ddad-11da-8ad9-0800200c9a66',
 	'dist\\etc\\gtk-2.0':                                         '08ec0481-fe38-11da-92e3-0800200c9a66',
 	'dist\\etc\\pango':                                           '08ec0482-fe38-11da-92e3-0800200c9a66',
 	'dist\\lib':                                                 '08ec0483-fe38-11da-92e3-0800200c9a66',
@@ -119,6 +121,10 @@ componentIds = {
 	'dist\\lib\\gtk-2.0\\2.4.0\\engines':                           '08ec2b90-fe38-11da-92e3-0800200c9a66',
 	'dist\\lib\\gtk-2.0\\2.4.0\\immodules':                         '08ec2b91-fe38-11da-92e3-0800200c9a66',
 	'dist\\lib\\gtk-2.0\\2.4.0\\loaders':                           '08ec2b92-fe38-11da-92e3-0800200c9a66',
+	'dist\\lib\\gtk-2.0\\2.10.0':                                   '1abbb1c3-ddad-11da-8ad9-0800200c9a66',
+	'dist\\lib\\gtk-2.0\\2.10.0\\engines':                           '1abbb1c4-ddad-11da-8ad9-0800200c9a66',
+	'dist\\lib\\gtk-2.0\\2.10.0\\immodules':                         '1abbb1c5-ddad-11da-8ad9-0800200c9a66',
+	'dist\\lib\\gtk-2.0\\2.10.0\\loaders':                           '1abbb1c6-ddad-11da-8ad9-0800200c9a66',
 	'dist\\lib\\pango':                                           '08ec2b93-fe38-11da-92e3-0800200c9a66',
 	'dist\\lib\\pango\\1.5.0':                                     '1ab80849-ddad-11da-8ad9-0800200c9a66',
 	'dist\\lib\\pango\\1.5.0\\modules':                             '1ab8084a-ddad-11da-8ad9-0800200c9a66',
@@ -555,7 +561,8 @@ else:
         for entry in os.listdir( dirPath ):
             entryPath = os.path.join( dirPath, entry )
             if os.path.isdir( entryPath ):
-                componentIdList.extend( gatherRecursive( dirNode, entry, id + '_' + entry, entryPath ) )
+                if entry != '.svn':
+                    componentIdList.extend( gatherRecursive( dirNode, entry, id + '_' + entry, entryPath ) )
             elif os.path.isfile( entryPath ):
                 base, ext = os.path.splitext( entry )
                 fileId = id + '_' + base + '_' + ext[1:]
@@ -590,11 +597,12 @@ else:
 
     etcComponentIds = gatherRecursive( gSculptDir, 'etc', 'etc', os.path.join( 'dist', 'etc' ) )
     libComponentIds = gatherRecursive( gSculptDir, 'lib', 'lib', os.path.join( 'dist', 'lib' ) )
-    openGLComponentIds = gatherRecursive( gSculptDir, 'OpenGL', 'opengl', os.path.join( 'dist', 'OpenGL' ) )
+    #openGLComponentIds = gatherRecursive( gSculptDir, 'OpenGL', 'opengl', os.path.join( 'dist', 'OpenGL' ) )
     shareComponentIds = gatherRecursive( gSculptDir, 'share', 'share', os.path.join( 'dist', 'share' ) )
     localeComponentIds = gatherRecursive( gSculptDir, 'locale', 'locale', os.path.join( 'dist', 'locale' ) )
     docComponentIds = gatherRecursive( gSculptDir, 'doc', 'doc', os.path.join( 'dist', 'doc' ) )
-    allComponentIds = etcComponentIds + libComponentIds + openGLComponentIds + shareComponentIds + localeComponentIds + docComponentIds
+    #allComponentIds = etcComponentIds + libComponentIds + openGLComponentIds + shareComponentIds + localeComponentIds + docComponentIds
+    allComponentIds = etcComponentIds + libComponentIds + shareComponentIds + localeComponentIds + docComponentIds
 
     gatherRootContents( gSculptRootComponent )
 
@@ -663,12 +671,6 @@ else:
 
 # A bunch of GUIDs.
 # Take one and remove it from the list each time one is needed.
-##1abbb1c1-ddad-11da-8ad9-0800200c9a66
-##1abbb1c2-ddad-11da-8ad9-0800200c9a66
-##1abbb1c3-ddad-11da-8ad9-0800200c9a66
-##1abbb1c4-ddad-11da-8ad9-0800200c9a66
-##1abbb1c5-ddad-11da-8ad9-0800200c9a66
-##1abbb1c6-ddad-11da-8ad9-0800200c9a66
 ##1abbb1c7-ddad-11da-8ad9-0800200c9a66
 ##1abbb1c8-ddad-11da-8ad9-0800200c9a66
 ##1abbb1c9-ddad-11da-8ad9-0800200c9a66
