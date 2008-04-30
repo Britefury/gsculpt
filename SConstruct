@@ -106,6 +106,8 @@ pyBrushFiles = cppPrefixPaths( 'Brush', [ 'pyBrushModule.cpp', 'pyBrush.cpp', 'p
 
 cppGreenletFiles = cppPrefixPaths( os.path.join( 'extlibs', 'greenlet' ), [ 'greenlet.c' ] )
 
+pyGLWrapperFiles = cppPrefixPaths( 'GLWrapper', [ 'wrap_GL.cpp' ] )
+
 pyBugWorkaroundFiles = cppPrefixPaths( 'bugworkarounds', [ 'pyGLDeleteTextures.cpp', 'pybugworkarounds.cpp' ] )
 
 
@@ -310,6 +312,8 @@ env.SharedLibrary( os.path.join( 'Britefury', 'Brush', 'Brush' ), pyBrushFiles, 
 env.SharedLibrary( os.path.join( 'Britefury', 'extlibs', 'greenlet', 'greenlet' ), cppGreenletFiles, LIBS=pyLibs, LIBPATH=libPaths, SHLIBPREFIX='', SHLIBSUFFIX=pyExtSuffix )
 
 env.SharedLibrary( os.path.join( 'Britefury', 'bugworkarounds', 'bugworkarounds' ), pyBugWorkaroundFiles, LIBS=extLibs + cppLibs, LIBPATH=libPaths, SHLIBPREFIX='', SHLIBSUFFIX=pyExtSuffix )
+
+env.SharedLibrary( os.path.join( 'Britefury', 'GL', 'GL' ), pyGLWrapperFiles, LIBS=extLibs + cppLibs, LIBPATH=libPaths, SHLIBPREFIX='', SHLIBSUFFIX=pyExtSuffix )
 
 
 

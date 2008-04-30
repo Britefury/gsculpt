@@ -8,9 +8,15 @@
 import os
 import sys
 
+import _winreg
+
+_reg_gtk2 = _winreg.OpenKey( _winreg.HKEY_LOCAL_MACHINE, 'Software\\GTK\\2.0' )
+
+
 
 distDir = 'dist'
-gtkDir = 'C:\\Program Files\\Common Files\\GTK\\2.0'
+#gtkDir = 'C:\\Program Files\\Common Files\\GTK\\2.0'
+gtkDir = _winreg.QueryValueEx( _reg_gtk2, 'Path' )[0]
 gtkResources = [ 'etc', 'lib', 'share' ]
 gsimagesDir = 'gsimages'
 examplesDir = 'examples'
@@ -101,6 +107,6 @@ deltree( os.path.join( distDir, docDir ) )
 copyTree( docDir, os.path.join( distDir, docDir ), False, [ '.txt', '.html', '.css' ] )
 
 
-copyFile( 'msvcr80.dll', os.path.join( 'dist', 'msvcr80.dll' ) )
-copyFile( 'msvcp80.dll', os.path.join( 'dist', 'msvcp80.dll' ) )
-copyFile( 'msvcm80.dll', os.path.join( 'dist', 'msvcm80.dll' ) )
+copyFile( 'msvcr90.dll', os.path.join( 'dist', 'msvcr90.dll' ) )
+copyFile( 'msvcp90.dll', os.path.join( 'dist', 'msvcp90.dll' ) )
+copyFile( 'msvcm90.dll', os.path.join( 'dist', 'msvcm90.dll' ) )
