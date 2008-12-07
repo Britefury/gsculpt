@@ -31,7 +31,7 @@ static bool triangleContainsPoint(const Point2 &a, const Point2 &b, const Point2
 	{
 		double k = Point2::areaOfTrianglex2( c, a, p );
 
-		return positiveArea  &&  k > -epsilonSquared  ||  negativeArea  &&  k < epsilonSquared;
+		return ( positiveArea  &&  k > -epsilonSquared )  ||  ( negativeArea  &&  k < epsilonSquared );
 	}
 	else
 	{

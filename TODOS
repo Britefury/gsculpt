@@ -3,6 +3,9 @@ Additional tools:
 	edge ring/loop next/prev
 
 
+Axis layout for OBJ importer (Y-up / north)
+Faster OBJ importer
+Nodes that are deleted remain in the project
 Further investigate bug that can occur while using tweak tool; something to do with picking acceleration
 Help system
 Handle image loading errors

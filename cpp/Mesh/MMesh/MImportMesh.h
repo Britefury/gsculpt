@@ -60,9 +60,14 @@ public:
 	MImportMesh();
 
 
+	void reserve(int numVertices, int numTextureCoords, int numFaces);
 	int addVertex(const Point3 &position);
 	int addTextureCoord(const Point2f &tex);
 	int addFace(const Face &face);
+
+	Array<Point3> & getVertexArray();
+	Array<Point2f> & getTextureCoordArray();
+	Array<Face> & getFaceArray();
 
 
 	void finalise();

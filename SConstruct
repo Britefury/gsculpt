@@ -104,6 +104,9 @@ pyGraphViewHelperFiles = cppPrefixPaths( 'GraphViewHelper', [ 'pyGraphViewWidget
 cppBrushFiles = cppPrefixPaths( 'Brush', [ 'Brush.cpp', 'SphericalBoundaryBrush.cpp', 'GaussianBrush.cpp', 'SphericalBrush.cpp', 'LinearBrush.cpp', 'FlatBrush.cpp', 'CubicSCurveBrush.cpp' ] )
 pyBrushFiles = cppPrefixPaths( 'Brush', [ 'pyBrushModule.cpp', 'pyBrush.cpp', 'pySphericalBoundaryBrush.cpp', 'pyGaussianBrush.cpp', 'pySphericalBrush.cpp', 'pyLinearBrush.cpp', 'pyFlatBrush.cpp', 'pyCubicSCurveBrush.cpp' ] )
 
+cppImportExportFilterObjImportFiles = cppPrefixPaths( 'ImportExportFilter', prefixPaths( 'ObjImport', [ 'ObjStringUtils.cpp', 'ObjLayout.cpp', 'ObjData.cpp' ] ) )
+
+
 cppGreenletFiles = cppPrefixPaths( os.path.join( 'extlibs', 'greenlet' ), [ 'greenlet.c' ] )
 
 pyGLWrapperFiles = cppPrefixPaths( 'GLWrapper', [ 'wrap_GL.cpp' ] )
@@ -285,8 +288,10 @@ cppGraphViewHelperLib = env.SharedLibrary( 'GraphViewHelper', cppGraphViewHelper
 							LIBS=extLibs + shLibsForShLib( [ 'Math', 'Util' ] ) )
 cppBrushLib = env.SharedLibrary( 'Brush', cppBrushFiles, LIBPATH=libPaths,
 							LIBS=extLibs + shLibsForShLib( [ 'Math', 'Util', 'RTType' ] ) )
+cppImportExportFilterObjImportLib = env.SharedLibrary( 'ImportExportFilterObjImport', cppImportExportFilterObjImportFiles, LIBPATH=libPaths,
+							LIBS=extLibs + shLibsForShLib( [] ) )
 
-cppLibs = [ 'Math', 'CompGeometry', 'FileIO', 'Graphics', 'LogGrid', 'Mesh', 'Model', 'Painter', 'PolyBlend', 'Polyline', 'Product', 'RTType', 'Transformation', 'Util', 'UVMap', 'View', 'GraphViewHelper', 'Group', 'Brush' ]
+cppLibs = [ 'Math', 'CompGeometry', 'FileIO', 'Graphics', 'LogGrid', 'Mesh', 'Model', 'Painter', 'PolyBlend', 'Polyline', 'Product', 'RTType', 'Transformation', 'Util', 'UVMap', 'View', 'GraphViewHelper', 'Group', 'Brush', 'ImportExportFilterObjImport' ]
 
 
 env.SharedLibrary( os.path.join( 'Britefury', 'Graphics', 'Graphics' ), pyGraphicsFiles, LIBS=extLibs + cppLibs, LIBPATH=libPaths, SHLIBPREFIX='', SHLIBSUFFIX=pyExtSuffix )

@@ -7993,7 +7993,7 @@ void MVertexSurfaceTweakAdjust::build(const Vector3 &viewVector)
 							Vector3 beta = nextFace.u.cross( endVector );
 							double alphaDotView = alpha.dot( viewVector );
 							double betaDotView = beta.dot( viewVector );
-							if ( !( alphaDotView < -EPSILON  &&  betaDotView < -EPSILON    ||    alphaDotView > EPSILON  &&  betaDotView > EPSILON ) )
+							if ( !( ( alphaDotView < -EPSILON  &&  betaDotView < -EPSILON )    ||    ( alphaDotView > EPSILON  &&  betaDotView > EPSILON ) ) )
 							{
 								// Compute the mid line, that lies between the boundaries of @face and @nextFace
 								Vector3 mid;

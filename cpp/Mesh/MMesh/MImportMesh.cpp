@@ -18,6 +18,13 @@ MImportMesh::MImportMesh()
 }
 
 
+void MImportMesh::reserve(int numVertices, int numTextureCoords, int numFaces)
+{
+	importVertices.reserve( numVertices );
+	importTextureCoords.reserve( numTextureCoords );
+	importFaces.reserve( numFaces );
+}
+
 int MImportMesh::addVertex(const Point3 &position)
 {
 	return importVertices.push_back( position );
@@ -34,10 +41,27 @@ int MImportMesh::addFace(const Face &face)
 }
 
 
+Array<Point3> & MImportMesh::getVertexArray()
+{
+	return importVertices;
+}
+
+Array<Point2f> & MImportMesh::getTextureCoordArray()
+{
+	return importTextureCoords;
+}
+
+Array<MImportMesh::Face> & MImportMesh::getFaceArray()
+{
+	return importFaces;
+}
+
+
+
 void MImportMesh::finalise()
 {
 	// Remove any duplicate vertices from the faces
-	for (int faceI = 0; faceI < importFaces.size(); faceI++)
+	for (int faceI = importFaces.size() - 1; faceI >= 0; faceI--)
 	{
 		Face &face = importFaces[faceI];
 
@@ -60,7 +84,6 @@ void MImportMesh::finalise()
 		if ( face.size() < 3 )
 		{
 			importFaces.remove( faceI );
-			faceI--;
 		}
 	}
 
