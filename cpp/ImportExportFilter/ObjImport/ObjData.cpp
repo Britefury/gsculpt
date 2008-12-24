@@ -137,7 +137,7 @@ ObjData::ObjReaderState::ObjReaderState()
 
 
 
-ObjData::ObjData(ObjLayout *layout, FILE *file)
+ObjData::ObjData(ObjLayout *layout, LineReader &reader)
 {
 	this->layout = layout;
 
@@ -165,13 +165,12 @@ ObjData::ObjData(ObjLayout *layout, FILE *file)
 
 
 	ObjReaderState state;
-	fseek( file, 0, SEEK_SET );
-	char buffer[1025];
-	char *line = fgets( buffer, 1024, file );
+	reader.reset();
+	char *line = reader.readLine();
 	while ( line != NULL )
 	{
 		processLine( state, line );
-		line = fgets( buffer, 1024, file );
+		line = reader.readLine();
 	}
 
 

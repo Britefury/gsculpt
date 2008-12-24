@@ -104,7 +104,7 @@ pyGraphViewHelperFiles = cppPrefixPaths( 'GraphViewHelper', [ 'pyGraphViewWidget
 cppBrushFiles = cppPrefixPaths( 'Brush', [ 'Brush.cpp', 'SphericalBoundaryBrush.cpp', 'GaussianBrush.cpp', 'SphericalBrush.cpp', 'LinearBrush.cpp', 'FlatBrush.cpp', 'CubicSCurveBrush.cpp' ] )
 pyBrushFiles = cppPrefixPaths( 'Brush', [ 'pyBrushModule.cpp', 'pyBrush.cpp', 'pySphericalBoundaryBrush.cpp', 'pyGaussianBrush.cpp', 'pySphericalBrush.cpp', 'pyLinearBrush.cpp', 'pyFlatBrush.cpp', 'pyCubicSCurveBrush.cpp' ] )
 
-cppImportExportFilterObjImportFiles = cppPrefixPaths( 'ImportExportFilter', prefixPaths( 'ObjImport', [ 'ObjStringUtils.cpp', 'ObjLayout.cpp', 'ObjData.cpp' ] ) )
+cppImportExportFilterObjImportFiles = cppPrefixPaths( 'ImportExportFilter', prefixPaths( 'ObjImport', [ 'ObjStringUtils.cpp', 'ObjLayout.cpp', 'ObjData.cpp', 'LineReader.cpp' ] ) )
 
 
 cppGreenletFiles = cppPrefixPaths( os.path.join( 'extlibs', 'greenlet' ), [ 'greenlet.c' ] )

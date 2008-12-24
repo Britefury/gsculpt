@@ -15,11 +15,10 @@
 
 
 
-ObjLayout::ObjLayout(FILE *file, bool bProcessModels)
+ObjLayout::ObjLayout(LineReader &reader, bool bProcessModels)
 {
 	this->bProcessModels = bProcessModels;
 	numV = numVT = numVN = numF = numFV = 0;
-	char buffer[1025];
 
 	if ( bProcessModels )
 	{
@@ -28,12 +27,12 @@ ObjLayout::ObjLayout(FILE *file, bool bProcessModels)
 		activeModels.push_back( defaultModel );
 	}
 
-	fseek( file, 0, SEEK_SET );
-	char *line = fgets( buffer, 1024, file );
+	reader.reset();
+	char *line = reader.readLine();
 	while ( line != NULL )
 	{
 		processLine( line );
-		line = fgets( buffer, 1024, file );
+		line = reader.readLine();
 	}
 
 	if ( bProcessModels )

@@ -12,6 +12,7 @@
 #include <vector>
 #include <map>
 
+#include <ImportExportFilter/ObjImport/LineReader.h>
 #include <ImportExportFilter/ObjImport/ObjLayout.h>
 
 
@@ -158,7 +159,7 @@ private:
 
 
 public:
-	ObjData(ObjLayout *layout, FILE *file);
+	ObjData(ObjLayout *layout, LineReader &reader);
 	~ObjData();
 
 

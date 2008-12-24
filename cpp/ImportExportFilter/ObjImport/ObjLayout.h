@@ -12,6 +12,9 @@
 #include <vector>
 #include <map>
 
+#include <ImportExportFilter/ObjImport/LineReader.h>
+
+
 
 class ObjModelLayout
 {
@@ -43,7 +46,7 @@ private:
 
 
 public:
-	ObjLayout(FILE *file, bool bProcessModels);
+	ObjLayout(LineReader &reader, bool bProcessModels);
 	~ObjLayout();
 
 
