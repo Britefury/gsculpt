@@ -8,19 +8,21 @@
 #ifndef OBJIMPORT_CPP__
 #define OBJIMPORT_CPP__
 
-#include <ImportExportFilter/ObjImport/ObjImport.h>
-
-#include <ImportExportFilter/ObjImport/ObjData.h>
-
 #include <Mesh/MMesh/MImportMesh.h>
 
+#include <ImportExportFilter/ObjImport/LineReader.h>
+#include <ImportExportFilter/ObjImport/ObjData.h>
+
+#include <ImportExportFilter/ObjImport/ObjImport.h>
 
 
-static void convertObjDataGlobalModelToImportMesh(MImportMesh &importMesh, ObjData &objData)
+
+GS_DllExport MImportMesh * convertObjDataGlobalModelToImportMesh(ObjData &objData)
 {
-	Array<Point3> &vertices = importMesh.getVertexArray();
-	Array<Point2f> &texCoords = importMesh.getTextureCoordArray();
-	Array<MImportMesh::Face> &faces = importMesh.getFaceArray();
+	MImportMesh *importMesh = new MImportMesh();
+	Array<Point3> &vertices = importMesh->getVertexArray();
+	Array<Point2f> &texCoords = importMesh->getTextureCoordArray();
+	Array<MImportMesh::Face> &faces = importMesh->getFaceArray();
 
 
 	vertices.resize( objData.layout->numV );
@@ -52,7 +54,67 @@ static void convertObjDataGlobalModelToImportMesh(MImportMesh &importMesh, ObjDa
 	}
 
 
-	importMesh.finalise();
+	importMesh->finalise();
+
+	return importMesh;
+}
+
+
+
+GS_DllExport MImportMesh * convertObjModelToImportMesh(ObjData &objData, ObjModel &objModel)
+{
+	MImportMesh *importMesh = new MImportMesh();
+	Array<Point3> &vertices = importMesh->getVertexArray();
+	Array<Point2f> &texCoords = importMesh->getTextureCoordArray();
+	Array<MImportMesh::Face> &faces = importMesh->getFaceArray();
+
+
+	vertices.resize( objModel.numV );
+	texCoords.resize( objModel.numVT );
+	faces.resize( objModel.numF );
+
+	for (int i = 0; i < objModel.numV; i++)
+	{
+		int x = objModel.vIndices[i];
+		vertices[i] = Point3( objData.v[x].v[0],objData.v[x].v[1], objData.v[x].v[2] );
+	}
+
+	for (int i = 0; i < objModel.numVT; i++)
+	{
+		int x = objModel.vtIndices[i];
+		texCoords[i] = Point2f( objData.vt[x].v[0],objData.vt[x].v[1] );
+	}
+
+	for (int i = 0; i < objModel.numF; i++)
+	{
+		ObjFace &faceIn = objModel.f[i];
+
+		MImportMesh::Face &faceOut = faces[i];
+		int faceSize = faceIn.numFV;
+
+		faceOut.resize( faceSize );
+		for (int j = 0; j < faceSize; j++)
+		{
+			faceOut[j] = MImportMesh::FaceVertex( faceIn.v[j].v, faceIn.v[j].vt );
+		}
+	}
+
+
+	importMesh->finalise();
+
+	return importMesh;
+}
+
+
+
+
+GS_DllExport MImportMesh * importObjAsSingleMesh(FILE *file)
+{
+	LineReader reader( file );
+	ObjLayout layout( reader, false );
+	ObjData data( &layout, reader );
+
+	return convertObjDataGlobalModelToImportMesh( data );
 }
 
 

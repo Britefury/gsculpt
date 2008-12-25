@@ -718,7 +718,8 @@ class MainApp (object):
 				gSculptUserConfig.userConfig.importPath = os.path.dirname( filename )
 				f = open( filename, 'r' )
 				if f is not None:
-					nodes = ObjImport.importNodes( f, bMerge )
+					f.close()
+					nodes = ObjImport.importNodes( filename, bMerge )
 					self._commandHistory.freeze()
 					for node in nodes:
 						self._project.scene.nodes.append( node )

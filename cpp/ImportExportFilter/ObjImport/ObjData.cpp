@@ -43,9 +43,20 @@ ObjModel::ModelIndexBuffer::~ModelIndexBuffer()
 
 void ObjModel::ModelIndexBuffer::reset(ObjLayout *layout)
 {
-	memset( vGlobalToModel, 0xff, sizeof(int) * layout->numV );
-	memset( vtGlobalToModel, 0xff, sizeof(int) * layout->numVT );
-	memset( vnGlobalToModel, 0xff, sizeof(int) * layout->numVN );
+	for (int i = 0; i < layout->numV; i++)
+	{
+		vGlobalToModel[i] = -1;
+	}
+
+	for (int i = 0; i < layout->numVT; i++)
+	{
+		vtGlobalToModel[i] = -1;
+	}
+
+	for (int i = 0; i < layout->numVN; i++)
+	{
+		vnGlobalToModel[i] = -1;
+	}
 }
 
 
@@ -53,8 +64,11 @@ void ObjModel::ModelIndexBuffer::reset(ObjLayout *layout)
 ObjModel::ObjModel(ObjModelLayout *layout)
 {
 	this->layout = layout;
-	f = new ObjFace[layout->numF];
-	fv = new ObjFaceVertex[layout->numFV];
+	numV = numVT = numVN = 0;
+	numF = layout->numF;
+	numFV = layout->numFV;
+	f = new ObjFace[numF];
+	fv = new ObjFaceVertex[numFV];
 	indexF = indexFV = 0;
 }
 
@@ -82,7 +96,7 @@ void ObjModel::addGlobalFace(ObjFace &face)
 
 void ObjModel::build(ModelIndexBuffer &buffer)
 {
-	int vCount = 0, vtCount = 0, vnCount = 0;
+	numV = numVT = numVN = 0;
 
 	for (int i = 0; i < layout->numF; i++)
 	{
@@ -92,35 +106,41 @@ void ObjModel::build(ModelIndexBuffer &buffer)
 			
 			if ( buffer.vGlobalToModel[fv.v] == -1 )
 			{
-				buffer.vModelToGlobal[vCount] = fv.v;
-				buffer.vGlobalToModel[fv.v] = vCount++;
+				buffer.vModelToGlobal[numV] = fv.v;
+				buffer.vGlobalToModel[fv.v] = numV++;
 			}
 			fv.v = buffer.vGlobalToModel[fv.v];
 
 
-			if ( buffer.vtGlobalToModel[fv.vt] == -1 )
+			if ( fv.vt != -1 )
 			{
-				buffer.vtModelToGlobal[vtCount] = fv.vt;
-				buffer.vtGlobalToModel[fv.vt] = vtCount++;
+				if ( buffer.vtGlobalToModel[fv.vt] == -1 )
+				{
+					buffer.vtModelToGlobal[numVT] = fv.vt;
+					buffer.vtGlobalToModel[fv.vt] = numVT++;
+				}
+				fv.vt = buffer.vtGlobalToModel[fv.vt];
 			}
-			fv.vt = buffer.vtGlobalToModel[fv.vt];
 
 
-			if ( buffer.vnGlobalToModel[fv.vn] == -1 )
+			if ( fv.vn != -1 )
 			{
-				buffer.vnModelToGlobal[vnCount] = fv.vn;
-				buffer.vnGlobalToModel[fv.vn] = vnCount++;
+				if ( buffer.vnGlobalToModel[fv.vn] == -1 )
+				{
+					buffer.vnModelToGlobal[numVN] = fv.vn;
+					buffer.vnGlobalToModel[fv.vn] = numVN++;
+				}
+				fv.vn = buffer.vnGlobalToModel[fv.vn];
 			}
-			fv.vn = buffer.vnGlobalToModel[fv.vn];
 		}
 	}
 
-	vIndices = new int[vCount];
-	vtIndices = new int[vtCount];
-	vnIndices = new int[vnCount];
-	memcpy( vIndices, buffer.vModelToGlobal, sizeof(int)*vCount );
-	memcpy( vtIndices, buffer.vtModelToGlobal, sizeof(int)*vtCount );
-	memcpy( vnIndices, buffer.vnModelToGlobal, sizeof(int)*vnCount );
+	vIndices = new int[numV];
+	vtIndices = new int[numVT];
+	vnIndices = new int[numVN];
+	memcpy( vIndices, buffer.vModelToGlobal, sizeof(int)*numV );
+	memcpy( vtIndices, buffer.vtModelToGlobal, sizeof(int)*numVT );
+	memcpy( vnIndices, buffer.vnModelToGlobal, sizeof(int)*numVN );
 }
 
 	
@@ -235,12 +255,12 @@ void ObjData::processLine(ObjReaderState &state, char *line)
 		if ( isWhitespace( line[1] ) )
 		{
 			readF( state, state.indexF, line + 2 );
-			state.indexF++;
+			int fIndex = state.indexF++;
 			if ( layout->bProcessModels )
 			{
 				for (std::vector<ObjModel*>::iterator iter = activeModels.begin(); iter != activeModels.end(); iter++)
 				{
-					(*iter)->addGlobalFace( f[state.indexF] );
+					(*iter)->addGlobalFace( f[fIndex] );
 				}
 			}
 		}

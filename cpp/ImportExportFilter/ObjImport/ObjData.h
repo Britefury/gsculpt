@@ -102,9 +102,10 @@ private:
 public:
 	ObjModelLayout *layout;
 
+	int numV, numVT, numVN, numF, numFV;
+	int *vIndices, *vtIndices, *vnIndices;
 	ObjFace *f;
 	ObjFaceVertex *fv;
-	int *vIndices, *vtIndices, *vnIndices;
 
 
 

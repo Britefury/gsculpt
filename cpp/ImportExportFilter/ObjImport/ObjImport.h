@@ -7,4 +7,16 @@
 //##************************
 #ifndef OBJIMPORT_H__
 #define OBJIMPORT_H__
+
+#include <Mesh/MMesh/MImportMesh.h>
+
+#include <ImportExportFilter/ObjImport/ObjData.h>
+
+
+
+GS_DllExport MImportMesh * convertObjDataGlobalModelToImportMesh(ObjData &objData);
+GS_DllExport MImportMesh * convertObjModelToImportMesh(ObjData &objData, ObjModel &objModel);
+
+
+
 #endif

@@ -9,6 +9,7 @@ from Britefury.Math.Math import Point3, Point4, Vector3, Point2, Point2f
 from Britefury.Mesh.Mesh import GSProductMesh, MImportMesh
 from Britefury.SceneNodes.SceneModelNode import SceneModelNode
 from Britefury.ImportExportFilter.ToolImportedModel import ProcImportedModel
+from Britefury.ImportExportFilter.Obj import ObjImport
 
 
 
@@ -180,10 +181,11 @@ class _ObjImporter (object):
 
 
 
-def importProducts(f, bMerge):
+def importProducts(filename, bMerge):
 	"""Import the products from an OBJ file
-	@f - the file
+	@filename - the file name
 	@bMerge - merge all models into one product if True"""
+	f = open( filename, 'r' )
 	importer = _ObjImporter( f, bMerge )
 
 	namesAndProducts = []
@@ -208,8 +210,32 @@ def importProducts(f, bMerge):
 			product.importMesh( importMesh )
 
 			namesAndProducts.append( ( entity.name, product ) )
+	
+	f.close();
 
 	return namesAndProducts
+
+
+
+
+def importProducts(filename, bMerge):
+	"""Import the products from an OBJ file
+	@filename - the file name
+	@bMerge - merge all models into one product if True"""
+	if bMerge:
+		product = GSProductMesh()
+		importMesh = ObjImport.importObjFileAsSingleMesh( filename )
+		product.importMesh( importMesh )
+		
+		return [ ( 'default', product ) ]
+	else:
+		namesAndMeshes = ObjImport.importObjFileAsMultipleMeshes( filename )
+		namesAndProducts = []
+		for name, mesh in namesAndMeshes:
+			product = GSProductMesh()
+			product.importMesh( mesh )
+			namesAndProducts.append( ( name, product ) )
+		return namesAndProducts
 
 
 

@@ -105,6 +105,7 @@ cppBrushFiles = cppPrefixPaths( 'Brush', [ 'Brush.cpp', 'SphericalBoundaryBrush.
 pyBrushFiles = cppPrefixPaths( 'Brush', [ 'pyBrushModule.cpp', 'pyBrush.cpp', 'pySphericalBoundaryBrush.cpp', 'pyGaussianBrush.cpp', 'pySphericalBrush.cpp', 'pyLinearBrush.cpp', 'pyFlatBrush.cpp', 'pyCubicSCurveBrush.cpp' ] )
 
 cppImportExportFilterObjImportFiles = cppPrefixPaths( 'ImportExportFilter', prefixPaths( 'ObjImport', [ 'ObjStringUtils.cpp', 'ObjLayout.cpp', 'ObjData.cpp', 'LineReader.cpp', 'ObjImport.cpp' ] ) )
+pyImportExportFilterObjImportFiles = cppPrefixPaths( 'ImportExportFilter', prefixPaths( 'ObjImport', [ 'PyObjImport.cpp' ] ) )
 
 
 cppGreenletFiles = cppPrefixPaths( os.path.join( 'extlibs', 'greenlet' ), [ 'greenlet.c' ] )
@@ -314,6 +315,8 @@ env.SharedLibrary( os.path.join( 'Britefury', 'PolyBlend', 'PolyBlend' ), pyPoly
 env.SharedLibrary( os.path.join( 'Britefury', 'Transformation', 'Transformation' ), pyTransformationFiles, LIBS=extLibs + cppLibs, LIBPATH=libPaths, SHLIBPREFIX='', SHLIBSUFFIX=pyExtSuffix )
 
 env.SharedLibrary( os.path.join( 'Britefury', 'Brush', 'Brush' ), pyBrushFiles, LIBS=extLibs + cppLibs, LIBPATH=libPaths, SHLIBPREFIX='', SHLIBSUFFIX=pyExtSuffix )
+
+env.SharedLibrary( os.path.join( 'Britefury', 'ImportExportFilter', 'Obj', 'ObjImport' ), pyImportExportFilterObjImportFiles, LIBS=extLibs + cppLibs, LIBPATH=libPaths, SHLIBPREFIX='', SHLIBSUFFIX=pyExtSuffix )
 
 env.SharedLibrary( os.path.join( 'Britefury', 'extlibs', 'greenlet', 'greenlet' ), cppGreenletFiles, LIBS=pyLibs, LIBPATH=libPaths, SHLIBPREFIX='', SHLIBSUFFIX=pyExtSuffix )
 
