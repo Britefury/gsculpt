@@ -14,6 +14,8 @@
 
 using namespace boost::python;
 
+#include <Background/Model/BackgroundMesh.h>
+
 #include <Mesh/MMesh/MImportMesh.h>
 
 #include <ImportExportFilter/ObjImport/LineReader.h>
@@ -67,10 +69,26 @@ boost::python::object py_importObjFileAsMultipleMeshes(std::string filename)
 
 
 
+BackgroundMesh * py_importObjFileAsBackgroundMesh(std::string filename)
+{
+	FILE *file = fopen( filename.c_str(), "r" );
+
+	LineReader reader( file );
+	ObjLayout layout( reader, false );
+	ObjData data( &layout, reader );
+
+	fclose( file );
+
+	return convertObjDataGlobalModelToBackgroundMesh( data );
+}
+
+
+
 void exportObjImport()
 {
 	def( "importObjFileAsSingleMesh", py_importObjFileAsSingleMesh, return_value_policy<manage_new_object>() );
 	def( "importObjFileAsMultipleMeshes", py_importObjFileAsMultipleMeshes );
+	def( "importObjFileAsBackgroundMesh", py_importObjFileAsBackgroundMesh, return_value_policy<manage_new_object>() );
 }
 
 

@@ -108,14 +108,40 @@ GS_DllExport MImportMesh * convertObjModelToImportMesh(ObjData &objData, ObjMode
 
 
 
-GS_DllExport MImportMesh * importObjAsSingleMesh(FILE *file)
-{
-	LineReader reader( file );
-	ObjLayout layout( reader, false );
-	ObjData data( &layout, reader );
 
-	return convertObjDataGlobalModelToImportMesh( data );
+GS_DllExport BackgroundMesh * convertObjDataGlobalModelToBackgroundMesh(ObjData &objData)
+{
+	Array<Point3f> vertices;
+	Array<BackgroundMesh::IndexFace> faces;
+
+
+	vertices.resize( objData.layout->numV );
+	faces.resize( objData.layout->numF );
+
+
+	for (int i = 0; i < objData.layout->numV; i++)
+	{
+		vertices[i] = Point3f( objData.v[i].v[0],objData.v[i].v[1], objData.v[i].v[2] );
+	}
+
+	for (int i = 0; i < objData.layout->numF; i++)
+	{
+		ObjFace &faceIn = objData.f[i];
+
+		BackgroundMesh::IndexFace &faceOut = faces[i];
+		int faceSize = faceIn.numFV;
+
+		faceOut.resize( faceSize );
+		for (int j = 0; j < faceSize; j++)
+		{
+			faceOut[j] = faceIn.v[j].v;
+		}
+	}
+
+
+	return new BackgroundMesh( vertices, faces );
 }
+
 
 
 

@@ -104,6 +104,9 @@ pyGraphViewHelperFiles = cppPrefixPaths( 'GraphViewHelper', [ 'pyGraphViewWidget
 cppBrushFiles = cppPrefixPaths( 'Brush', [ 'Brush.cpp', 'SphericalBoundaryBrush.cpp', 'GaussianBrush.cpp', 'SphericalBrush.cpp', 'LinearBrush.cpp', 'FlatBrush.cpp', 'CubicSCurveBrush.cpp' ] )
 pyBrushFiles = cppPrefixPaths( 'Brush', [ 'pyBrushModule.cpp', 'pyBrush.cpp', 'pySphericalBoundaryBrush.cpp', 'pyGaussianBrush.cpp', 'pySphericalBrush.cpp', 'pyLinearBrush.cpp', 'pyFlatBrush.cpp', 'pyCubicSCurveBrush.cpp' ] )
 
+cppBackgroundModelFiles = cppPrefixPaths( 'Background', prefixPaths( 'Model', [ 'BackgroundMesh.cpp' ] ) )
+pyBackgroundModelFiles = cppPrefixPaths( 'Background', prefixPaths( 'Model', [ 'PyBackgroundModel.cpp', 'PyBackgroundMesh.cpp' ] ) )
+
 cppImportExportFilterObjImportFiles = cppPrefixPaths( 'ImportExportFilter', prefixPaths( 'ObjImport', [ 'ObjStringUtils.cpp', 'ObjLayout.cpp', 'ObjData.cpp', 'LineReader.cpp', 'ObjImport.cpp' ] ) )
 pyImportExportFilterObjImportFiles = cppPrefixPaths( 'ImportExportFilter', prefixPaths( 'ObjImport', [ 'PyObjImport.cpp' ] ) )
 
@@ -289,10 +292,13 @@ cppGraphViewHelperLib = env.SharedLibrary( 'GraphViewHelper', cppGraphViewHelper
 							LIBS=extLibs + shLibsForShLib( [ 'Math', 'Util' ] ) )
 cppBrushLib = env.SharedLibrary( 'Brush', cppBrushFiles, LIBPATH=libPaths,
 							LIBS=extLibs + shLibsForShLib( [ 'Math', 'Util', 'RTType' ] ) )
+cppBackgroundModelLib = env.SharedLibrary( 'BackgroundModel', cppBackgroundModelFiles, LIBPATH=libPaths,
+							LIBS=extLibs + shLibsForShLib( [ 'Math', 'Util' ] ) )
 cppImportExportFilterObjImportLib = env.SharedLibrary( 'ImportExportFilterObjImport', cppImportExportFilterObjImportFiles, LIBPATH=libPaths,
-							LIBS=extLibs + shLibsForShLib( [] ) )
+							LIBS=extLibs + shLibsForShLib( [ 'Math', 'Util' ] ) )
 
-cppLibs = [ 'Math', 'CompGeometry', 'FileIO', 'Graphics', 'LogGrid', 'Mesh', 'Model', 'Painter', 'PolyBlend', 'Polyline', 'Product', 'RTType', 'Transformation', 'Util', 'UVMap', 'View', 'GraphViewHelper', 'Group', 'Brush', 'ImportExportFilterObjImport' ]
+cppLibs = [ 'Math', 'CompGeometry', 'FileIO', 'Graphics', 'LogGrid', 'Mesh', 'Model', 'Painter', 'PolyBlend', 'Polyline', 'Product', 'RTType', 'Transformation', 'Util', 'UVMap', 'View', 'GraphViewHelper', 'Group', 'Brush', 'BackgroundModel',
+		'ImportExportFilterObjImport' ]
 
 
 env.SharedLibrary( os.path.join( 'Britefury', 'Graphics', 'Graphics' ), pyGraphicsFiles, LIBS=extLibs + cppLibs, LIBPATH=libPaths, SHLIBPREFIX='', SHLIBSUFFIX=pyExtSuffix )
@@ -317,6 +323,8 @@ env.SharedLibrary( os.path.join( 'Britefury', 'Transformation', 'Transformation'
 env.SharedLibrary( os.path.join( 'Britefury', 'Brush', 'Brush' ), pyBrushFiles, LIBS=extLibs + cppLibs, LIBPATH=libPaths, SHLIBPREFIX='', SHLIBSUFFIX=pyExtSuffix )
 
 env.SharedLibrary( os.path.join( 'Britefury', 'ImportExportFilter', 'Obj', 'ObjImport' ), pyImportExportFilterObjImportFiles, LIBS=extLibs + cppLibs, LIBPATH=libPaths, SHLIBPREFIX='', SHLIBSUFFIX=pyExtSuffix )
+
+env.SharedLibrary( os.path.join( 'Britefury', 'Background', 'Model' ), pyBackgroundModelFiles, LIBS=extLibs + cppLibs, LIBPATH=libPaths, SHLIBPREFIX='', SHLIBSUFFIX=pyExtSuffix )
 
 env.SharedLibrary( os.path.join( 'Britefury', 'extlibs', 'greenlet', 'greenlet' ), cppGreenletFiles, LIBS=pyLibs, LIBPATH=libPaths, SHLIBPREFIX='', SHLIBSUFFIX=pyExtSuffix )
 

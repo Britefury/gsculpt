@@ -5,23 +5,22 @@
 //##* version 2 can be found in the file named 'COPYING' that accompanies this
 //##* program. This source code is (C)copyright Geoffrey French 1999-2007.
 //##************************
-#ifndef OBJIMPORT_H__
-#define OBJIMPORT_H__
+#ifndef PYBACKGROUNDMODEL_CPP__
+#define PYBACKGROUNDMODEL_CPP__
 
-#include <Mesh/MMesh/MImportMesh.h>
-#include <Background/Model/BackgroundMesh.h>
-
-#include <ImportExportFilter/ObjImport/ObjData.h>
+#include <boost/python.hpp>
+using namespace boost::python;
 
 
 
-GS_DllExport MImportMesh * convertObjDataGlobalModelToImportMesh(ObjData &objData);
-GS_DllExport MImportMesh * convertObjModelToImportMesh(ObjData &objData, ObjModel &objModel);
+void export_BackgroundMesh();
 
 
 
-GS_DllExport BackgroundMesh * convertObjDataGlobalModelToBackgroundMesh(ObjData &objData);
-
+BOOST_PYTHON_MODULE(Model)
+{
+	export_BackgroundMesh();
+}
 
 
 
