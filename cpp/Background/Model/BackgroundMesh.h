@@ -10,6 +10,8 @@
 
 #include <PlatformSpecific/IncludeGL.h>
 
+#include <PlatformSpecific/GLExtensions.h>
+
 #include <Util/Array.h>
 
 #include <Math/Point3f.h>
@@ -37,17 +39,20 @@ public:
 
 
 private:
-	Array<Vertex> vertices;
+	Array<Point3f> vPosition;
+	Array<Vector3f> vNormal;
 	Array<IndexTri> tris;
 
 	enum
 	{
-		BUFFERINDEX_VERTICES = 0,
-		BUFFERINDEX_INDICES = 1,
-		NUMBUFFERS = 2
+		BUFFERINDEX_POSITION = 0,
+		BUFFERINDEX_NORMAL = 1,
+		BUFFERINDEX_INDICES = 2,
+		NUMBUFFERS = 3
 	};
 
 	GLuint buffers[NUMBUFFERS];
+	bool bInitialisedGL;
 
 
 public:

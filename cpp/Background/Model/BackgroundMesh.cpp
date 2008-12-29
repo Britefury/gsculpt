@@ -13,17 +13,73 @@
 #include <PlatformSpecific/IncludeGL.h>
 #include <PlatformSpecific/GLExtensions.h>
 
+#include <Model/ModelDraw.h>
+
 
 #include <Background/Model/BackgroundMesh.h>
 
 
 
+
+/*static void setupUntexturedMaterial(bool reflection)
+{
+	Colour3f diffCol = reflection  ?  getSurfaceDiffuseColour() * getReflectedSurfaceFilterColour() : getSurfaceDiffuseColour();
+	const Colour3f &specCol = getSurfaceSpecularColour();
+	GLfloat diff[] = { diffCol.r, diffCol.g, diffCol.b, 0.0f };
+	GLfloat spec[] = { specCol.r, specCol.g, specCol.b, 0.0f };
+	GLfloat shin[] = { 35.0f };
+
+	glMaterialfv( GL_FRONT, GL_DIFFUSE, diff );
+	glMaterialfv( GL_FRONT, GL_SPECULAR, spec );
+	glMaterialfv( GL_FRONT, GL_SHININESS, shin );
+}*/
+
+static void setupTransparentMaterial()
+{
+	const Colour3f &diffCol = getTransparentBackgroundSurfaceDiffuseColour();
+	const Colour3f &specCol = getTransparentBackgroundSurfaceSpecularColour();
+	float alpha = getTransparentBackgroundSurfaceAlpha();
+
+	GLfloat diff[] = { diffCol.r, diffCol.g, diffCol.b, alpha };
+	GLfloat spec[] = { specCol.r, specCol.g, specCol.b, alpha };
+	GLfloat shin[] = { 35.0f };
+
+	glMaterialfv( GL_FRONT, GL_DIFFUSE, diff );
+	glMaterialfv( GL_FRONT, GL_SPECULAR, spec );
+	glMaterialfv( GL_FRONT, GL_SHININESS, shin );
+}
+
+static void beginSolidRendering()
+{
+	glPolygonMode( GL_FRONT_AND_BACK, GL_FILL );
+	glEnable( GL_POLYGON_OFFSET_FILL );
+
+	glPolygonOffset( 1.0, 1.0 );
+
+	glEnable( GL_LIGHTING );
+}
+
+static void endSolidRendering()
+{
+	glDisable( GL_LIGHTING );
+
+	glDisable( GL_POLYGON_OFFSET_FILL );
+}
+
+
+
+
+
+
 BackgroundMesh::BackgroundMesh()
 {
+	bInitialisedGL = false;
 }
 
 BackgroundMesh::BackgroundMesh(Array<Point3f> &inVerts, Array<IndexFace> &inFaces)
 {
+	bInitialisedGL = false;
+
 	// Face index buffer
 	IndexFace faceIndices;
 	// Edge vectors
@@ -33,14 +89,11 @@ BackgroundMesh::BackgroundMesh(Array<Point3f> &inVerts, Array<IndexFace> &inFace
 	// Normal vector
 	Vector3f n;
 
-	vertices.resize( inVerts.size() );
+	vNormal.resize( inVerts.size() );
 	tris.reserve( inFaces.size() );
 
 	// Copy vertex positions
-	for (int vertexI = 0; vertexI < inVerts.size(); vertexI++)
-	{
-		vertices[vertexI].v = inVerts[vertexI];
-	}
+	vPosition = inVerts;
 
 	// For each face
 	for (int faceI = 0; faceI < inFaces.size(); faceI++)
@@ -100,7 +153,7 @@ BackgroundMesh::BackgroundMesh(Array<Point3f> &inVerts, Array<IndexFace> &inFace
 			for (int faceVertexI = 0; faceVertexI < faceIndices.size(); faceVertexI++)
 			{
 				int vIndex = faceIndices[faceVertexI];
-				vertices[vIndex].n += unitN;
+				vNormal[vIndex] += unitN;
 			}
 		}
 	}
@@ -109,7 +162,7 @@ BackgroundMesh::BackgroundMesh(Array<Point3f> &inVerts, Array<IndexFace> &inFace
 	// Normalise vertex normals
 	for (int vertexI = 0; vertexI < inVerts.size(); vertexI++)
 	{
-		vertices[vertexI].n.normalise();
+		vNormal[vertexI].normalise();
 	}
 }
 
@@ -118,39 +171,80 @@ BackgroundMesh::BackgroundMesh(Array<Point3f> &inVerts, Array<IndexFace> &inFace
 
 void BackgroundMesh::initGL()
 {
-	glGenBuffers( NUMBUFFERS, buffers );
+	if ( !bInitialisedGL )
+	{
+		bInitialisedGL = true;
 
-	glBindBuffer( GL_ARRAY_BUFFER, buffers[BUFFERINDEX_VERTICES] );
-	glBufferData( GL_ARRAY_BUFFER, sizeof( Vertex ) * vertices.size(), vertices.begin(), GL_STATIC_DRAW );
-	glVertexPointer( 3, GL_FLOAT, sizeof( Vertex ), BUFFER_OFFSET( 0 ) );
-	glNormalPointer( 3, sizeof( Vertex ), BUFFER_OFFSET( sizeof( Point3f ) ) );
+		GLExtensions *glext = getGLExtensions();
+		if ( glext != NULL )
+		{
+			glext->glGenBuffers( NUMBUFFERS, buffers );
+		
+			glext->glBindBuffer( GL_ARRAY_BUFFER, buffers[BUFFERINDEX_POSITION] );
+			glext->glBufferData( GL_ARRAY_BUFFER, sizeof( Point3f ) * vPosition.size(), vPosition.begin(), GL_STATIC_DRAW );
+			glVertexPointer( 3, GL_FLOAT, 0, NULL );
 
-	glBindBuffer( GL_ELEMENT_ARRAY_BUFFER, buffers[BUFFERINDEX_INDICES] );
-	glBufferData( GL_ELEMENT_ARRAY_BUFFER, sizeof( IndexTri ) * tris.size(), tris.begin(), GL_STATIC_DRAW );
+			glext->glBindBuffer( GL_ARRAY_BUFFER, buffers[BUFFERINDEX_NORMAL] );
+			glext->glBufferData( GL_ARRAY_BUFFER, sizeof( Vector3f ) * vNormal.size(), vNormal.begin(), GL_STATIC_DRAW );
+			glNormalPointer( GL_FLOAT, 0, NULL );
+		
+			glext->glBindBuffer( GL_ELEMENT_ARRAY_BUFFER, buffers[BUFFERINDEX_INDICES] );
+			glext->glBufferData( GL_ELEMENT_ARRAY_BUFFER, sizeof( IndexTri ) * tris.size(), tris.begin(), GL_STATIC_DRAW );
+		}
+	}
 }
 
 
 void BackgroundMesh::drawGL()
 {
-	glBindBuffer( GL_ARRAY_BUFFER, buffers[BUFFERINDEX_VERTICES] );
-	glBindBuffer( GL_ELEMENT_ARRAY_BUFFER, buffers[BUFFERINDEX_INDICES] );
+	if ( bInitialisedGL )
+	{
+		GLExtensions *glext = getGLExtensions();
+		if ( glext != NULL )
+		{
+			glEnableClientState( GL_VERTEX_ARRAY );
+			glEnableClientState( GL_NORMAL_ARRAY );
+		
+			glext->glBindBuffer( GL_ARRAY_BUFFER, buffers[BUFFERINDEX_POSITION] );
 
-	glVertexPointer( 3, GL_FLOAT, sizeof( Vertex ), BUFFER_OFFSET( 0 ) );
-	glNormalPointer( 3, sizeof( Vertex ), BUFFER_OFFSET( sizeof( Point3f ) ) );
+			glext->glBindBuffer( GL_ARRAY_BUFFER, buffers[BUFFERINDEX_NORMAL] );
 
-	glEnableClientState( GL_VERTEX_ARRAY );
-	glEnableClientState( GL_NORMAL_ARRAY );
+			glext->glBindBuffer( GL_ELEMENT_ARRAY_BUFFER, buffers[BUFFERINDEX_INDICES] );
+		
 
-	glDrawElements( GL_TRIANGLES, tris.size() * 3, GL_UNSIGNED_INT, 0 );
 
-	glDisableClientState( GL_VERTEX_ARRAY );
-	glDisableClientState( GL_NORMAL_ARRAY );
+
+
+			beginSolidRendering();
+
+			setupTransparentMaterial();
+
+			glDrawElements( GL_TRIANGLES, tris.size() * 3, GL_UNSIGNED_INT, 0 );
+
+			endSolidRendering();
+
+
+
+
+
+			glDisableClientState( GL_VERTEX_ARRAY );
+			glDisableClientState( GL_NORMAL_ARRAY );
+		}
+	}
 }
 
 
 void BackgroundMesh::shutdownGL()
 {
-	glDeleteBuffers( NUMBUFFERS, buffers );
+	if ( bInitialisedGL )
+	{
+		bInitialisedGL = false;
+		GLExtensions *glext = getGLExtensions();
+		if ( glext != NULL )
+		{
+			glext->glDeleteBuffers( NUMBUFFERS, buffers );
+		}
+	}
 }
 
 

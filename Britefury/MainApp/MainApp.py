@@ -52,6 +52,8 @@ from Britefury.Texture import TextureTable
 
 from Britefury.View.BackgroundImage import BackgroundImageList
 from Britefury.View.BackgroundImageTool import BackgroundImageTool
+from Britefury.View.BackgroundModel import BackgroundModelList
+from Britefury.View.BackgroundModelTool import BackgroundModelTool
 from Britefury.View.ModelLayerEditor import ModelLayerEditorWindow
 from Britefury.View.ModelLayerEditor import ModelLayerEditorWindow
 from Britefury.View.ModelLayerBackgroundPainter import ModelLayerBackgroundPainter
@@ -168,6 +170,45 @@ class BackgroundImagePainter (Viewport3dPainter):
 
 
 
+class BackgroundModelPainter (Viewport3dPainter):
+	def __init__(self):
+		self._backgroundModelList = None
+		self._viewports = []
+
+	def painterAttachedToViewport(self, viewport):
+		super( BackgroundModelPainter, self ).painterAttachedToViewport( viewport )
+		if self._backgroundModelList is not None:
+			self._backgroundModelList.painterAttachedToViewport( viewport )
+		self._viewports.append( viewport )
+
+
+	def painterDetachedFromViewport(self, viewport):
+		super( BackgroundModelPainter, self ).painterDetachedFromViewport( viewport )
+		if self._backgroundModelList is not None:
+			self._backgroundModelList.painterDetachedFromViewport( viewport )
+		self._viewports.remove( viewport )
+
+
+	def evPaint3d(self, viewport, paintLayer):
+		super( BackgroundModelPainter, self ).evPaint3d( viewport, paintLayer )
+		if self._backgroundModelList is not None:
+			self._backgroundModelList.evPaint3d( viewport, paintLayer )
+
+
+	def _p_setBackgroundModelList(self, imageList):
+		if self._backgroundModelList is not None:
+			for viewport in self._viewports:
+				self._backgroundModelList.painterDetachedFromViewport( viewport )
+		self._backgroundModelList = imageList
+		if self._backgroundModelList is not None:
+			for viewport in self._viewports:
+				self._backgroundModelList.painterAttachedToViewport( viewport )
+
+
+	backgroundModelList = property( None, _p_setBackgroundModelList )
+
+
+
 class GSculptScriptEnvironment (object):
 	def __init__(self, project, app):
 		self._project = project
@@ -220,13 +261,23 @@ class MainApp (object):
 
 		self._toolboxTable = ToolboxTable()
 
+
 		self._backgroundImagePainter = BackgroundImagePainter()
 
 		self._backgroundImagesTool = BackgroundImageTool( self._view, self._editorSettings, self._window, self._commandHistory )
 		self._backgroundImagesTool.doneListener = self._p_onBackgroundImagesToolDone
 
+
+		self._backgroundModelPainter = BackgroundModelPainter()
+		
+		self._backgroundModelsTool = BackgroundModelTool( self._view, self._editorSettings, self._window, self._commandHistory )
+		self._backgroundModelsTool.doneListener = self._p_onBackgroundModelsToolDone
+
+		self._view.addPainter( self._backgroundModelPainter, Viewport3d )
+
 		self._drawingPlaneTool = DrawingPlaneTool( self._view, self._editorSettings, self._window, self._commandHistory )
 		self._drawingPlaneTool.doneListener = self._p_onDrawingPlaneToolDone
+
 
 		self._layerTableEditor = ModelLayerEditorWindow( self._window, self._commandHistory )
 		self._layerTableEditor.closeSignal.connect( self._p_onLayerTableEditorClose )
@@ -276,6 +327,11 @@ class MainApp (object):
 		self._backgroundImageButton.getWidget().show()
 		self._backgroundImageButton.toggleSignal.connect( self._p_onBackgroundImageButton )
 		tooltips.set_tip( self._backgroundImageButton.getWidget(), _( 'Background images' ), _( 'Background images' ) )
+
+		self._backgroundModelButton = ToggleButton( gsImageFilename='background_images.png' )
+		self._backgroundModelButton.getWidget().show()
+		self._backgroundModelButton.toggleSignal.connect( self._p_onBackgroundModelButton )
+		tooltips.set_tip( self._backgroundModelButton.getWidget(), _( 'Background models' ), _( 'Background models' ) )
 
 		self._snapSettingsButton = gtk.Button()
 		image = GSImage.getGSImageWidget( 'snap_settings.png' )
@@ -478,6 +534,7 @@ class MainApp (object):
 		self._mainToolbar.pack_start( self._focusButton.getWidget(), False, False )
 		self._mainToolbar.pack_start( gtk.VSeparator(), False, False, 5 )
 		self._mainToolbar.pack_start( self._backgroundImageButton.getWidget(), False, False )
+		self._mainToolbar.pack_start( self._backgroundModelButton.getWidget(), False, False )
 		self._mainToolbar.pack_start( gtk.VSeparator(), False, False, 5 )
 		self._mainToolbar.pack_start( self._snapSettingsButton, False, False )
 		self._mainToolbar.pack_start( gtk.VSeparator(), False, False, 5 )
@@ -571,6 +628,8 @@ class MainApp (object):
 		self._sceneEditor.attachScene( self._project.scene )
 		self._backgroundImagePainter.backgroundImageList = self._project.scene.backgroundImages
 		self._backgroundImagesTool.attachImageList( self._project.scene.backgroundImages )
+		self._backgroundModelPainter.backgroundModelList = self._project.scene.backgroundModels
+		self._backgroundModelsTool.attachModelList( self._project.scene.backgroundModels )
 		self._drawingPlaneTool.sheet = self._project.drawingPlane
 		self._project.drawingPlane.cells.bEnabled.changedSignal.connect( self._p_onDrawingPlaneEnabledChanged )
 		self._view.addPainter( self._project.drawingPlane, Viewport3d )
@@ -594,6 +653,8 @@ class MainApp (object):
 		self._drawingPlaneTool.sheet = None
 		self._backgroundImagesTool.detachImageList()
 		self._backgroundImagePainter.backgroundImageList = None
+		self._backgroundModelsTool.detachModelList()
+		self._backgroundModelPainter.backgroundModelList = None
 		self._layerPainter.detachLayerTable()
 		self._layerTableEditor.detachLayerTable()
 		self._sceneEditor.detachScene()
@@ -997,6 +1058,13 @@ class MainApp (object):
 			else:
 				self._backgroundImagesTool.uninstall()
 
+	def _p_onBackgroundModelButton(self, event, bState):
+		if event.bUserEvent:
+			if bState:
+				self._backgroundModelsTool.install( self._toolPanel, self._window )
+			else:
+				self._backgroundModelsTool.uninstall()
+
 	def _p_onDrawingPlaneButton(self, event, bState):
 		if self._project is not None:
 			if bState != self._project.drawingPlane.bEnabled:
@@ -1024,6 +1092,10 @@ class MainApp (object):
 	def _p_onBackgroundImagesToolDone(self, tool):
 		tool.uninstall()
 		self._backgroundImageButton.state = False
+
+	def _p_onBackgroundModelsToolDone(self, tool):
+		tool.uninstall()
+		self._backgroundModelButton.state = False
 
 
 	def _p_onDrawingPlaneToolDone(self, tool):

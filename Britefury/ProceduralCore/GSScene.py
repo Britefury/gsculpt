@@ -8,6 +8,7 @@
 from Britefury.FileIO import IOXml
 
 from Britefury.View.BackgroundImage import BackgroundImageList
+from Britefury.View.BackgroundModel import BackgroundModelList
 from Britefury.View.ModelLayer import ModelLayerTable
 
 from Britefury.SheetGraph.SheetGraph import *
@@ -124,6 +125,7 @@ class GSScene (SheetGraph):
 		self._nodesByName = GSScene._NameToNodeTable( self )
 		self._layerTable = None
 		self._backgroundImages = BackgroundImageList()
+		self._backgroundModels = BackgroundModelList()
 		self._layerTable = ModelLayerTable( self )
 		self._graphViewDisplayTable = SheetGraphViewDisplayTable()
 
@@ -144,6 +146,7 @@ class GSScene (SheetGraph):
 		super( GSScene, self ).__readxml__( xmlNode )
 
 		xmlNode.getChild( 'background_images' )  >>  self._backgroundImages
+		xmlNode.getChild( 'background_models' )  >>  self._backgroundModels
 		xmlNode.getChild( 'layer_table' )  >>  self._layerTable
 		xmlNode.getChild( 'graph_view_display_table' )  >>  self._graphViewDisplayTable
 
@@ -152,6 +155,7 @@ class GSScene (SheetGraph):
 		super( GSScene, self ).__writexml__( xmlNode )
 
 		xmlNode.addChild( 'background_images' )  <<  self._backgroundImages
+		xmlNode.addChild( 'background_models' )  <<  self._backgroundModels
 		xmlNode.addChild( 'layer_table' )  <<  self._layerTable
 		xmlNode.addChild( 'graph_view_display_table' )  <<  self._graphViewDisplayTable
 
@@ -176,10 +180,14 @@ class GSScene (SheetGraph):
 	def _getBackgroundImages(self):
 		return self._backgroundImages
 
+	def _getBackgroundModels(self):
+		return self._backgroundModels
+
 
 	nodesByName = property( _getNodesByName, doc='Name to node mapping' )
 	layerTable = property( _getLayerTable, doc='Layer table' )
 	backgroundImages = property( _getBackgroundImages, doc='Background image list' )
+	backgroundModels = property( _getBackgroundModels, doc='Background model list' )
 
 
 IOXml.ioObjectFactoryRegister( 'GSScene', GSScene )

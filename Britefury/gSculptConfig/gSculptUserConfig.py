@@ -64,6 +64,7 @@ class GSculptUserConfig (object):
 
 
 	texturePath = ConfigProperty( 'Paths', 'texturePath', str, os.getcwd() )
+	backgroundModelPath = ConfigProperty( 'Paths', 'backgroundModelPath', str, os.getcwd() )
 	uiToolPanelWidth = ConfigProperty( 'UI', 'toolPanelWidth', int, 230 )
 	projectPath = ConfigProperty( 'Paths', 'projectPath', str, os.getcwd() )
 	importPath = ConfigProperty( 'Paths', 'importPath', str, os.getcwd() )

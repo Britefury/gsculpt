@@ -110,6 +110,9 @@ pyBackgroundModelFiles = cppPrefixPaths( 'Background', prefixPaths( 'Model', [ '
 cppImportExportFilterObjImportFiles = cppPrefixPaths( 'ImportExportFilter', prefixPaths( 'ObjImport', [ 'ObjStringUtils.cpp', 'ObjLayout.cpp', 'ObjData.cpp', 'LineReader.cpp', 'ObjImport.cpp' ] ) )
 pyImportExportFilterObjImportFiles = cppPrefixPaths( 'ImportExportFilter', prefixPaths( 'ObjImport', [ 'PyObjImport.cpp' ] ) )
 
+cppPlatformSpecificFiles = cppPrefixPaths( 'PlatformSpecific', [ 'GLExtensions.cpp' ] )
+pyPlatformSpecificFiles = cppPrefixPaths( 'PlatformSpecific', [ 'PyPlatformSpecific.cpp' ] )
+
 
 cppGreenletFiles = cppPrefixPaths( os.path.join( 'extlibs', 'greenlet' ), [ 'greenlet.c' ] )
 
@@ -296,9 +299,11 @@ cppBackgroundModelLib = env.SharedLibrary( 'BackgroundModel', cppBackgroundModel
 							LIBS=extLibs + shLibsForShLib( [ 'Math', 'Util' ] ) )
 cppImportExportFilterObjImportLib = env.SharedLibrary( 'ImportExportFilterObjImport', cppImportExportFilterObjImportFiles, LIBPATH=libPaths,
 							LIBS=extLibs + shLibsForShLib( [ 'Math', 'Util' ] ) )
+cppPlatformSpecificLib = env.SharedLibrary( 'PlatformSpecific', cppPlatformSpecificFiles, LIBPATH=libPaths,
+							LIBS=extLibs + shLibsForShLib( [] ) )
 
 cppLibs = [ 'Math', 'CompGeometry', 'FileIO', 'Graphics', 'LogGrid', 'Mesh', 'Model', 'Painter', 'PolyBlend', 'Polyline', 'Product', 'RTType', 'Transformation', 'Util', 'UVMap', 'View', 'GraphViewHelper', 'Group', 'Brush', 'BackgroundModel',
-		'ImportExportFilterObjImport' ]
+		'ImportExportFilterObjImport', 'PlatformSpecific' ]
 
 
 env.SharedLibrary( os.path.join( 'Britefury', 'Graphics', 'Graphics' ), pyGraphicsFiles, LIBS=extLibs + cppLibs, LIBPATH=libPaths, SHLIBPREFIX='', SHLIBSUFFIX=pyExtSuffix )
@@ -322,9 +327,11 @@ env.SharedLibrary( os.path.join( 'Britefury', 'Transformation', 'Transformation'
 
 env.SharedLibrary( os.path.join( 'Britefury', 'Brush', 'Brush' ), pyBrushFiles, LIBS=extLibs + cppLibs, LIBPATH=libPaths, SHLIBPREFIX='', SHLIBSUFFIX=pyExtSuffix )
 
+env.SharedLibrary( os.path.join( 'Britefury', 'Background', 'Model' ), pyBackgroundModelFiles, LIBS=extLibs + cppLibs, LIBPATH=libPaths, SHLIBPREFIX='', SHLIBSUFFIX=pyExtSuffix )
+
 env.SharedLibrary( os.path.join( 'Britefury', 'ImportExportFilter', 'Obj', 'ObjImport' ), pyImportExportFilterObjImportFiles, LIBS=extLibs + cppLibs, LIBPATH=libPaths, SHLIBPREFIX='', SHLIBSUFFIX=pyExtSuffix )
 
-env.SharedLibrary( os.path.join( 'Britefury', 'Background', 'Model' ), pyBackgroundModelFiles, LIBS=extLibs + cppLibs, LIBPATH=libPaths, SHLIBPREFIX='', SHLIBSUFFIX=pyExtSuffix )
+env.SharedLibrary( os.path.join( 'Britefury', 'PlatformSpecific', 'PlatformSpecific' ), pyPlatformSpecificFiles, LIBS=extLibs + cppLibs, LIBPATH=libPaths, SHLIBPREFIX='', SHLIBSUFFIX=pyExtSuffix )
 
 env.SharedLibrary( os.path.join( 'Britefury', 'extlibs', 'greenlet', 'greenlet' ), cppGreenletFiles, LIBS=pyLibs, LIBPATH=libPaths, SHLIBPREFIX='', SHLIBSUFFIX=pyExtSuffix )
 

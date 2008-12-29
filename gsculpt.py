@@ -365,6 +365,8 @@ from Britefury.MainApp.MainApp import MainApp
 
 from Britefury.Util.Util import FPUPrecision, setFPUPrecision
 
+from Britefury.PlatformSpecific.PlatformSpecific import initialisePlatformSpecific
+
 import signal
 
 
@@ -405,7 +407,7 @@ if bTestSETree:
 	print sourceText
 	print 'Data size %d' % ( len( testText ), )
 
-	sys.exit();
+	sys.exit()
 
 
 
@@ -414,6 +416,11 @@ from Britefury.CellEdit import CellEditFunctionButton
 CellEditFunctionButton.__bShowFunctionButtons__ = bShowFunctionButtons
 
 
+
+# Initialise platform specific module
+if not initialisePlatformSpecific():
+	print 'Could not initialise platform specific modules'
+	sys.exit()
 
 # Set FPU precision
 setFPUPrecision( FPUPrecision.DOUBLE )
