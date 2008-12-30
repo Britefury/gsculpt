@@ -17,7 +17,15 @@
 class GS_DllExport Point2
 {
 public:
-	double x, y;
+	union
+	{
+		struct
+		{
+			double x, y;
+		};
+
+		double v[2];
+	};
 
 
 	inline Point2() : x( 0.0 ), y( 0.0 )

@@ -19,7 +19,15 @@
 class GS_DllExport Point3f
 {
 public:
-	float x, y, z;
+	union
+	{
+		struct
+		{
+			float x, y, z;
+		};
+
+		float v[3];
+	};
 
 
 	inline Point3f() : x( 0.0 ), y( 0.0 ), z( 0.0 )

@@ -81,6 +81,7 @@ public:
 
 
 GS_DllExport void setColourPalette(const ModelDrawColourPalette &palette);
+GS_DllExport ModelDrawColourPalette & getColourPalette();
 
 
 

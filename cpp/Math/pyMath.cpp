@@ -18,6 +18,7 @@ void export_Axes3();
 void export_Axis();
 void export_BBox2();
 void export_BBox3();
+void export_BBox3f();
 void export_Bezier2Util();
 void export_Circle2();
 void export_Colour3f();
@@ -61,6 +62,7 @@ BOOST_PYTHON_MODULE(Math)
 	export_Axis();
 	export_BBox2();
 	export_BBox3();
+	export_BBox3f();
 	export_Bezier2Util();
 	export_Circle2();
 	export_Colour3f();

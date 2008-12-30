@@ -732,40 +732,12 @@ public:
 	//get major and minor size
 	inline double getMajorSize() const
 	{
-		double size = getWidth();
-
-		double height = getHeight();
-		double depth = getDepth();
-
-		if ( height > size )
-		{
-			size = height;
-		}
-		if ( depth > size )
-		{
-			size = depth;
-		}
-
-		return size;
+		return std::max( getWidth(), std::max( getHeight(), getDepth() ) );
 	}
 
 	inline double getMinorSize() const
 	{
-		double size = getWidth();
-
-		double height = getHeight();
-		double depth = getDepth();
-
-		if ( height < size )
-		{
-			size = height;
-		}
-		if ( depth < size )
-		{
-			size = depth;
-		}
-
-		return size;
+		return std::min( getWidth(), std::min( getHeight(), getDepth() ) );
 	}
 
 

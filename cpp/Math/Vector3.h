@@ -25,7 +25,15 @@
 class GS_DllExport Vector3
 {
 public:
-	double x, y, z;
+	union
+	{
+		struct
+		{
+			double x, y, z;
+		};
+
+		double v[3];
+	};
 
 
 

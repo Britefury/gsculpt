@@ -52,7 +52,7 @@ cppLogGridFiles = cppPrefixPaths( 'LogGrid', [ 'LogScale.cpp', 'LogMultiScale.cp
 pyLogGridFiles = cppPrefixPaths( 'LogGrid', [ 'pyModellerGrid.cpp', 'pyLogGrid.cpp' ] )
 
 cppMathFiles = cppPrefixPaths( 'Math', [ 'Bezier2Util.cpp', 'ConvexHull2.cpp', 'IndexTriangle.cpp', 'Projection.cpp', 'Polygon2.cpp', 'Polygon3.cpp', 'Segment2.cpp', 'Segment3.cpp' ] )
-pyMathFiles = cppPrefixPaths( 'Math', [ 'pyAxes2.cpp', 'pyAxes3.cpp', 'pyAxis.cpp', 'pyBBox2.cpp', 'pyBBox3.cpp', 'pyBezier2Util.cpp', 'pyCircle2.cpp', 'pyColour3f.cpp',
+pyMathFiles = cppPrefixPaths( 'Math', [ 'pyAxes2.cpp', 'pyAxes3.cpp', 'pyAxis.cpp', 'pyBBox2.cpp', 'pyBBox3.cpp', 'pyBBox3f.cpp', 'pyBezier2Util.cpp', 'pyCircle2.cpp', 'pyColour3f.cpp',
 								'pyConvexHull2.cpp', 'pyEulerRotation.cpp',
 								'pyFrustum.cpp', 'pyIndexTriangle.cpp', 'pyLine3.cpp', 'pyMatrix3.cpp', 'pyMatrix4.cpp', 'pyPlane.cpp', 'pyPoint2.cpp', 'pyPoint2f.cpp',
 								'pyPoint2i.cpp', 'pyPoint3.cpp', 'pyPoint3f.cpp', 'pyPoint4.cpp', 'pyPolygon2.cpp', 'pyPolygon3.cpp', 'pyProjection.cpp', 'pyQuadratic.cpp',

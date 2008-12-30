@@ -19,7 +19,15 @@
 class GS_DllExport Point3
 {
 public:
-	double x, y, z;
+	union
+	{
+		struct
+		{
+			double x, y, z;
+		};
+
+		double v[3];
+	};
 
 
 	inline Point3() : x( 0.0 ), y( 0.0 ), z( 0.0 )

@@ -24,6 +24,7 @@ class GSSceneCommandTracker (SheetGraphCommandTracker):
 		super( GSSceneCommandTracker, self ).track( scene )
 		assert isinstance( scene, GSScene.GSScene )
 
+		self._commandHistory.track( scene.backgroundModels )
 		self._commandHistory.track( scene.backgroundImages )
 		self._commandHistory.track( scene.layerTable )
 		self._commandHistory.track( scene._graphViewDisplayTable )
@@ -35,6 +36,7 @@ class GSSceneCommandTracker (SheetGraphCommandTracker):
 		self._commandHistory.stopTracking( scene._graphViewDisplayTable )
 		self._commandHistory.stopTracking( scene.layerTable )
 		self._commandHistory.stopTracking( scene.backgroundImages )
+		self._commandHistory.stopTracking( scene.backgroundModels )
 
 		super( GSSceneCommandTracker, self ).stopTracking( scene )
 

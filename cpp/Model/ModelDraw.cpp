@@ -86,6 +86,11 @@ void setColourPalette(const ModelDrawColourPalette &palette)
 	_palette = palette;
 }
 
+ModelDrawColourPalette & getColourPalette()
+{
+	return _palette;
+}
+
 
 
 const Colour3f & getUnmarkedVertexColour()

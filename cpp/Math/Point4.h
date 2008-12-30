@@ -15,7 +15,15 @@
 class GS_DllExport Point4
 {
 public:
-	double x, y, z, w;
+	union
+	{
+		struct
+		{
+			double x, y, z, w;
+		};
+
+		double v[4];
+	};
 
 
 	inline Point4() : x( 0.0 ), y( 0.0 ), z( 0.0 ), w( 1.0 )

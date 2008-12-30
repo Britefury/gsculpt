@@ -74,7 +74,10 @@ void export_ModelDraw()
 		.def_readwrite( "mirrorPlaneColour", &ModelDrawColourPalette::mirrorPlaneColour )
 		.def_readwrite( "mirrorPlaneAlpha", &ModelDrawColourPalette::mirrorPlaneAlpha );
 
+
+
 	def( "setColourPalette", &setColourPalette );
+	def( "getColourPalette", &getColourPalette, return_value_policy<reference_existing_object>() );
 }
 
 

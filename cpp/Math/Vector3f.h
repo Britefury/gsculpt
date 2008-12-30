@@ -21,7 +21,15 @@
 class GS_DllExport Vector3f
 {
 public:
-	float x, y, z;
+	union
+	{
+		struct
+		{
+			float x, y, z;
+		};
+
+		float v[3];
+	};
 
 
 	inline Vector3f() : x( 0.0 ), y( 0.0 ), z( 0.0 )
@@ -139,6 +147,18 @@ public:
 	{
 		float lOverLength = l / length();
 		return Vector3f( x * lOverLength, y * lOverLength, z * lOverLength );
+	}
+
+
+
+	static Vector3f min(const Vector3f &a, const Vector3f &b)
+	{
+		return Vector3f( std::min( a.x, b.x ), std::min( a.y, b.y ), std::min( a.z, b.z ) );
+	}
+
+	static Vector3f max(const Vector3f &a, const Vector3f &b)
+	{
+		return Vector3f( std::max( a.x, b.x ), std::max( a.y, b.y ), std::max( a.z, b.z ) );
 	}
 
 

@@ -21,7 +21,15 @@
 class GS_DllExport Vector2
 {
 public:
-	double x, y;
+	union
+	{
+		struct
+		{
+			double x, y;
+		};
+
+		double v[2];
+	};
 
 
 	inline Vector2() : x( 0.0 ), y( 0.0 )
