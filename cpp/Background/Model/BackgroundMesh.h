@@ -8,6 +8,8 @@
 #ifndef BACKGROUNDMESH_H__
 #define BACKGROUNDMESH_H__
 
+#include <boost/python.hpp>
+
 #include <PlatformSpecific/IncludeGL.h>
 
 #include <PlatformSpecific/GLExtensions.h>
@@ -17,6 +19,7 @@
 #include <Math/Point3f.h>
 #include <Math/Vector3f.h>
 #include <Math/BBox3f.h>
+#include <Math/Segment3f.h>
 
 
 #define _KDT_SPLIT_AXIS_SHIFT 28
@@ -41,7 +44,7 @@ class GS_DllExport BackgroundMesh
 private:
 	class KDTree
 	{
-	private:
+	public:
 		class KDSegment
 		{
 		public:
@@ -65,7 +68,7 @@ private:
 
 			inline Vector3f getDirection() const
 			{
-				return b - a;
+				return direction;
 			}
 
 			inline Point3f getPoint(float t) const
@@ -149,7 +152,7 @@ private:
 			}
 		};
 
-
+	private:
 		class KDTreeNode
 		{
 		public:
@@ -217,8 +220,9 @@ private:
 	
 	
 	public:
-		KDTree(BackgroundMesh *mesh);
-		~KDTree();
+		KDTree();
+
+		void initialise(BackgroundMesh *mesh);
 	
 
 	private:	
@@ -272,6 +276,8 @@ private:
 	GLuint buffers[NUMBUFFERS];
 	bool bInitialisedGL;
 
+	KDTree kdTree;
+
 
 public:
 	BackgroundMesh();
@@ -281,6 +287,12 @@ public:
 	void initGL();
 	void drawGL();
 	void shutdownGL();
+
+
+	int raytrace(const Segment3f &seg, Point3f &p, float &t) const;
+
+
+	boost::python::tuple py_raytrace(const Segment3f &seg) const;
 
 
 

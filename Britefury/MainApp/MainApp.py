@@ -59,6 +59,7 @@ from Britefury.View.ModelLayerEditor import ModelLayerEditorWindow
 from Britefury.View.ModelLayerBackgroundPainter import ModelLayerBackgroundPainter
 from Britefury.View.FocusTool import FocusTool
 from Britefury.View.DrawingPlane import DrawingPlaneTool
+from Britefury.View.DrawingTemplate import DrawingTemplate
 from Britefury.View.ViewDrawingSettings import *
 from Britefury.View.ViewDrawingSettingsEditor import ViewDrawingSettingsEditorWindow
 
@@ -170,7 +171,7 @@ class BackgroundImagePainter (Viewport3dPainter):
 
 
 
-class BackgroundModelPainter (Viewport3dPainter):
+class BackgroundModelPainter (Viewport3dPainter, DrawingTemplate):
 	def __init__(self):
 		self._backgroundModelList = None
 		self._viewports = []
@@ -195,6 +196,21 @@ class BackgroundModelPainter (Viewport3dPainter):
 			self._backgroundModelList.evPaint3d( viewport, paintLayer )
 
 
+	def templateDrawingPoint3d(self, ray, bBackfaceCulling):
+		"""Template drawing point - 3D
+		@ray - the ray to raytrace 		[Segment3d]
+		@bBackfaceCulling - cull back faces
+		Returns: a tuple of:
+			bSuccess		 [bool]						Successful; did we hit anything?
+			t			[float] (or None if no hit)			The intersection parameter
+			intersection	[Point3] (or None if no hit)			The intersection point
+			clippedRay	[Segment3] (or None if no hit)		The clipped ray"""
+		if self._backgroundModelList is not None:
+			return self._backgroundModelList.templateDrawingPoint3d( ray, bBackfaceCulling )
+		else:
+			return False, None, None, None
+	
+	
 	def _p_setBackgroundModelList(self, imageList):
 		if self._backgroundModelList is not None:
 			for viewport in self._viewports:
@@ -274,6 +290,7 @@ class MainApp (object):
 		self._backgroundModelsTool.doneListener = self._p_onBackgroundModelsToolDone
 
 		self._view.addPainter( self._backgroundModelPainter, Viewport3d )
+		self._view.addDrawingTemplate( self._backgroundModelPainter, Viewport3d )
 
 		self._drawingPlaneTool = DrawingPlaneTool( self._view, self._editorSettings, self._window, self._commandHistory )
 		self._drawingPlaneTool.doneListener = self._p_onDrawingPlaneToolDone

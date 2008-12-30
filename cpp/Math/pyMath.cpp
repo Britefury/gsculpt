@@ -44,6 +44,7 @@ void export_Quaternion();
 void export_Ray3();
 void export_Segment2();
 void export_Segment3();
+void export_Segment3f();
 void export_Side();
 void export_Triangle2();
 void export_Triangle3();
@@ -88,6 +89,7 @@ BOOST_PYTHON_MODULE(Math)
 	export_Ray3();
 	export_Segment2();
 	export_Segment3();
+	export_Segment3f();
 	export_Side();
 	export_Triangle2();
 	export_Triangle3();

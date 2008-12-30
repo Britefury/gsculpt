@@ -71,6 +71,13 @@ void _wrap_glDeleteTextures(boost::python::list py_textures)
 }
 
 
+
+void _wrap_glBitmap(GLsizei width, GLsizei height, GLfloat xorig, GLfloat yorig, GLfloat xmove, GLfloat ymove, const std::string &bitmap)
+{
+	glBitmap( width, height, xorig, yorig, xmove, ymove, (const GLubyte *)bitmap.c_str() );
+}
+
+
 void _wrap_glAccum(GLenum op, GLfloat value)
 {
 	glAccum( op, value );
@@ -3880,6 +3887,7 @@ BOOST_PYTHON_MODULE(_GL)
 	def( "glCallLists", _wrap_glCallLists );
 	def( "glGenTextures", _wrap_glGenTextures );
 	def( "glDeleteTextures", _wrap_glDeleteTextures );
+	def( "glBitmap", _wrap_glBitmap );
 	def( "glAccum", _wrap_glAccum );
 	def( "glAlphaFunc", _wrap_glAlphaFunc );
 	def( "glArrayElement", _wrap_glArrayElement );

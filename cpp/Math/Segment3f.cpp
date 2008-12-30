@@ -5,25 +5,25 @@
 //##* version 2 can be found in the file named 'COPYING' that accompanies this
 //##* program. This source code is (C)copyright Geoffrey French 1999-2007.
 //##************************
-#ifndef PYBACKGROUNDMESH_CPP__
-#define PYBACKGROUNDMESH_CPP__
+#ifndef SEGMENT3F_CPP__
+#define SEGMENT3F_CPP__
 
-#include <boost/python.hpp>
-using namespace boost::python;
-
+#include <Math/Segment3f.h>
 
 
-#include <Background/Model/BackgroundMesh.h>
 
-
-void export_BackgroundMesh()
+void Segment3f::read(FILE *f)
 {
-	class_<BackgroundMesh>( "BackgroundMesh", init<>() )
-		.def( "initGL", &BackgroundMesh::initGL )
-		.def( "shutdownGL", &BackgroundMesh::shutdownGL )
-		.def( "drawGL", &BackgroundMesh::drawGL )
-		.def( "raytrace", &BackgroundMesh::py_raytrace );
+//	a.read( f );
+//	b.read( f );
 }
+
+void Segment3f::write(FILE *f) const
+{
+//	a.write( f );
+//	b.write( f );
+}
+
 
 
 

@@ -51,12 +51,12 @@ pyGraphicsFiles = cppPrefixPaths( 'Graphics', [ 'pyBackfaceCull.cpp', 'pyCamera.
 cppLogGridFiles = cppPrefixPaths( 'LogGrid', [ 'LogScale.cpp', 'LogMultiScale.cpp', 'Ruler.cpp', 'Grid.cpp', 'CGrid.cpp', 'ModellerGrid.cpp' ] )
 pyLogGridFiles = cppPrefixPaths( 'LogGrid', [ 'pyModellerGrid.cpp', 'pyLogGrid.cpp' ] )
 
-cppMathFiles = cppPrefixPaths( 'Math', [ 'Bezier2Util.cpp', 'ConvexHull2.cpp', 'IndexTriangle.cpp', 'Projection.cpp', 'Polygon2.cpp', 'Polygon3.cpp', 'Segment2.cpp', 'Segment3.cpp' ] )
+cppMathFiles = cppPrefixPaths( 'Math', [ 'Bezier2Util.cpp', 'ConvexHull2.cpp', 'IndexTriangle.cpp', 'Projection.cpp', 'Polygon2.cpp', 'Polygon3.cpp', 'Segment2.cpp', 'Segment3.cpp', 'Segment3f.cpp' ] )
 pyMathFiles = cppPrefixPaths( 'Math', [ 'pyAxes2.cpp', 'pyAxes3.cpp', 'pyAxis.cpp', 'pyBBox2.cpp', 'pyBBox3.cpp', 'pyBBox3f.cpp', 'pyBezier2Util.cpp', 'pyCircle2.cpp', 'pyColour3f.cpp',
 								'pyConvexHull2.cpp', 'pyEulerRotation.cpp',
 								'pyFrustum.cpp', 'pyIndexTriangle.cpp', 'pyLine3.cpp', 'pyMatrix3.cpp', 'pyMatrix4.cpp', 'pyPlane.cpp', 'pyPoint2.cpp', 'pyPoint2f.cpp',
 								'pyPoint2i.cpp', 'pyPoint3.cpp', 'pyPoint3f.cpp', 'pyPoint4.cpp', 'pyPolygon2.cpp', 'pyPolygon3.cpp', 'pyProjection.cpp', 'pyQuadratic.cpp',
-								'pyQuaternion.cpp', 'pyRay3.cpp', 'pySegment2.cpp', 'pySegment3.cpp', 'pySide.cpp', 'pyTriangle2.cpp', 'pyTriangle3.cpp',
+								'pyQuaternion.cpp', 'pyRay3.cpp', 'pySegment2.cpp', 'pySegment3.cpp', 'pySegment3f.cpp', 'pySide.cpp', 'pyTriangle2.cpp', 'pyTriangle3.cpp',
 								'pyVector2.cpp', 'pyVector2f.cpp', 'pyVector2i.cpp', 'pyVector3.cpp', 'pyVector3f.cpp', 'pyMath.cpp' ] )
 
 cppMeshFiles = cppPrefixPaths( 'Mesh', [ 'GSProductMesh.cpp', 'MeshPainter.cpp', 'MeshPrimitives.cpp' ]  +

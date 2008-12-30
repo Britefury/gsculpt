@@ -14,7 +14,7 @@ using namespace boost::python;
 
 #include <Math/BBox3f.h>
 
-void export_BBoxf3()
+void export_BBox3f()
 {
 	class_<BBox3f>( "BBox3f", init<>() )
 		.def( init<Point3f>() )

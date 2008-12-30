@@ -279,9 +279,16 @@ bool BackgroundMesh::KDTree::KDTreeNode::isLeaf() const
 				KDTree
  ***************************************************************/
 
-BackgroundMesh::KDTree::KDTree(BackgroundMesh *mesh)
-				: mesh( mesh )
+BackgroundMesh::KDTree::KDTree()
 {
+	mesh = NULL;
+}
+
+
+void BackgroundMesh::KDTree::initialise(BackgroundMesh *mesh)
+{
+	this->mesh = mesh;
+
 	// Initialise the lists of face bounding boxes and indices
 	int numFaces = mesh->tris.size();
 
@@ -323,7 +330,6 @@ BackgroundMesh::KDTree::KDTree(BackgroundMesh *mesh)
 
 	faces.swapArray( orderedFaces );
 }
-
 
 
 int BackgroundMesh::KDTree::createNode(int startIndex, int endIndex)
@@ -425,6 +431,7 @@ int BackgroundMesh::KDTree::raytrace(const KDSegment &seg, Point3f &p, float &t)
 	if ( nodes.size() > 0 )
 	{
 		KDSegment clippedSeg = seg;
+		t = 1.0f;
 		int triIndex = raytrace( seg, clippedSeg, t, nodes[0] );
 		if ( triIndex != -1 )
 		{
@@ -442,6 +449,10 @@ int BackgroundMesh::KDTree::raytrace(const KDSegment &seg, Point3f &p, float &t)
 
 
 
+
+/***************************************************************
+				BackgroundMesh
+ ***************************************************************/
 
 BackgroundMesh::BackgroundMesh()
 {
@@ -536,6 +547,9 @@ BackgroundMesh::BackgroundMesh(Array<Point3f> &inVerts, Array<IndexFace> &inFace
 	{
 		vNormal[vertexI].normalise();
 	}
+
+
+	kdTree.initialise( this );
 }
 
 
@@ -608,6 +622,33 @@ void BackgroundMesh::shutdownGL()
 		}
 	}
 }
+
+
+
+
+int BackgroundMesh::raytrace(const Segment3f &seg, Point3f &p, float &t) const
+{
+	return kdTree.raytrace( BackgroundMesh::KDTree::KDSegment( seg.a, seg.b ), p, t );
+}
+
+
+boost::python::tuple BackgroundMesh::py_raytrace(const Segment3f &seg) const
+{
+	Point3f p;
+	float t;
+
+	int triIndex = raytrace( seg, p, t );
+
+	if ( triIndex != -1 )
+	{
+		return boost::python::make_tuple( true, triIndex, p, t );
+	}
+	else
+	{
+		return boost::python::make_tuple( false, -1, Point3f(), 0.0f );
+	}
+}
+
 
 
 
