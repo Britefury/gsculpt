@@ -166,10 +166,13 @@ class BackgroundModel (Sheet):
 				model = self.model.model
 			
 				if model is not None:
-					bSuccess, triIndex, intersection, t = model.raytrace( Segment3f( ray ) )
+					modelToWorldMatrix = Matrix4.scale( self.scale )  *  Matrix4.rotate( self.rotation )  *  Matrix4.translate( self.position.toVector3() )
+					worldToModelMatrix = modelToWorldMatrix.inverse()
+					modelSpaceRay = ray * worldToModelMatrix
+					bSuccess, triIndex, intersection, t = model.raytrace( Segment3f( modelSpaceRay ) )
 					if bSuccess:
-						intersection = intersection.toPoint3()
-						return True, t, intersection, Segment3( ray.a, intersection )
+						intersection = intersection.toPoint3() * modelToWorldMatrix
+						return True, t, intersection, Segment3( ray.a * modelToWorldMatrix, intersection )
 		
 		return False, None, None, None
 	

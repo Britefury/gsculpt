@@ -38,6 +38,10 @@
 #define _KDT_DIRFLAG_POS_Z 32
 
 
+//#define _BACKGROUNDMESH_USE_VERTEX_BUFFERS
+#define _BACKGROUNDMESH_USE_VERTEX_ARRAYS_AND_DISPLAY_LIST
+
+
 
 class GS_DllExport BackgroundMesh
 {
@@ -165,7 +169,7 @@ private:
 			KDTreeNode();
 
 
-			void build(KDTree *tree, int start, int end);
+			void build(KDTree *tree, int nodeIndex, int start, int end);
 	
 
 			bool intersects(const KDSegment &seg) const;
@@ -174,7 +178,7 @@ private:
 
 			inline int getSplitAxis() const
 			{
-				return (negativeIndex & _KDT_SPLIT_AXIS_MASK )  >>  _KDT_SPLIT_AXIS_SHIFT;
+				return ( negativeIndex & _KDT_SPLIT_AXIS_MASK )  >>  _KDT_SPLIT_AXIS_SHIFT;
 			}
 
 			inline void setSplitAxis(int axis)
@@ -273,7 +277,11 @@ private:
 		NUMBUFFERS = 3
 	};
 
+#ifdef _BACKGROUNDMESH_USE_VERTEX_BUFFERS
 	GLuint buffers[NUMBUFFERS];
+#elif defined (_BACKGROUNDMESH_USE_VERTEX_ARRAYS_AND_DISPLAY_LIST)
+	GLuint displayListId;
+#endif
 	bool bInitialisedGL;
 
 	KDTree kdTree;

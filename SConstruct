@@ -181,6 +181,7 @@ if platform == PLATFORM_WIN32:
 	pyLibs = [ 'python%s%s'  %  ( sys.version_info[0], sys.version_info[1] ) ]
 	boostPyLibs = [ 'boost_python' ]
 	glLibs = [ 'OpenGL32', 'GLU32' ]
+	standardLibs = []
 	ccFlags = [ '/nologo', '/EHsc', '/DLL', '/MD', '"/DGS_DllExport=__declspec(dllexport)"', '/DGSCULPT_PLATFORM_WIN32', '/DGSCULPT_FPU_X86' ]
 	linkFlags = [ '/NOLOGO' ]
 
@@ -190,6 +191,8 @@ if platform == PLATFORM_WIN32:
 
 	pyExtSuffix = '.pyd'
 elif platform == PLATFORM_LINUX:
+	def pkgConfig(args):
+		return os.popen( 'pkg-config ' + args ).read().strip().split()
 	_pythonVersion = '%d.%d'  %  ( sys.version_info[0], sys.version_info[1] )
 
 	localIncPaths = [ 'cpp' ]
@@ -204,8 +207,9 @@ elif platform == PLATFORM_LINUX:
 	pyLibs = [ 'python%s'  %  ( _pythonVersion, ) ]
 	boostPyLibs = [ 'boost_python' ]
 	glLibs = [ 'GL', 'GLU' ]
-	ccFlags = [ '-Wall', '-Werror', '-ffast-math', '-g', '-DGS_DllExport=', '-DGSCULPT_PLATFORM_POSIX', '-DGSCULPT_FPU_X86' ]
-	linkFlags = [ '-g' ]
+	standardLibs = []
+	ccFlags = [ '-Wall', '-Werror', '-ffast-math', '-g', '-DGS_DllExport=', '-DGSCULPT_PLATFORM_POSIX', '-DGSCULPT_FPU_X86' ]  +  pkgConfig( '--cflags glib-2.0' )  +  pkgConfig( '--cflags gthread-2.0' )
+	linkFlags = [ '-g' ]  +  pkgConfig( '--libs glib-2.0' )  +  pkgConfig( '--libs gthread-2.0' )
 
 	envPath = None
 
@@ -216,7 +220,7 @@ elif platform == PLATFORM_LINUX:
 incPaths = localIncPaths + pyIncPaths + boostPyIncPaths + standardIncPaths
 libPaths = localLibPaths + pyLibPaths + boostPyLibPaths + standardLibPaths
 
-extLibs = pyLibs + boostPyLibs + glLibs
+extLibs = pyLibs + boostPyLibs + glLibs + standardLibs
 
 
 
@@ -257,88 +261,88 @@ if envPath is not None:
 
 
 
-cppMathLib = env.SharedLibrary( 'Math', cppMathFiles, LIBPATH=libPaths,
+cppMathLib = env.SharedLibrary( 'Math', cppMathFiles, LIBPATH=libPaths, LINKFLAGS=linkFlags,
 							LIBS=extLibs + shLibsForShLib( [ 'Util' ] ) )
-cppCompGeometryLib = env.SharedLibrary( 'CompGeometry', cppCompGeometryFiles, LIBPATH=libPaths,
+cppCompGeometryLib = env.SharedLibrary( 'CompGeometry', cppCompGeometryFiles, LIBPATH=libPaths, LINKFLAGS=linkFlags,
 							LIBS=extLibs + shLibsForShLib( [ 'Math', 'Util' ] ) )
-cppFileIOLib = env.SharedLibrary( 'FileIO', cppFileIOFiles, LIBPATH=libPaths,
+cppFileIOLib = env.SharedLibrary( 'FileIO', cppFileIOFiles, LIBPATH=libPaths, LINKFLAGS=linkFlags,
 							LIBS=extLibs + shLibsForShLib( [] ) )
-cppGraphicsLib = env.SharedLibrary( 'Graphics', cppGraphicsFiles, LIBPATH=libPaths,
+cppGraphicsLib = env.SharedLibrary( 'Graphics', cppGraphicsFiles, LIBPATH=libPaths, LINKFLAGS=linkFlags,
 							LIBS=extLibs + shLibsForShLib( [ 'Math', 'RTType', 'Util' ] ) )
-cppLogGridLib = env.SharedLibrary( 'LogGrid', cppLogGridFiles, LIBPATH=libPaths,
+cppLogGridLib = env.SharedLibrary( 'LogGrid', cppLogGridFiles, LIBPATH=libPaths, LINKFLAGS=linkFlags,
 							LIBS=extLibs + shLibsForShLib( [ 'Math', 'Graphics', 'RTType', 'Util' ] ) )
-cppMeshLib = env.SharedLibrary( 'Mesh', cppMeshFiles, LIBPATH=libPaths,
+cppMeshLib = env.SharedLibrary( 'Mesh', cppMeshFiles, LIBPATH=libPaths, LINKFLAGS=linkFlags,
 							LIBS=extLibs + shLibsForShLib( [ 'Math', 'Polyline', 'UVMap', 'RTType', 'Util', 'PolyBlend', 'Transformation', 'View', 'Graphics', 'Painter', 'Model', 'Product', 'CompGeometry' ] ) )
-cppModelLib = env.SharedLibrary( 'Model', cppModelFiles, LIBPATH=libPaths,
+cppModelLib = env.SharedLibrary( 'Model', cppModelFiles, LIBPATH=libPaths, LINKFLAGS=linkFlags,
 							LIBS=extLibs + shLibsForShLib( [ 'Math', 'RTType', 'Util', 'Product', 'Painter', 'Transformation', 'View', 'Graphics', 'FileIO' ] ) )
-cppGroupLib = env.SharedLibrary( 'Group', cppGroupFiles, LIBPATH=libPaths,
+cppGroupLib = env.SharedLibrary( 'Group', cppGroupFiles, LIBPATH=libPaths, LINKFLAGS=linkFlags,
 							LIBS=extLibs + shLibsForShLib( [ 'Math', 'RTType', 'Util', 'Product', 'Painter', 'Transformation', 'View', 'Graphics', 'FileIO', 'Model' ] ) )
-cppPainterLib = env.SharedLibrary( 'Painter', cppPainterFiles, LIBPATH=libPaths,
+cppPainterLib = env.SharedLibrary( 'Painter', cppPainterFiles, LIBPATH=libPaths, LINKFLAGS=linkFlags,
 							LIBS=extLibs + shLibsForShLib( [ 'Math', 'RTType', 'Util', 'Product', 'Graphics' ] ) )
-cppPolyBlendLib = env.SharedLibrary( 'PolyBlend', cppPolyBlendFiles, LIBPATH=libPaths,
+cppPolyBlendLib = env.SharedLibrary( 'PolyBlend', cppPolyBlendFiles, LIBPATH=libPaths, LINKFLAGS=linkFlags,
 							LIBS=extLibs + shLibsForShLib( [ 'Math', 'Util' ] ) )
-cppPolylineLib = env.SharedLibrary( 'Polyline', cppPolylineFiles, LIBPATH=libPaths,
+cppPolylineLib = env.SharedLibrary( 'Polyline', cppPolylineFiles, LIBPATH=libPaths, LINKFLAGS=linkFlags,
 							LIBS=extLibs + shLibsForShLib( [ 'FileIO', 'Math', 'Util', 'Transformation', 'RTType', 'PolyBlend' ] ) )
-cppProductLib = env.SharedLibrary( 'Product', cppProductFiles, LIBPATH=libPaths,
+cppProductLib = env.SharedLibrary( 'Product', cppProductFiles, LIBPATH=libPaths, LINKFLAGS=linkFlags,
 							LIBS=extLibs + shLibsForShLib( [ 'Math', 'Util', 'RTType' ] ) )
-cppRTTypeLib = env.SharedLibrary( 'RTType', cppRTTypeFiles, LIBPATH=libPaths,
+cppRTTypeLib = env.SharedLibrary( 'RTType', cppRTTypeFiles, LIBPATH=libPaths, LINKFLAGS=linkFlags,
 							LIBS=extLibs + shLibsForShLib( [ 'Util', 'FileIO' ] ) )
-cppTransformationLib = env.SharedLibrary( 'Transformation', cppTransformationFiles, LIBPATH=libPaths,
+cppTransformationLib = env.SharedLibrary( 'Transformation', cppTransformationFiles, LIBPATH=libPaths, LINKFLAGS=linkFlags,
 							LIBS=extLibs + shLibsForShLib( [ 'Math', 'Util' ] ) )
-cppUtilLib = env.SharedLibrary( 'Util', cppUtilFiles, LIBPATH=libPaths,
+cppUtilLib = env.SharedLibrary( 'Util', cppUtilFiles, LIBPATH=libPaths, LINKFLAGS=linkFlags,
 							LIBS=extLibs + shLibsForShLib( [] ) )
-cppUVMapLib = env.SharedLibrary( 'UVMap', cppUVMapFiles, LIBPATH=libPaths,
+cppUVMapLib = env.SharedLibrary( 'UVMap', cppUVMapFiles, LIBPATH=libPaths, LINKFLAGS=linkFlags,
 							LIBS=extLibs + shLibsForShLib( [ 'Math', 'Util' ] ) )
-cppViewLib = env.SharedLibrary( 'View', cppViewFiles, LIBPATH=libPaths,
+cppViewLib = env.SharedLibrary( 'View', cppViewFiles, LIBPATH=libPaths, LINKFLAGS=linkFlags,
 							LIBS=extLibs + shLibsForShLib( [ 'Math', 'Util', 'RTType', 'Graphics' ] ) )
-cppGraphViewHelperLib = env.SharedLibrary( 'GraphViewHelper', cppGraphViewHelperFiles, LIBPATH=libPaths,
+cppGraphViewHelperLib = env.SharedLibrary( 'GraphViewHelper', cppGraphViewHelperFiles, LIBPATH=libPaths, LINKFLAGS=linkFlags,
 							LIBS=extLibs + shLibsForShLib( [ 'Math', 'Util' ] ) )
-cppBrushLib = env.SharedLibrary( 'Brush', cppBrushFiles, LIBPATH=libPaths,
+cppBrushLib = env.SharedLibrary( 'Brush', cppBrushFiles, LIBPATH=libPaths, LINKFLAGS=linkFlags,
 							LIBS=extLibs + shLibsForShLib( [ 'Math', 'Util', 'RTType' ] ) )
-cppBackgroundModelLib = env.SharedLibrary( 'BackgroundModel', cppBackgroundModelFiles, LIBPATH=libPaths,
+cppBackgroundModelLib = env.SharedLibrary( 'BackgroundModel', cppBackgroundModelFiles, LIBPATH=libPaths, LINKFLAGS=linkFlags,
 							LIBS=extLibs + shLibsForShLib( [ 'Math', 'Util' ] ) )
-cppImportExportFilterObjImportLib = env.SharedLibrary( 'ImportExportFilterObjImport', cppImportExportFilterObjImportFiles, LIBPATH=libPaths,
+cppImportExportFilterObjImportLib = env.SharedLibrary( 'ImportExportFilterObjImport', cppImportExportFilterObjImportFiles, LIBPATH=libPaths, LINKFLAGS=linkFlags,
 							LIBS=extLibs + shLibsForShLib( [ 'Math', 'Util' ] ) )
-cppPlatformSpecificLib = env.SharedLibrary( 'PlatformSpecific', cppPlatformSpecificFiles, LIBPATH=libPaths,
+cppPlatformSpecificLib = env.SharedLibrary( 'PlatformSpecific', cppPlatformSpecificFiles, LIBPATH=libPaths, LINKFLAGS=linkFlags,
 							LIBS=extLibs + shLibsForShLib( [] ) )
 
 cppLibs = [ 'Math', 'CompGeometry', 'FileIO', 'Graphics', 'LogGrid', 'Mesh', 'Model', 'Painter', 'PolyBlend', 'Polyline', 'Product', 'RTType', 'Transformation', 'Util', 'UVMap', 'View', 'GraphViewHelper', 'Group', 'Brush', 'BackgroundModel',
 		'ImportExportFilterObjImport', 'PlatformSpecific' ]
 
 
-env.SharedLibrary( os.path.join( 'Britefury', 'Graphics', 'Graphics' ), pyGraphicsFiles, LIBS=extLibs + cppLibs, LIBPATH=libPaths, SHLIBPREFIX='', SHLIBSUFFIX=pyExtSuffix )
-env.SharedLibrary( os.path.join( 'Britefury', 'Math', 'Math' ), pyMathFiles, LIBS=extLibs + cppLibs, LIBPATH=libPaths, SHLIBPREFIX='', SHLIBSUFFIX=pyExtSuffix  )
-env.SharedLibrary( os.path.join( 'Britefury', 'LogGrid', 'LogGrid' ), pyLogGridFiles, LIBS=extLibs + cppLibs, LIBPATH=libPaths, SHLIBPREFIX='', SHLIBSUFFIX=pyExtSuffix  )
+env.SharedLibrary( os.path.join( 'Britefury', 'Graphics', 'Graphics' ), pyGraphicsFiles, LIBS=extLibs + cppLibs, LINKFLAGS=linkFlags, LIBPATH=libPaths, SHLIBPREFIX='', SHLIBSUFFIX=pyExtSuffix )
+env.SharedLibrary( os.path.join( 'Britefury', 'Math', 'Math' ), pyMathFiles, LIBS=extLibs + cppLibs, LINKFLAGS=linkFlags, LIBPATH=libPaths, SHLIBPREFIX='', SHLIBSUFFIX=pyExtSuffix  )
+env.SharedLibrary( os.path.join( 'Britefury', 'LogGrid', 'LogGrid' ), pyLogGridFiles, LIBS=extLibs + cppLibs, LINKFLAGS=linkFlags, LIBPATH=libPaths, SHLIBPREFIX='', SHLIBSUFFIX=pyExtSuffix  )
 
-env.SharedLibrary( os.path.join( 'Britefury', 'Painter', 'Painter' ), pyPainterFiles, LIBS=extLibs + cppLibs, LIBPATH=libPaths, SHLIBPREFIX='', SHLIBSUFFIX=pyExtSuffix  )
-env.SharedLibrary( os.path.join( 'Britefury', 'View', 'View' ), pyViewFiles, LIBS=extLibs + cppLibs, LIBPATH=libPaths, SHLIBPREFIX='', SHLIBSUFFIX=pyExtSuffix  )
-env.SharedLibrary( os.path.join( 'Britefury', 'GraphView', 'GraphViewHelper' ), pyGraphViewHelperFiles, LIBS=extLibs + cppLibs, LIBPATH=libPaths, SHLIBPREFIX='', SHLIBSUFFIX=pyExtSuffix  )
-env.SharedLibrary( os.path.join( 'Britefury', 'Kernel', 'RTType' ), pyRTTypeFiles, LIBS=extLibs + cppLibs, LIBPATH=libPaths, SHLIBPREFIX='', SHLIBSUFFIX=pyExtSuffix  )
-env.SharedLibrary( os.path.join( 'Britefury', 'Util', 'Util' ), pyUtilFiles, LIBS=extLibs + cppLibs, LIBPATH=libPaths, SHLIBPREFIX='', SHLIBSUFFIX=pyExtSuffix  )
+env.SharedLibrary( os.path.join( 'Britefury', 'Painter', 'Painter' ), pyPainterFiles, LIBS=extLibs + cppLibs, LINKFLAGS=linkFlags, LIBPATH=libPaths, SHLIBPREFIX='', SHLIBSUFFIX=pyExtSuffix  )
+env.SharedLibrary( os.path.join( 'Britefury', 'View', 'View' ), pyViewFiles, LIBS=extLibs + cppLibs, LINKFLAGS=linkFlags, LIBPATH=libPaths, SHLIBPREFIX='', SHLIBSUFFIX=pyExtSuffix  )
+env.SharedLibrary( os.path.join( 'Britefury', 'GraphView', 'GraphViewHelper' ), pyGraphViewHelperFiles, LIBS=extLibs + cppLibs, LINKFLAGS=linkFlags, LIBPATH=libPaths, SHLIBPREFIX='', SHLIBSUFFIX=pyExtSuffix  )
+env.SharedLibrary( os.path.join( 'Britefury', 'Kernel', 'RTType' ), pyRTTypeFiles, LIBS=extLibs + cppLibs, LINKFLAGS=linkFlags, LIBPATH=libPaths, SHLIBPREFIX='', SHLIBSUFFIX=pyExtSuffix  )
+env.SharedLibrary( os.path.join( 'Britefury', 'Util', 'Util' ), pyUtilFiles, LIBS=extLibs + cppLibs, LINKFLAGS=linkFlags, LIBPATH=libPaths, SHLIBPREFIX='', SHLIBSUFFIX=pyExtSuffix  )
 
-env.SharedLibrary( os.path.join( 'Britefury', 'ProceduralCore', 'Product' ), pyProductFiles, LIBS=extLibs + cppLibs, LIBPATH=libPaths, SHLIBPREFIX='', SHLIBSUFFIX=pyExtSuffix  )
-env.SharedLibrary( os.path.join( 'Britefury', 'Model', 'Model' ), pyModelFiles, LIBS=extLibs + cppLibs, LIBPATH=libPaths, SHLIBPREFIX='', SHLIBSUFFIX=pyExtSuffix  )
-env.SharedLibrary( os.path.join( 'Britefury', 'Group', 'Group' ), pyGroupFiles, LIBS=extLibs + cppLibs, LIBPATH=libPaths, SHLIBPREFIX='', SHLIBSUFFIX=pyExtSuffix  )
-env.SharedLibrary( os.path.join( 'Britefury', 'Mesh', 'Mesh' ), pyMeshFiles, LIBS=extLibs + cppLibs, LIBPATH=libPaths, SHLIBPREFIX='', SHLIBSUFFIX=pyExtSuffix  )
+env.SharedLibrary( os.path.join( 'Britefury', 'ProceduralCore', 'Product' ), pyProductFiles, LIBS=extLibs + cppLibs, LINKFLAGS=linkFlags, LIBPATH=libPaths, SHLIBPREFIX='', SHLIBSUFFIX=pyExtSuffix  )
+env.SharedLibrary( os.path.join( 'Britefury', 'Model', 'Model' ), pyModelFiles, LIBS=extLibs + cppLibs, LINKFLAGS=linkFlags, LIBPATH=libPaths, SHLIBPREFIX='', SHLIBSUFFIX=pyExtSuffix  )
+env.SharedLibrary( os.path.join( 'Britefury', 'Group', 'Group' ), pyGroupFiles, LIBS=extLibs + cppLibs, LINKFLAGS=linkFlags, LIBPATH=libPaths, SHLIBPREFIX='', SHLIBSUFFIX=pyExtSuffix  )
+env.SharedLibrary( os.path.join( 'Britefury', 'Mesh', 'Mesh' ), pyMeshFiles, LIBS=extLibs + cppLibs, LINKFLAGS=linkFlags, LIBPATH=libPaths, SHLIBPREFIX='', SHLIBSUFFIX=pyExtSuffix  )
 
-env.SharedLibrary( os.path.join( 'Britefury', 'PolyBlend', 'PolyBlend' ), pyPolyBlendFiles, LIBS=extLibs + cppLibs, LIBPATH=libPaths, SHLIBPREFIX='', SHLIBSUFFIX=pyExtSuffix )
+env.SharedLibrary( os.path.join( 'Britefury', 'PolyBlend', 'PolyBlend' ), pyPolyBlendFiles, LIBS=extLibs + cppLibs, LINKFLAGS=linkFlags, LIBPATH=libPaths, SHLIBPREFIX='', SHLIBSUFFIX=pyExtSuffix )
 
-env.SharedLibrary( os.path.join( 'Britefury', 'Transformation', 'Transformation' ), pyTransformationFiles, LIBS=extLibs + cppLibs, LIBPATH=libPaths, SHLIBPREFIX='', SHLIBSUFFIX=pyExtSuffix )
+env.SharedLibrary( os.path.join( 'Britefury', 'Transformation', 'Transformation' ), pyTransformationFiles, LIBS=extLibs + cppLibs, LINKFLAGS=linkFlags, LIBPATH=libPaths, SHLIBPREFIX='', SHLIBSUFFIX=pyExtSuffix )
 
-env.SharedLibrary( os.path.join( 'Britefury', 'Brush', 'Brush' ), pyBrushFiles, LIBS=extLibs + cppLibs, LIBPATH=libPaths, SHLIBPREFIX='', SHLIBSUFFIX=pyExtSuffix )
+env.SharedLibrary( os.path.join( 'Britefury', 'Brush', 'Brush' ), pyBrushFiles, LIBS=extLibs + cppLibs, LINKFLAGS=linkFlags, LIBPATH=libPaths, SHLIBPREFIX='', SHLIBSUFFIX=pyExtSuffix )
 
-env.SharedLibrary( os.path.join( 'Britefury', 'Background', 'Model' ), pyBackgroundModelFiles, LIBS=extLibs + cppLibs, LIBPATH=libPaths, SHLIBPREFIX='', SHLIBSUFFIX=pyExtSuffix )
+env.SharedLibrary( os.path.join( 'Britefury', 'Background', 'Model' ), pyBackgroundModelFiles, LIBS=extLibs + cppLibs, LINKFLAGS=linkFlags, LIBPATH=libPaths, SHLIBPREFIX='', SHLIBSUFFIX=pyExtSuffix )
 
-env.SharedLibrary( os.path.join( 'Britefury', 'ImportExportFilter', 'Obj', 'ObjImport' ), pyImportExportFilterObjImportFiles, LIBS=extLibs + cppLibs, LIBPATH=libPaths, SHLIBPREFIX='', SHLIBSUFFIX=pyExtSuffix )
+env.SharedLibrary( os.path.join( 'Britefury', 'ImportExportFilter', 'Obj', 'ObjImport' ), pyImportExportFilterObjImportFiles, LIBS=extLibs + cppLibs, LINKFLAGS=linkFlags, LIBPATH=libPaths, SHLIBPREFIX='', SHLIBSUFFIX=pyExtSuffix )
 
-env.SharedLibrary( os.path.join( 'Britefury', 'PlatformSpecific', 'PlatformSpecific' ), pyPlatformSpecificFiles, LIBS=extLibs + cppLibs, LIBPATH=libPaths, SHLIBPREFIX='', SHLIBSUFFIX=pyExtSuffix )
+env.SharedLibrary( os.path.join( 'Britefury', 'PlatformSpecific', 'PlatformSpecific' ), pyPlatformSpecificFiles, LIBS=extLibs + cppLibs, LINKFLAGS=linkFlags, LIBPATH=libPaths, SHLIBPREFIX='', SHLIBSUFFIX=pyExtSuffix )
 
-env.SharedLibrary( os.path.join( 'Britefury', 'extlibs', 'greenlet', 'greenlet' ), cppGreenletFiles, LIBS=pyLibs, LIBPATH=libPaths, SHLIBPREFIX='', SHLIBSUFFIX=pyExtSuffix )
+env.SharedLibrary( os.path.join( 'Britefury', 'extlibs', 'greenlet', 'greenlet' ), cppGreenletFiles, LIBS=pyLibs, LINKFLAGS=linkFlags, LIBPATH=libPaths, SHLIBPREFIX='', SHLIBSUFFIX=pyExtSuffix )
 
-env.SharedLibrary( os.path.join( 'Britefury', 'bugworkarounds', 'bugworkarounds' ), pyBugWorkaroundFiles, LIBS=extLibs + cppLibs, LIBPATH=libPaths, SHLIBPREFIX='', SHLIBSUFFIX=pyExtSuffix )
+env.SharedLibrary( os.path.join( 'Britefury', 'bugworkarounds', 'bugworkarounds' ), pyBugWorkaroundFiles, LIBS=extLibs + cppLibs, LINKFLAGS=linkFlags, LIBPATH=libPaths, SHLIBPREFIX='', SHLIBSUFFIX=pyExtSuffix )
 
-env.SharedLibrary( os.path.join( 'Britefury', 'GL', '_GL' ), pyGLWrapperFiles, LIBS=extLibs + cppLibs, LIBPATH=libPaths, SHLIBPREFIX='', SHLIBSUFFIX=pyExtSuffix )
-env.SharedLibrary( os.path.join( 'Britefury', 'GL', '_GLU' ), pyGLUWrapperFiles, LIBS=extLibs + cppLibs, LIBPATH=libPaths, SHLIBPREFIX='', SHLIBSUFFIX=pyExtSuffix )
+env.SharedLibrary( os.path.join( 'Britefury', 'GL', '_GL' ), pyGLWrapperFiles, LIBS=extLibs + cppLibs, LINKFLAGS=linkFlags, LIBPATH=libPaths, SHLIBPREFIX='', SHLIBSUFFIX=pyExtSuffix )
+env.SharedLibrary( os.path.join( 'Britefury', 'GL', '_GLU' ), pyGLUWrapperFiles, LIBS=extLibs + cppLibs, LINKFLAGS=linkFlags, LIBPATH=libPaths, SHLIBPREFIX='', SHLIBSUFFIX=pyExtSuffix )
 
 
 

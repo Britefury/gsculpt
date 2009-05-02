@@ -37,6 +37,20 @@ void LineReader::reset()
 	fseek( file, fileStart, SEEK_SET );
 }
 
+int LineReader::getFileSize()
+{
+	int pos = ftell( file );
+	fseek( file, 0, SEEK_END );
+	int end = ftell( file );
+	fseek( file, pos, SEEK_SET );
+	return end - fileStart;
+}
+
+int LineReader::getPos()
+{
+	return ftell( file )  -  fileStart;
+}
+
 
 
 char * LineReader::readLine()

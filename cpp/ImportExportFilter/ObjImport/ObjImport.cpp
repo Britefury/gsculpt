@@ -138,8 +138,9 @@ GS_DllExport BackgroundMesh * convertObjDataGlobalModelToBackgroundMesh(ObjData 
 		}
 	}
 
+	BackgroundMesh *mesh = new BackgroundMesh( vertices, faces );
 
-	return new BackgroundMesh( vertices, faces );
+	return mesh;
 }
 
 

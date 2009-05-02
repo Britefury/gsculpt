@@ -345,7 +345,7 @@ class MainApp (object):
 		self._backgroundImageButton.toggleSignal.connect( self._p_onBackgroundImageButton )
 		tooltips.set_tip( self._backgroundImageButton.getWidget(), _( 'Background images' ), _( 'Background images' ) )
 
-		self._backgroundModelButton = ToggleButton( gsImageFilename='background_images.png' )
+		self._backgroundModelButton = ToggleButton( gsImageFilename='background_models.png' )
 		self._backgroundModelButton.getWidget().show()
 		self._backgroundModelButton.toggleSignal.connect( self._p_onBackgroundModelButton )
 		tooltips.set_tip( self._backgroundModelButton.getWidget(), _( 'Background models' ), _( 'Background models' ) )

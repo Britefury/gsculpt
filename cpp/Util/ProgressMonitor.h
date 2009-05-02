@@ -5,46 +5,20 @@
 //##* version 2 can be found in the file named 'COPYING' that accompanies this
 //##* program. This source code is (C)copyright Geoffrey French 1999-2007.
 //##************************
-#ifndef LINEREADER_H__
-#define LINEREADER_H__
+#ifndef PROGRESSMONITOR_H__
+#define PROGRESSMONITOR_H__
 
-#include <stdio.h>
+#include <stdlib.h>
 
-#define LINEREADER_BUFFERSIZE 1024
-
-
-
-class LineReader
+template <typename ProgressType> class ProgressMonitor
 {
-private:
-	FILE *file;
-	char *largeBuffer;
-	int largeBufferSize;
-	char buffer[LINEREADER_BUFFERSIZE];
-	int fileStart;
-
-
 public:
-	LineReader(FILE *f);
-	~LineReader();
-
-
-	void reset();
-	int getFileSize();
-	int getPos();
-
-
-	char * readLine();
-
-
-private:
-	char * readLongLine();
+	virtual ~ProgressMonitor()
+	{
+	}
+	
+	virtual void updateProgress(const ProgressType &v) = 0;
 };
-
-
-
-void testLineReader();
-
 
 #endif
 

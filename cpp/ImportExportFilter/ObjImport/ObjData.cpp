@@ -94,7 +94,7 @@ void ObjModel::addGlobalFace(ObjFace &face)
 	}
 }
 
-void ObjModel::build(ModelIndexBuffer &buffer)
+void ObjModel::build(ModelIndexBuffer &buffer, ProgressMonitor<ObjImportProgress> *monitor, ObjImportProgress *modelProgress)
 {
 	numV = numVT = numVN = 0;
 
@@ -133,6 +133,14 @@ void ObjModel::build(ModelIndexBuffer &buffer)
 				fv.vn = buffer.vnGlobalToModel[fv.vn];
 			}
 		}
+		
+		if ( monitor != NULL )
+		{
+			if ( i % 10000 == 0 )
+			{
+				monitor->updateProgress( modelProgress->buildModelProgress( layout->numF, i ) );
+			}
+		}
 	}
 
 	vIndices = new int[numV];
@@ -157,7 +165,7 @@ ObjData::ObjReaderState::ObjReaderState()
 
 
 
-ObjData::ObjData(ObjLayout *layout, LineReader &reader)
+ObjData::ObjData(ObjLayout *layout, LineReader &reader, ProgressMonitor<ObjImportProgress> *monitor)
 {
 	this->layout = layout;
 
@@ -187,21 +195,49 @@ ObjData::ObjData(ObjLayout *layout, LineReader &reader)
 	ObjReaderState state;
 	reader.reset();
 	char *line = reader.readLine();
+	int lineCount = 0;
+	int geometrySize = layout->numV + layout->numVT + layout->numVN + layout->numF + layout->numFV;
 	while ( line != NULL )
 	{
 		processLine( state, line );
+		if ( monitor != NULL )
+		{
+			lineCount++;
+			if ( lineCount % 10000 == 0 )
+			{
+				monitor->updateProgress( ObjImportProgress::readGeometryProgress( geometrySize, state.indexV + state.indexVT + state.indexVN + state.indexF + state.indexFV ) );
+			}
+		}
 		line = reader.readLine();
+	}
+	if ( monitor != NULL )
+	{
+		monitor->updateProgress( ObjImportProgress::readGeometryProgress( geometrySize, state.indexV + state.indexVT + state.indexVN + state.indexF + state.indexFV ) );
 	}
 
 
 	if ( layout->bProcessModels )
 	{
+		int numModels = layout->models.size();
+		int modelIndex = 0;
 		ObjModel::ModelIndexBuffer buffer( layout );
+		ObjImportProgress modelProgress;
 		for (std::map<std::string, ObjModel*>::iterator iter = models.begin(); iter != models.end(); ++iter)
 		{
+			if ( monitor != NULL )
+			{
+				modelProgress = ObjImportProgress::buildModelsProgress( numModels, modelIndex );
+				monitor->updateProgress( modelProgress );
+			}
 			buffer.reset( layout );
-			iter->second->build( buffer );
+			iter->second->build( buffer, monitor, &modelProgress );
+			modelIndex++;
 		}
+	}
+
+	if ( monitor != NULL )
+	{
+		monitor->updateProgress( ObjImportProgress::finished() );
 	}
 }
 

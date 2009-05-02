@@ -120,7 +120,7 @@ public:
 
 private:
 	void addGlobalFace(ObjFace &face);
-	void build(ModelIndexBuffer &buffer);
+	void build(ModelIndexBuffer &buffer, ProgressMonitor<ObjImportProgress> *monitor, ObjImportProgress *modelProgress);
 
 	
 
@@ -160,7 +160,7 @@ private:
 
 
 public:
-	ObjData(ObjLayout *layout, LineReader &reader);
+	ObjData(ObjLayout *layout, LineReader &reader, ProgressMonitor<ObjImportProgress> *monitor = NULL);
 	~ObjData();
 
 

@@ -21,6 +21,7 @@ from Britefury.UI.OptionList import OptionList
 from Britefury.UI.FormLayout import FormLayout
 from Britefury.UI.ToggleButton import ToggleButton
 from Britefury.UI.ToggleGroup import ToggleGroup
+from Britefury.UI.ButtonPopupMenu import ButtonPopupMenu
 from Britefury.UI.UIAction import UIAction
 
 from Britefury.Event.QueuedEvent import queueEvent

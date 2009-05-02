@@ -25,6 +25,8 @@
 
 
 
+
+
 /***************************************************************
 				KDTree::KDTreeNode
  ***************************************************************/
@@ -34,13 +36,15 @@ BackgroundMesh::KDTree::KDTreeNode::KDTreeNode()
 }
 
 
-void BackgroundMesh::KDTree::KDTreeNode::build(KDTree *tree, int start, int end)
+void BackgroundMesh::KDTree::KDTreeNode::build(KDTree *tree, int nodeIndex, int start, int end)
 {
 	startIndex = start;
 	endIndex = end;
 	negativeIndex = positiveIndex = 0;
 
 	int numFacesInNode = end - start;
+	
+	box = BBox3f();
 
 	if ( numFacesInNode < NODE_SIZE_THRESHOLD )
 	{
@@ -193,8 +197,13 @@ void BackgroundMesh::KDTree::KDTreeNode::build(KDTree *tree, int start, int end)
 			if ( start != anchorIndex  &&  anchorIndex != end )
 			{
 				// Create subtrees
-				setNegativeIndex( tree->createNode( start, anchorIndex ) );
-				setPositiveIndex( tree->createNode( anchorIndex, end ) );
+				
+				// DO NOT REFERENCE *this
+				// The tree->createNode() call modifies the node array. This can result in *this being copied into a new node
+				// In this case we want to refer to the node in the array, which may be a new copy of *this, not *this, so we use
+				// tree->nodes[nodeIndex]
+				tree->nodes[nodeIndex].setNegativeIndex( tree->createNode( start, anchorIndex ) );
+				tree->nodes[nodeIndex].setPositiveIndex( tree->createNode( anchorIndex, end ) );
 			}
 		}
 	}
@@ -296,6 +305,7 @@ void BackgroundMesh::KDTree::initialise(BackgroundMesh *mesh)
 	faceBoxes.resize( numFaces );
 	faceCentroids.resize( numFaces );
 	faceOrder.resize( numFaces );
+	nodes.clear();
 
 
 	for (int faceI = 0; faceI < numFaces; faceI++)
@@ -337,7 +347,7 @@ int BackgroundMesh::KDTree::createNode(int startIndex, int endIndex)
 	int nodeIndex = nodes.size();
 
 	KDTreeNode &node = nodes.push_back();
-	node.build( this, startIndex, endIndex );
+	node.build( this, nodeIndex, startIndex, endIndex );
 
 	return nodeIndex;
 }
@@ -430,19 +440,20 @@ int BackgroundMesh::KDTree::raytrace(const KDSegment &seg, Point3f &p, float &t)
 {
 	if ( nodes.size() > 0 )
 	{
-		KDSegment clippedSeg = seg;
-		t = 1.0f;
-		int triIndex = raytrace( seg, clippedSeg, t, nodes[0] );
-		if ( triIndex != -1 )
+		if ( nodes[0].intersects( seg ) )
 		{
-			p = clippedSeg.b;
+			KDSegment clippedSeg = seg;
+			t = 1.0f;
+			int triIndex = raytrace( seg, clippedSeg, t, nodes[0] );
+			if ( triIndex != -1 )
+			{
+				p = clippedSeg.b;
+			}
+			return triIndex;
 		}
-		return triIndex;
 	}
-	else
-	{
-		return -1;
-	}
+
+	return -1;
 }
 
 
@@ -467,8 +478,6 @@ BackgroundMesh::BackgroundMesh(Array<Point3f> &inVerts, Array<IndexFace> &inFace
 	IndexFace faceOrder;
 	// Edge vectors
 	Vector3f edges[2];
-	// Normals for faces
-	Array<Vector3f> faceNormals;
 	// Normal vector
 	Vector3f n;
 
@@ -503,7 +512,7 @@ BackgroundMesh::BackgroundMesh(Array<Point3f> &inVerts, Array<IndexFace> &inFace
 		{
 			// The face is not degenerate
 
-			// Compute the normal of the face
+			// Triangulate the face, and compute the normal
 			int aIndex = faceOrder[0], bIndex = faceOrder[1];
 			const Point3f *a = &inVerts[aIndex];
 			const Point3f *b = &inVerts[bIndex];
@@ -528,15 +537,14 @@ BackgroundMesh::BackgroundMesh(Array<Point3f> &inVerts, Array<IndexFace> &inFace
 				b = c;
 				std::swap( u, v );
 			}
-
-			faceNormals.push_back( n * ( 1.0f / n.length() ) );
-			const Vector3f &unitN = faceNormals.back();
+			
+			n.normalise();
 
 			// Accumulate normals per vertex
 			for (int faceVertexI = 0; faceVertexI < faceOrder.size(); faceVertexI++)
 			{
 				int vIndex = faceOrder[faceVertexI];
-				vNormal[vIndex] += unitN;
+				vNormal[vIndex] += n;
 			}
 		}
 	}
@@ -548,12 +556,14 @@ BackgroundMesh::BackgroundMesh(Array<Point3f> &inVerts, Array<IndexFace> &inFace
 		vNormal[vertexI].normalise();
 	}
 
-
+	
 	kdTree.initialise( this );
 }
 
 
 
+
+#ifdef _BACKGROUNDMESH_USE_VERTEX_BUFFERS
 
 void BackgroundMesh::initGL()
 {
@@ -592,16 +602,10 @@ void BackgroundMesh::drawGL()
 			glEnableClientState( GL_NORMAL_ARRAY );
 		
 			glext->glBindBuffer( GL_ARRAY_BUFFER, buffers[BUFFERINDEX_POSITION] );
-
 			glext->glBindBuffer( GL_ARRAY_BUFFER, buffers[BUFFERINDEX_NORMAL] );
-
 			glext->glBindBuffer( GL_ELEMENT_ARRAY_BUFFER, buffers[BUFFERINDEX_INDICES] );
 
-
-
 			glDrawElements( GL_TRIANGLES, tris.size() * 3, GL_UNSIGNED_INT, 0 );
-
-
 
 			glDisableClientState( GL_VERTEX_ARRAY );
 			glDisableClientState( GL_NORMAL_ARRAY );
@@ -622,6 +626,63 @@ void BackgroundMesh::shutdownGL()
 		}
 	}
 }
+
+#elif defined(_BACKGROUNDMESH_USE_VERTEX_ARRAYS_AND_DISPLAY_LIST)
+
+void BackgroundMesh::initGL()
+{
+	if ( !bInitialisedGL )
+	{
+		bInitialisedGL = true;
+		
+		// Generate a display list
+		displayListId = glGenLists( 1 );
+		
+		// Setup vertex and normal arrays
+		glEnableClientState( GL_VERTEX_ARRAY );
+		glEnableClientState( GL_NORMAL_ARRAY );
+
+		glVertexPointer( 3, GL_FLOAT, 0, vPosition.begin() );
+		glNormalPointer( GL_FLOAT, 0, vNormal.begin() );
+
+		
+		// Compile the display list
+		glNewList( displayListId, GL_COMPILE );
+		glDrawElements( GL_TRIANGLES, tris.size() * 3, GL_UNSIGNED_INT, tris.begin() );
+		glEndList();
+
+
+		// Shutdown vertex and normal arrays
+		glDisableClientState( GL_VERTEX_ARRAY );
+		glDisableClientState( GL_NORMAL_ARRAY );
+	}
+}
+
+
+void BackgroundMesh::drawGL()
+{
+	if ( bInitialisedGL )
+	{
+		// Call the display list
+		glCallList( displayListId );
+	}
+}
+
+
+void BackgroundMesh::shutdownGL()
+{
+	if ( bInitialisedGL )
+	{
+		bInitialisedGL = false;
+		
+		// Delete the display list
+		glDeleteLists( displayListId, 1 );
+	}
+}
+
+
+#endif
+
 
 
 
