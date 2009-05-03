@@ -20,7 +20,7 @@ GS_DllExport MImportMesh * convertObjModelToImportMesh(ObjData &objData, ObjMode
 
 
 
-GS_DllExport BackgroundMesh * convertObjDataGlobalModelToBackgroundMesh(ObjData &objData);
+GS_DllExport BackgroundMesh * convertObjDataGlobalModelToBackgroundMesh(ObjData &objData, ProgressMonitor *convertMonitor = NULL, ProgressMonitor *kdtreeMonitor = NULL);
 
 
 

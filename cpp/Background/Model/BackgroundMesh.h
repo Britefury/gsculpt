@@ -15,6 +15,7 @@
 #include <PlatformSpecific/GLExtensions.h>
 
 #include <Util/Array.h>
+#include <Util/ProgressMonitor.h>
 
 #include <Math/Point3f.h>
 #include <Math/Vector3f.h>
@@ -45,6 +46,14 @@
 
 class GS_DllExport BackgroundMesh
 {
+public:
+	struct IndexTri
+	{
+		int i[3];
+	};
+
+
+
 private:
 	class KDTree
 	{
@@ -103,6 +112,15 @@ private:
 			inline KDTTri(const Point3f &va, const Point3f &vb, const Point3f &vc)
 						: a( va ), e1( vb - va ), e2( vc - va )
 			{
+			}
+		
+			inline KDTTri(const Array<Point3f> &v, const IndexTri &tri)
+			{
+				a = v[ tri.i[0] ];
+				const Point3f &b = v[ tri.i[1] ];
+				const Point3f &c = v[ tri.i[2] ];
+				e1 = b - a;
+				e2 = c - a;
 			}
 		
 		
@@ -169,7 +187,7 @@ private:
 			KDTreeNode();
 
 
-			void build(KDTree *tree, int nodeIndex, int start, int end);
+			void build(KDTree *tree, int nodeIndex, int start, int end, ProgressMonitor *kdtreeMonitor);
 	
 
 			bool intersects(const KDSegment &seg) const;
@@ -215,22 +233,23 @@ private:
 		BackgroundMesh *mesh;
 
 		Array<KDTreeNode> nodes;
-		Array<KDTTri> faces;
 		Array<BBox3f> faceBoxes;
 		Array<Point3f> faceCentroids;
 		Array<int> faceOrder;
+		int numNodesEstimate;
 
-		float initialCost;
-	
 	
 	public:
 		KDTree();
+		
+		void readFromFile(BackgroundMesh *mesh, FILE *file);
+		void writeToFile(FILE *file);
 
-		void initialise(BackgroundMesh *mesh);
+		void initialise(BackgroundMesh *mesh, ProgressMonitor *kdtreeMonitor);
 	
 
 	private:	
-		int createNode(int startIndex, int endIndex);
+		int createNode(int startIndex, int endIndex, ProgressMonitor *kdtreeMonitor);
 		
 
 	
@@ -250,17 +269,6 @@ public:
 	typedef Array<int> IndexFace;
 
 
-	struct IndexTri
-	{
-		int i[3];
-	};
-
-
-	struct Vertex
-	{
-		Point3f v;
-		Vector3f n;
-	};
 
 
 
@@ -289,7 +297,11 @@ private:
 
 public:
 	BackgroundMesh();
-	BackgroundMesh(Array<Point3f> &inVerts, Array<IndexFace> &inFaces);
+	BackgroundMesh(Array<Point3f> &inVerts, Array<IndexFace> &inFaces, ProgressMonitor *convertMonitor = NULL, ProgressMonitor *kdtreeMonitor = NULL);
+	
+	
+	bool readFromFile(std::string filename);
+	void writeToFile(std::string filename);
 
 
 	void initGL();

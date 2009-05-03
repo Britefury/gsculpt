@@ -13,7 +13,6 @@
 #include <map>
 
 #include <ImportExportFilter/ObjImport/LineReader.h>
-#include <ImportExportFilter/ObjImport/ObjImportProgress.h>
 
 #include <Util/ProgressMonitor.h>
 
@@ -49,7 +48,7 @@ private:
 
 
 public:
-	ObjLayout(LineReader &reader, bool bProcessModels, ProgressMonitor<ObjImportProgress> *monitor = NULL);
+	ObjLayout(LineReader &reader, bool bProcessModels, ProgressMonitor *monitor = NULL);
 	~ObjLayout();
 
 

@@ -13,20 +13,25 @@
 #include <stdlib.h>
 
 #include <Util/ProgressMonitor.h>
+#include <Util/Array.h>
 
 
-template <typename ProgressType, typename ResultType> class MonitoredThread
+template <typename ResultType> class MonitoredThread
 {
 private:
-	ProgressType progress;
+	int progressStage;
+	float progress;
 	ResultType result;
 	GMutex *mutex;
 	GThread *thread;
-	bool bJoined;
+	bool bJoined, bFinished;
 	
 public:
 	inline MonitoredThread()
 	{
+		progressStage = 0;
+		progress = 0.0f;
+		
 		if ( !g_thread_supported() )
 		{
 			g_thread_init( NULL );
@@ -35,6 +40,7 @@ public:
 		mutex = g_mutex_new();
 		
 		bJoined = false;
+		bFinished = false;
 		thread = NULL;
 	}
 	
@@ -52,18 +58,27 @@ public:
 	
 	
 	
-	inline ProgressType getProgress()
+	inline float getProgress()
 	{
 		g_mutex_lock( mutex );
-		ProgressType p = progress;
+		float p = progress;
 		g_mutex_unlock( mutex );
 		return p;
 	}
 	
-	inline void updateProgress(const ProgressType &v)
+	inline float getProgressStage()
 	{
 		g_mutex_lock( mutex );
-		progress = v;
+		int stage = progressStage;
+		g_mutex_unlock( mutex );
+		return stage;
+	}
+	
+	inline void updateProgress(int progressStage, float progress)
+	{
+		g_mutex_lock( mutex );
+		this->progressStage = progressStage;
+		this->progress = progress;
 		g_mutex_unlock( mutex );
 	}
 	
@@ -75,6 +90,12 @@ public:
 		ResultType r = result;
 		g_mutex_unlock( mutex );
 		return r;
+	}
+	
+	
+	inline bool isFinished()
+	{
+		return bFinished;
 	}
 	
 	
@@ -103,24 +124,27 @@ protected:
 	
 	
 private:
-	inline static gpointer threadFunc(MonitoredThread<ProgressType, ResultType> *t)
+	inline static gpointer threadFunc(MonitoredThread<ResultType> *t)
 	{
 		t->result = t->execute();
+		t->bFinished = true;
 		return NULL;
 	}
 };
 
 
 
-template <typename ProgressType, typename ResultType> class ThreadProgressMonitor : public ProgressMonitor<ProgressType>
+template <typename ResultType> class ThreadProgressMonitor : public ProgressMonitor
 {
 private:
-	MonitoredThread<ProgressType, ResultType> *thread;
+	MonitoredThread<ResultType> *thread;
+	int progressStage;
 	
 public:
-	inline ThreadProgressMonitor(MonitoredThread<ProgressType, ResultType> *thread)
+	inline ThreadProgressMonitor(MonitoredThread<ResultType> *thread, int progressStage)
 	{
 		this->thread = thread;
+		this->progressStage = progressStage;
 	}
 	
 	virtual ~ThreadProgressMonitor()
@@ -128,9 +152,9 @@ public:
 	}
 	
 	
-	virtual void updateProgress(const ProgressType &v)
+	virtual void updateProgress(float progress)
 	{
-		thread->updateProgress( v );
+		thread->updateProgress( progressStage, progress );
 	}
 };
 

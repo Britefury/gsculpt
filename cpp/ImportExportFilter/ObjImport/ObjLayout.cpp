@@ -15,7 +15,7 @@
 
 
 
-ObjLayout::ObjLayout(LineReader &reader, bool bProcessModels, ProgressMonitor<ObjImportProgress> *monitor)
+ObjLayout::ObjLayout(LineReader &reader, bool bProcessModels, ProgressMonitor *monitor)
 {
 	this->bProcessModels = bProcessModels;
 	numV = numVT = numVN = numF = numFV = 0;
@@ -29,6 +29,7 @@ ObjLayout::ObjLayout(LineReader &reader, bool bProcessModels, ProgressMonitor<Ob
 
 	int lineCount = 0;
 	int fileSize = reader.getFileSize();
+	float fileSizeRecip = 1.0f / (float)fileSize;
 	reader.reset();
 	char *line = reader.readLine();
 	while ( line != NULL )
@@ -39,14 +40,14 @@ ObjLayout::ObjLayout(LineReader &reader, bool bProcessModels, ProgressMonitor<Ob
 			lineCount++;
 			if ( lineCount % 10000 == 0 )
 			{
-				monitor->updateProgress( ObjImportProgress::scanStructureProgress( fileSize, reader.getPos(), lineCount ) );
+				monitor->updateProgress( (float)reader.getPos() * fileSizeRecip );
 			}
 		}
 		line = reader.readLine();
 	}
 	if ( monitor != NULL )
 	{
-		monitor->updateProgress( ObjImportProgress::scanStructureProgress( fileSize, reader.getPos(), lineCount ) );
+		monitor->updateProgress( 1.0f );
 	}
 
 	if ( bProcessModels )

@@ -19,6 +19,8 @@ using namespace boost::python;
 void export_BackgroundMesh()
 {
 	class_<BackgroundMesh>( "BackgroundMesh", init<>() )
+		.def( "readFromFile", &BackgroundMesh::readFromFile )
+		.def( "writeToFile", &BackgroundMesh::writeToFile )
 		.def( "initGL", &BackgroundMesh::initGL )
 		.def( "shutdownGL", &BackgroundMesh::shutdownGL )
 		.def( "drawGL", &BackgroundMesh::drawGL )

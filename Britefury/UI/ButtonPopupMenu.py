@@ -22,13 +22,21 @@ class ButtonPopupMenu (UIController):
 	menuSignal = ClassSignal()
 
 
-	def __init__(self, labelText=None, gsImageFilename=None, contents=None):
+	def __init__(self, labelText=None, gsImageFilename=None, contents=None, stock=None):
 		super( ButtonPopupMenu, self ).__init__()
-		self._button = gtk.Button()
-		self._contents = None
-		self._contentsBox = None
-		self._contentsWidget = None
-		self.setButtonContents( labelText, gsImageFilename, contents )
+		if stock is not None:
+			self._button = gtk.Button( stock=stock )
+			self._contents = None
+			self._contentsBox = None
+			self._contentsWidget = None
+			self._stock = stock
+		else:
+			self._button = gtk.Button()
+			self._contents = None
+			self._contentsBox = None
+			self._contentsWidget = None
+			self._stock = None
+			self.setButtonContents( labelText, gsImageFilename, contents )
 		self._button.connect( 'button-press-event', self._p_onButton )
 
 		self._menu = gtk.Menu()

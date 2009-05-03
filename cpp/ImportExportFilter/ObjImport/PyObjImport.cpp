@@ -26,26 +26,19 @@ using namespace boost::python;
 
 #include <ImportExportFilter/ObjImport/ObjImport.h>
 
-#include <ImportExportFilter/ObjImport/ObjImportProgress.h>
 
 
-
-template <typename ResultType> class _ThreadBase : public MonitoredThread<ObjImportProgress, ResultType>
+template <typename ResultType> class _ThreadBase : public MonitoredThread<ResultType>
 {
 protected:
 	FILE *file;
-	ThreadProgressMonitor<ObjImportProgress, ResultType> *monitor;
+	ThreadProgressMonitor<ResultType> scanStructureMonitor, readGeometryMonitor, buildModelsMonitor;
+	
 	
 public:
-	_ThreadBase(FILE *f) : MonitoredThread<ObjImportProgress, ResultType>()
+	_ThreadBase(FILE *f) : MonitoredThread<ResultType>(), scanStructureMonitor( this, 0 ), readGeometryMonitor( this, 1 ), buildModelsMonitor( this, 2 )
 	{
 		file = f;
-		monitor = new ThreadProgressMonitor<ObjImportProgress, ResultType>( this );
-	}
-	
-	virtual ~_ThreadBase()
-	{
-		delete monitor;
 	}
 };
 
@@ -73,9 +66,19 @@ public:
 	
 
 	
-	ObjImportProgress getProgress()
+	int getProgressStage()
+	{
+		return thread->getProgressStage();
+	}
+
+	float getProgress()
 	{
 		return thread->getProgress();
+	}
+	
+	bool isFinished()
+	{
+		return thread->isFinished();
 	}
 
 	ResultType getResult()
@@ -106,8 +109,8 @@ public:
 	virtual MImportMesh * execute()
 	{
 		LineReader reader( file );
-		ObjLayout layout( reader, false, monitor );
-		ObjData data( &layout, reader, monitor );
+		ObjLayout layout( reader, false, &scanStructureMonitor );
+		ObjData data( &layout, reader, &readGeometryMonitor, &buildModelsMonitor );
 		return convertObjDataGlobalModelToImportMesh( data );
 	}
 };
@@ -168,8 +171,8 @@ public:
 	virtual boost::python::object execute()
 	{
 		LineReader reader( file );
-		ObjLayout layout( reader, true, monitor );
-		ObjData data( &layout, reader, monitor );
+		ObjLayout layout( reader, true, &scanStructureMonitor );
+		ObjData data( &layout, reader, &readGeometryMonitor, &buildModelsMonitor );
 		
 		boost::python::list modelList;
 
@@ -241,17 +244,21 @@ ImportObjFileAsMultipleMeshesThreaded * py_importObjFileAsMultipleMeshesThreaded
 
 class _ImportObjFileAsBackgroundMeshThread : public _ThreadBase<BackgroundMesh*>
 {
+protected:
+	ThreadProgressMonitor<BackgroundMesh*> convertToBackgroundMeshMonitor, buildKDTreeMonitor;
+	
 public:
-	_ImportObjFileAsBackgroundMeshThread(FILE *f) : _ThreadBase<BackgroundMesh*>( f )
+	
+	_ImportObjFileAsBackgroundMeshThread(FILE *f) : _ThreadBase<BackgroundMesh*>( f ), convertToBackgroundMeshMonitor( this, 3 ), buildKDTreeMonitor( this, 4 )
 	{
 	}
 
 	virtual BackgroundMesh * execute()
 	{
 		LineReader reader( file );
-		ObjLayout layout( reader, false, monitor );
-		ObjData data( &layout, reader, monitor );
-		return convertObjDataGlobalModelToBackgroundMesh( data );
+		ObjLayout layout( reader, false, &scanStructureMonitor );
+		ObjData data( &layout, reader, &readGeometryMonitor, &buildModelsMonitor );
+		return convertObjDataGlobalModelToBackgroundMesh( data, &convertToBackgroundMeshMonitor, &buildKDTreeMonitor );
 	}
 };
 
@@ -292,15 +299,21 @@ ImportObjFileAsBackgroundMeshThreaded * py_importObjFileAsBackgroundMeshThreaded
 void exportObjImport()
 {
 	class_<ImportObjFileAsSingleMeshThreaded>( "ImportObjFileAsSingleMeshThreaded", init<std::string>() )
-		.def( "getProgress", &ImportObjFileAsSingleMeshThreaded::getProgress )
-		.def( "getResult", &ImportObjFileAsSingleMeshThreaded::getResult, return_value_policy<manage_new_object>() );
+			.def( "getProgress", &ImportObjFileAsSingleMeshThreaded::getProgress )
+			.def( "getProgressStage", &ImportObjFileAsSingleMeshThreaded::getProgressStage )
+			.def( "isFinished", &ImportObjFileAsSingleMeshThreaded::isFinished )
+			.def( "getResult", &ImportObjFileAsSingleMeshThreaded::getResult, return_value_policy<manage_new_object>() );
 	
 	class_<ImportObjFileAsMultipleMeshesThreaded>( "ImportObjFileAsMultipleMeshesThreaded", init<std::string>() )
 			.def( "getProgress", &ImportObjFileAsMultipleMeshesThreaded::getProgress )
+			.def( "getProgressStage", &ImportObjFileAsMultipleMeshesThreaded::getProgressStage )
+			.def( "isFinished", &ImportObjFileAsMultipleMeshesThreaded::isFinished )
 			.def( "getResult", &ImportObjFileAsMultipleMeshesThreaded::getResult );
 	
 	class_<ImportObjFileAsBackgroundMeshThreaded>( "ImportObjFileAsBackgroundMeshThreaded", init<std::string>() )
 			.def( "getProgress", &ImportObjFileAsBackgroundMeshThreaded::getProgress )
+			.def( "getProgressStage", &ImportObjFileAsBackgroundMeshThreaded::getProgressStage )
+			.def( "isFinished", &ImportObjFileAsBackgroundMeshThreaded::isFinished )
 			.def( "getResult", &ImportObjFileAsBackgroundMeshThreaded::getResult, return_value_policy<manage_new_object>() );
 	
 	
@@ -312,31 +325,9 @@ void exportObjImport()
 	def( "importObjFileAsBackgroundMeshThreaded", py_importObjFileAsBackgroundMeshThreaded, return_value_policy<manage_new_object>() );
 }
 
-void exportObjImportProgress()
-{
-	class_<ObjImportProgress>( "ObjImportProgress", init<>() )
-			.def_readonly( "stage", &ObjImportProgress::stage )
-			.def_readonly( "fileSize", &ObjImportProgress::fileSize )
-			.def_readonly( "bytesRead", &ObjImportProgress::bytesRead )
-			.def_readonly( "numLines", &ObjImportProgress::numLines )
-			.def_readonly( "geometrySize", &ObjImportProgress::geometrySize )
-			.def_readonly( "geometryRead", &ObjImportProgress::geometryRead )
-			.def_readonly( "numModels", &ObjImportProgress::numModels )
-			.def_readonly( "modelsBuilt", &ObjImportProgress::modelsBuilt )
-			.def_readonly( "modelFaces", &ObjImportProgress::modelFaces )
-			.def_readonly( "modelFacesBuilt", &ObjImportProgress::modelFacesBuilt );
-
-	enum_<ObjImportProgress::Stage>( "ObjImportProgressStage" )
-			.value( "SCAN_STRUCTURE", ObjImportProgress::STAGE_SCAN_STRUCTURE )
-			.value( "READ_GEOMETRY", ObjImportProgress::STAGE_READ_GEOMETRY )
-			.value( "BUILD_MODELS", ObjImportProgress::STAGE_BUILD_MODELS )
-			.value( "FINISHED", ObjImportProgress::STAGE_FINISHED );
-}
-
 BOOST_PYTHON_MODULE(ObjImport)
 {
 	exportObjImport();
-	exportObjImportProgress();
 }
 
 

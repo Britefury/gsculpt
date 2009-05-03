@@ -94,9 +94,11 @@ void ObjModel::addGlobalFace(ObjFace &face)
 	}
 }
 
-void ObjModel::build(ModelIndexBuffer &buffer, ProgressMonitor<ObjImportProgress> *monitor, ObjImportProgress *modelProgress)
+void ObjModel::build(ModelIndexBuffer &buffer, ProgressMonitor *buildModelsMonitor, float progressOffset, float progressScale)
 {
 	numV = numVT = numVN = 0;
+	
+	float numFRecip = 1.0f / (float)layout->numF;
 
 	for (int i = 0; i < layout->numF; i++)
 	{
@@ -134,11 +136,12 @@ void ObjModel::build(ModelIndexBuffer &buffer, ProgressMonitor<ObjImportProgress
 			}
 		}
 		
-		if ( monitor != NULL )
+		if ( buildModelsMonitor != NULL )
 		{
 			if ( i % 10000 == 0 )
 			{
-				monitor->updateProgress( modelProgress->buildModelProgress( layout->numF, i ) );
+				float p = (float)i * numFRecip;
+				buildModelsMonitor->updateProgress( p * progressScale + progressOffset );
 			}
 		}
 	}
@@ -165,7 +168,7 @@ ObjData::ObjReaderState::ObjReaderState()
 
 
 
-ObjData::ObjData(ObjLayout *layout, LineReader &reader, ProgressMonitor<ObjImportProgress> *monitor)
+ObjData::ObjData(ObjLayout *layout, LineReader &reader,  ProgressMonitor *readGeometryMonitor, ProgressMonitor *buildModelsMonitor)
 {
 	this->layout = layout;
 
@@ -197,47 +200,49 @@ ObjData::ObjData(ObjLayout *layout, LineReader &reader, ProgressMonitor<ObjImpor
 	char *line = reader.readLine();
 	int lineCount = 0;
 	int geometrySize = layout->numV + layout->numVT + layout->numVN + layout->numF + layout->numFV;
+	float geometrySizeRecip = 1.0f / (float)geometrySize;
 	while ( line != NULL )
 	{
 		processLine( state, line );
-		if ( monitor != NULL )
+		if ( readGeometryMonitor != NULL )
 		{
 			lineCount++;
 			if ( lineCount % 10000 == 0 )
 			{
-				monitor->updateProgress( ObjImportProgress::readGeometryProgress( geometrySize, state.indexV + state.indexVT + state.indexVN + state.indexF + state.indexFV ) );
+				readGeometryMonitor->updateProgress( (float)( state.indexV + state.indexVT + state.indexVN + state.indexF + state.indexFV )  *  geometrySizeRecip );
 			}
 		}
 		line = reader.readLine();
 	}
-	if ( monitor != NULL )
+	if ( readGeometryMonitor != NULL )
 	{
-		monitor->updateProgress( ObjImportProgress::readGeometryProgress( geometrySize, state.indexV + state.indexVT + state.indexVN + state.indexF + state.indexFV ) );
+		readGeometryMonitor->updateProgress( 1.0f );
 	}
 
 
 	if ( layout->bProcessModels )
 	{
 		int numModels = layout->models.size();
+		float numModelsRecip = 1.0f / (float)numModels;
 		int modelIndex = 0;
+		float modelProgress = 0.0f;
 		ObjModel::ModelIndexBuffer buffer( layout );
-		ObjImportProgress modelProgress;
 		for (std::map<std::string, ObjModel*>::iterator iter = models.begin(); iter != models.end(); ++iter)
 		{
-			if ( monitor != NULL )
+			if ( buildModelsMonitor != NULL )
 			{
-				modelProgress = ObjImportProgress::buildModelsProgress( numModels, modelIndex );
-				monitor->updateProgress( modelProgress );
+				modelProgress = (float)modelIndex * numModelsRecip;
+				buildModelsMonitor->updateProgress( modelProgress );
 			}
 			buffer.reset( layout );
-			iter->second->build( buffer, monitor, &modelProgress );
+			iter->second->build( buffer, buildModelsMonitor, modelProgress, numModelsRecip );
 			modelIndex++;
 		}
 	}
 
-	if ( monitor != NULL )
+	if ( buildModelsMonitor != NULL )
 	{
-		monitor->updateProgress( ObjImportProgress::finished() );
+		buildModelsMonitor->updateProgress( 1.0f );
 	}
 }
 

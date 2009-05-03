@@ -20,7 +20,7 @@
 
 
 
-#define NODE_SIZE_THRESHOLD 16
+#define NODE_SIZE_THRESHOLD 32
 #define FACE_BOX_EPSILON 1.0e-6
 
 
@@ -36,7 +36,7 @@ BackgroundMesh::KDTree::KDTreeNode::KDTreeNode()
 }
 
 
-void BackgroundMesh::KDTree::KDTreeNode::build(KDTree *tree, int nodeIndex, int start, int end)
+void BackgroundMesh::KDTree::KDTreeNode::build(KDTree *tree, int nodeIndex, int start, int end, ProgressMonitor *kdtreeMonitor)
 {
 	startIndex = start;
 	endIndex = end;
@@ -48,6 +48,7 @@ void BackgroundMesh::KDTree::KDTreeNode::build(KDTree *tree, int nodeIndex, int 
 
 	if ( numFacesInNode < NODE_SIZE_THRESHOLD )
 	{
+		// LEAF NODE
 		// Compute the bounding box for the faces in this node
 		for (int faceI = start; faceI < end; faceI++)
 		{
@@ -55,9 +56,22 @@ void BackgroundMesh::KDTree::KDTreeNode::build(KDTree *tree, int nodeIndex, int 
 			box.addBox( faceBox );
 		}
 		box.enlargeForIntersection();
+	
+		if ( kdtreeMonitor != NULL )
+		{
+			/*if ( nodeIndex % 1000 == 0 )
+			{
+				kdtreeMonitor->updateProgress( (float)nodeIndex / (float)tree->numNodesEstimate );
+			}*/
+			if ( start % 10000 == 0  ||  end % 10000 == 0  ||  ( start % 10000 ) > ( end % 10000 ) )
+			{
+				kdtreeMonitor->updateProgress( (float)end / (float)tree->mesh->tris.size() );
+			}
+		}
 	}
 	else
 	{
+// 		// BRANCH NODE
 		// Compute the bounding box for the faces in this node, and compute the average
 		// of the centroids of the faces
 		Point3f centroid;
@@ -192,6 +206,14 @@ void BackgroundMesh::KDTree::KDTreeNode::build(KDTree *tree, int nodeIndex, int 
 			}
 
 
+			/*if ( kdtreeMonitor != NULL )
+			{
+				if ( nodeIndex % 1000 == 0 )
+				{
+					kdtreeMonitor->updateProgress( (float)nodeIndex / (float)tree->numNodesEstimate );
+				}
+			}*/
+			
 			// Only create subtrees if the split does result in splitting the face list into two parts, otherwise
 			// you end up with infinite recursion
 			if ( start != anchorIndex  &&  anchorIndex != end )
@@ -202,8 +224,8 @@ void BackgroundMesh::KDTree::KDTreeNode::build(KDTree *tree, int nodeIndex, int 
 				// The tree->createNode() call modifies the node array. This can result in *this being copied into a new node
 				// In this case we want to refer to the node in the array, which may be a new copy of *this, not *this, so we use
 				// tree->nodes[nodeIndex]
-				tree->nodes[nodeIndex].setNegativeIndex( tree->createNode( start, anchorIndex ) );
-				tree->nodes[nodeIndex].setPositiveIndex( tree->createNode( anchorIndex, end ) );
+				tree->nodes[nodeIndex].setNegativeIndex( tree->createNode( start, anchorIndex, kdtreeMonitor ) );
+				tree->nodes[nodeIndex].setPositiveIndex( tree->createNode( anchorIndex, end, kdtreeMonitor ) );
 			}
 		}
 	}
@@ -291,21 +313,64 @@ bool BackgroundMesh::KDTree::KDTreeNode::isLeaf() const
 BackgroundMesh::KDTree::KDTree()
 {
 	mesh = NULL;
+	numNodesEstimate = 1;
+}
+
+void BackgroundMesh::KDTree::readFromFile(BackgroundMesh *mesh, FILE *file)
+{
+	this->mesh = mesh;
+	
+	int numNodes = 0, numFaces = 0;
+	
+	// Nodes
+	nodes.clear();
+	fread( &numNodes, sizeof(int), 1, file );
+	nodes.resize( numNodes );
+	fread( nodes.begin(), sizeof(KDTreeNode), numNodes, file );
+	
+	// Face data
+	fread( &numFaces, sizeof(int), 1, file );
+	faceBoxes.clear();
+	faceCentroids.clear();
+	faceOrder.clear();
+	faceOrder.resize( numFaces );
+	fread( faceOrder.begin(), sizeof(int), numFaces, file );
+}
+
+void BackgroundMesh::KDTree::writeToFile(FILE *file)
+{
+	// Nodes
+	int numNodes = nodes.size();
+	fwrite( &numNodes, sizeof(int), 1, file );
+	fwrite( nodes.begin(), sizeof(KDTreeNode), nodes.size(), file );
+	
+	// Face data
+	int numFaces = faceOrder.size();
+	fwrite( &numFaces, sizeof(int), 1, file );
+	fwrite( faceOrder.begin(), sizeof(int), faceOrder.size(), file );
 }
 
 
-void BackgroundMesh::KDTree::initialise(BackgroundMesh *mesh)
+
+void BackgroundMesh::KDTree::initialise(BackgroundMesh *mesh, ProgressMonitor *kdtreeMonitor)
 {
 	this->mesh = mesh;
+	
+	if ( kdtreeMonitor != NULL )
+	{
+		kdtreeMonitor->updateProgress( 0.0f );
+	}
 
 	// Initialise the lists of face bounding boxes and indices
 	int numFaces = mesh->tris.size();
 
-	faces.resize( numFaces );
+	//faces.resize( numFaces );
 	faceBoxes.resize( numFaces );
 	faceCentroids.resize( numFaces );
 	faceOrder.resize( numFaces );
 	nodes.clear();
+	
+	numNodesEstimate = (int)( (float)numFaces * 2.0f / (float)NODE_SIZE_THRESHOLD );
 
 
 	for (int faceI = 0; faceI < numFaces; faceI++)
@@ -314,7 +379,6 @@ void BackgroundMesh::KDTree::initialise(BackgroundMesh *mesh)
 		const Point3f &a = mesh->vPosition[t.i[0]];
 		const Point3f &b = mesh->vPosition[t.i[1]];
 		const Point3f &c = mesh->vPosition[t.i[2]];
-		faces[faceI] = KDTTri( a, b, c );
 		BBox3f &faceBox = faceBoxes[faceI];
 		faceBox.l = Point3f::min( Point3f::min( a, b ), c );
 		faceBox.u = Point3f::max( Point3f::max( a, b ), c );
@@ -324,30 +388,22 @@ void BackgroundMesh::KDTree::initialise(BackgroundMesh *mesh)
 
 	if ( numFaces > 0 )
 	{
-		createNode( 0, numFaces );	
+		createNode( 0, numFaces, kdtreeMonitor );	
 	}
 
+	faceBoxes.clear();
 	faceBoxes.setCapacity( 0 );
+	faceCentroids.clear();
 	faceCentroids.setCapacity( 0 );
-
-	Array<KDTTri> orderedFaces;
-	orderedFaces.resize( faces.size() );
-	for (int faceI = 0; faceI < numFaces; faceI++)
-	{
-		orderedFaces[faceI] = faces[ faceOrder[faceI] ];
-	}
-	faceOrder.setCapacity( 0 );
-
-	faces.swapArray( orderedFaces );
 }
 
 
-int BackgroundMesh::KDTree::createNode(int startIndex, int endIndex)
+int BackgroundMesh::KDTree::createNode(int startIndex, int endIndex, ProgressMonitor *kdtreeMonitor)
 {
 	int nodeIndex = nodes.size();
 
 	KDTreeNode &node = nodes.push_back();
-	node.build( this, nodeIndex, startIndex, endIndex );
+	node.build( this, nodeIndex, startIndex, endIndex, kdtreeMonitor );
 
 	return nodeIndex;
 }
@@ -363,7 +419,8 @@ int BackgroundMesh::KDTree::raytrace(const KDSegment &originalSeg, KDSegment &se
 		for (int triI = node.startIndex; triI < node.endIndex; triI++)
 		{
 			float t;
-			if ( faces[triI].raytrace( seg, t, u, v ) )
+			KDTTri face( mesh->vPosition, mesh->tris[ faceOrder[triI] ] );
+			if ( face.raytrace( seg, t, u, v ) )
 			{
 				if ( t < bestT  ||  triIndex == -1 )
 				{
@@ -470,7 +527,7 @@ BackgroundMesh::BackgroundMesh()
 	bInitialisedGL = false;
 }
 
-BackgroundMesh::BackgroundMesh(Array<Point3f> &inVerts, Array<IndexFace> &inFaces)
+BackgroundMesh::BackgroundMesh(Array<Point3f> &inVerts, Array<IndexFace> &inFaces, ProgressMonitor *convertMonitor, ProgressMonitor *kdtreeMonitor)
 {
 	bInitialisedGL = false;
 
@@ -486,6 +543,8 @@ BackgroundMesh::BackgroundMesh(Array<Point3f> &inVerts, Array<IndexFace> &inFace
 
 	// Copy vertex positions
 	vPosition = inVerts;
+	
+	float numPrimsRecip = 1.0f / (float)( inFaces.size() + inVerts.size() );
 
 	// For each face
 	for (int faceI = 0; faceI < inFaces.size(); faceI++)
@@ -547,17 +606,108 @@ BackgroundMesh::BackgroundMesh(Array<Point3f> &inVerts, Array<IndexFace> &inFace
 				vNormal[vIndex] += n;
 			}
 		}
+		
+		
+		if ( convertMonitor != NULL )
+		{
+			if ( faceI % 10000  ==  0 )
+			{
+				convertMonitor->updateProgress( (float)faceI * numPrimsRecip );
+			}
+		}
 	}
 
 
 	// Normalise vertex normals
+	float progressOffset = (float)inFaces.size() * numPrimsRecip;
 	for (int vertexI = 0; vertexI < inVerts.size(); vertexI++)
 	{
 		vNormal[vertexI].normalise();
+	
+		if ( convertMonitor != NULL )
+		{
+			if ( vertexI % 10000  ==  0 )
+			{
+				convertMonitor->updateProgress( progressOffset  +  (float)vertexI * numPrimsRecip );
+			}
+		}
 	}
 
 	
-	kdTree.initialise( this );
+	kdTree.initialise( this, kdtreeMonitor );
+}
+
+
+
+bool BackgroundMesh::readFromFile(std::string filename)
+{
+	FILE *file = fopen( filename.c_str(), "rb" );
+	
+	int numPositions = 0, numNormals = 0, numTris = 0;
+	
+	const char *expectedHeader = "GS_BKG_MESH";
+	char header[12];
+	fread( header, sizeof(char), 12, file );
+	header[11] = 0x00;
+	
+	if ( strcmp( header, expectedHeader )  !=  0 )
+	{
+		return false;
+	}
+	
+	
+	// Vertex positions
+	vPosition.clear();
+	fread( &numPositions, sizeof(int), 1, file );
+	vPosition.resize( numPositions );
+	fread( vPosition.begin(), sizeof(Point3f), numPositions, file );
+	
+	// Vertex normals
+	vNormal.clear();
+	fread( &numNormals, sizeof(int), 1, file );
+	vNormal.resize( numNormals );
+	fread( vNormal.begin(), sizeof(Vector3f), numNormals, file );
+	
+	// Triangles
+	tris.clear();
+	fread( &numTris, sizeof(int), 1, file );
+	tris.resize( numTris );
+	fread( tris.begin(), sizeof(IndexTri), numTris, file );
+	
+	// KD-Tree
+	kdTree.readFromFile( this, file );
+	
+	fclose( file );
+	
+	return true;
+}
+
+void BackgroundMesh::writeToFile(std::string filename)
+{
+	FILE *file = fopen( filename.c_str(), "wb" );
+	
+	const char *header = "GS_BKG_MESH";
+	fwrite( header, sizeof(char), strlen(header)+1, file );
+	
+	// Vertex positions
+	int numPositions = vPosition.size();
+	fwrite( &numPositions, sizeof(int), 1, file );
+	fwrite( vPosition.begin(), sizeof(Point3f), vPosition.size(), file );
+	
+	// Vertex normals
+	int numNormals = vNormal.size();
+	fwrite( &numNormals, sizeof(int), 1, file );
+	fwrite( vNormal.begin(), sizeof(Vector3f), vNormal.size(), file );
+	
+	// Triangles
+	int numTris = tris.size();
+	fwrite( &numTris, sizeof(int), 1, file );
+	fwrite( tris.begin(), sizeof(IndexTri), tris.size(), file );
+	
+	// KD-Tree
+	kdTree.writeToFile( file );
+	
+	fclose( file );
 }
 
 

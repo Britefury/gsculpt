@@ -23,12 +23,17 @@ from Britefury.UI.ToggleButton import ToggleButton
 from Britefury.UI.ToggleGroup import ToggleGroup
 from Britefury.UI.ButtonPopupMenu import ButtonPopupMenu
 from Britefury.UI.UIAction import UIAction
+from Britefury.UI.ConfirmOverwriteFileDialog import confirmOverwriteFileDialog
+from Britefury.UI.ThreadMontiorProgressDialog import getResultFromMonitoredThreadWithProgressDialog
 
 from Britefury.Event.QueuedEvent import queueEvent
 
 from Britefury.Background.BackgroundModelFileRefFieldEditor import BackgroundModelFileRefFieldEditChooser
-from Britefury.Background.BackgroundModelFileChooser import backgroundModelFileChooserDialog
+from Britefury.Background.BackgroundModelFileChooser import backgroundModelFileChooserDialog, backgroundModelFileSaveChooserDialog, importObjBackgroundModelFileChooserDialog, \
+     importObjAsBackgroundModelWithProgressDialog
 from Britefury.Background.BackgroundModelFileRef import BackgroundModelFileRef
+
+from Britefury.ImportExportFilter.Obj import ObjImport
 
 from BackgroundModel import BackgroundModel, BackgroundModelList
 
@@ -139,8 +144,12 @@ class BackgroundModelTool (SheetEditorTool):
 	def __init__(self, view, editorSettings, parentWindow, commandHistory):
 		self._modelOptionList = ModelOptionList()
 		self._modelOptionList.optionList.getWidget().show()
-		self._modelAddButton = gtk.Button( stock=gtk.STOCK_ADD )
-		self._modelAddButton.show()
+		#self._modelAddButton = gtk.Button( stock=gtk.STOCK_ADD )
+		#self._modelAddButton.show()
+		self._modelAddButton = ButtonPopupMenu( stock=gtk.STOCK_ADD )
+		self._modelAddButton.getWidget().show()
+		self._modelAddButton.addMenuItem( 'open', labelText=_( 'Open...' ) )
+		self._modelAddButton.addMenuItem( 'import_obj', labelText=_( 'Import OBJ...' ) )
 		self._modelRemoveButton = gtk.Button( stock=gtk.STOCK_REMOVE )
 		self._modelRemoveButton.show()
 		self._positionOriginButton = gtk.Button( _( 'Origin' ) )
@@ -153,7 +162,7 @@ class BackgroundModelTool (SheetEditorTool):
 		self._modelList = None
 
 		self._modelOptionList.optionList.choiceSignal.connect( self._onModelChoice )
-		self._modelAddButton.connect( 'clicked', self._onModelAdd )
+		self._modelAddButton.menuSignal.connect( self._onModelAdd )
 		self._modelRemoveButton.connect( 'clicked', self._onModelRemove )
 		self._positionOriginButton.connect( 'clicked', self._onPositionOrigin )
 
@@ -187,7 +196,7 @@ class BackgroundModelTool (SheetEditorTool):
 		layout.row()  <<  self.rotationButton
 		layout.row()
 		layout.block( 6 )  <<  self._modelOptionList.optionList
-		layout.row()  <<  self._modelAddButton  <<  self._modelRemoveButton
+		layout.row()  <<  self._modelAddButton.getWidget()  <<  self._modelRemoveButton
 		layout.row()
 		layout.row()  <<  _( 'Model:' )
 		layout.row()  <<  self.modelChooser.chooser
@@ -218,14 +227,14 @@ class BackgroundModelTool (SheetEditorTool):
 	def _onModelChoice(self, event, choice):
 		self._proxy.modelRef = choice
 
-	def _onModelAdd(self, widget):
-		self._commandHistory.freeze()
-		modelPath = backgroundModelFileChooserDialog( _( 'Choose model file' ), self._parentWindow )
-		if modelPath is not None:
-			model = self._modelList.newModel()
-			self._modelOptionList.optionList.choice = model
-			model.model = BackgroundModelFileRef( modelPath )
-		self._commandHistory.thaw()
+	def _onModelAdd(self, event, response):
+		if response == 'open':
+			self._addBackgroundModel()
+		elif response == 'import_obj':
+			self._importObjBackgroundModel()
+		else:
+			raise ValueError, 'invalid response'
+			
 
 
 	def _onModelRemove(self, widget):
@@ -238,6 +247,45 @@ class BackgroundModelTool (SheetEditorTool):
 	def _onMouseFunc(self, event, choice):
 		self.manipulatorSwitch.switchIndex.value = choice
 
+
+		
+	def _addBackgroundModel(self):
+		modelPath = backgroundModelFileChooserDialog( _( 'Choose background model file' ), self._parentWindow )
+		if modelPath is not None:
+			self._commandHistory.freeze()
+			model = self._modelList.newModel()
+			self._modelOptionList.optionList.choice = model
+			model.model = BackgroundModelFileRef( modelPath )
+			self._commandHistory.thaw()
+
+
+	def _importObjBackgroundModel(self):
+		modelPath = importObjBackgroundModelFileChooserDialog( _( 'Choose OBJ model file' ), self._parentWindow )
+		if modelPath is not None:
+			threadMonitor = ObjImport.importObjFileAsBackgroundMeshThreaded( modelPath )
+			backgroundModel = getResultFromMonitoredThreadWithProgressDialog( threadMonitor, _( 'Importing OBJ model' ), _( 'Importing %s...' )  %  ( os.path.split( modelPath )[1], ), self._parentWindow,
+											  [ ( _( 'Analysing structure' ), _( 'Analysed structure' ) ),
+											    ( _( 'Reading geometry' ), _( 'Read geometry' ) ),
+											    ( _( 'Building models' ), _( 'Built models' ) ),
+											    ( _( 'Converting to background mesh' ), _( 'Converted to background mesh' ) ),
+											    ( _( 'Building raytrace acceleration structure' ), _( 'Built raytrace acceleration structure' ) ) ] )
+			
+			savePath = os.path.splitext( modelPath )[0] + '.gbm'
+			savePath = backgroundModelFileSaveChooserDialog( _( 'Save background model' ), self._parentWindow, savePath )
+			
+			if savePath is not None:
+				bSave = True
+				if os.path.exists( savePath ):
+					bSave = confirmOverwriteFileDialog( savePath, self._parentWindow )
+						
+				if bSave:
+					backgroundModel.writeToFile( savePath )
+			
+					self._commandHistory.freeze()
+					model = self._modelList.newModel()
+					self._modelOptionList.optionList.choice = model
+					model.model = BackgroundModelFileRef( savePath )
+					self._commandHistory.thaw()
 
 
 

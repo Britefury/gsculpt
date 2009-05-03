@@ -10,14 +10,14 @@
 
 #include <stdlib.h>
 
-template <typename ProgressType> class ProgressMonitor
+class ProgressMonitor
 {
 public:
 	virtual ~ProgressMonitor()
 	{
 	}
 	
-	virtual void updateProgress(const ProgressType &v) = 0;
+	virtual void updateProgress(float progress) = 0;
 };
 
 #endif

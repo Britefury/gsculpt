@@ -109,7 +109,7 @@ GS_DllExport MImportMesh * convertObjModelToImportMesh(ObjData &objData, ObjMode
 
 
 
-GS_DllExport BackgroundMesh * convertObjDataGlobalModelToBackgroundMesh(ObjData &objData)
+GS_DllExport BackgroundMesh * convertObjDataGlobalModelToBackgroundMesh(ObjData &objData, ProgressMonitor *convertMonitor, ProgressMonitor *kdtreeMonitor)
 {
 	Array<Point3f> vertices;
 	Array<BackgroundMesh::IndexFace> faces;
@@ -138,7 +138,7 @@ GS_DllExport BackgroundMesh * convertObjDataGlobalModelToBackgroundMesh(ObjData 
 		}
 	}
 
-	BackgroundMesh *mesh = new BackgroundMesh( vertices, faces );
+	BackgroundMesh *mesh = new BackgroundMesh( vertices, faces, convertMonitor, kdtreeMonitor );
 
 	return mesh;
 }
