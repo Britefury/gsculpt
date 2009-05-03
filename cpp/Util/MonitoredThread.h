@@ -16,6 +16,22 @@
 #include <Util/Array.h>
 
 
+//
+//
+// NOTE
+// The MonitoredThread class getProgressStage() and getProgress() methods should
+// only be used to get progress for upating a progress bar for the user.
+// They may *not* be accurate; due to the fact that they must be called separately,
+// the progress value could be modified by the worker thread inbetween the calls to
+// these methods.
+// To make this more accurate, the progress stage and progress value would need to
+// be placed into a structure, which is retrieved in its entirety.
+//
+//
+
+
+
+
 template <typename ResultType> class MonitoredThread
 {
 private:
