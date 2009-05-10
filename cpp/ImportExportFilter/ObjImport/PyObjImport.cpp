@@ -14,7 +14,7 @@
 
 using namespace boost::python;
 
-#include <Background/Model/BackgroundMesh.h>
+#include <Background/BackgroundMesh/BackgroundMesh.h>
 
 #include <Mesh/MMesh/MImportMesh.h>
 

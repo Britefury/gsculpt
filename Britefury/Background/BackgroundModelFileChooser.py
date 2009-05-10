@@ -18,7 +18,7 @@ from Britefury.UI.ButtonPopupMenu import ButtonPopupMenu
 
 from Britefury.gSculptConfig.gSculptUserConfig import userConfig
 
-from Britefury.Background.Model import BackgroundMesh
+from Britefury.Background.BackgroundMesh import BackgroundMesh
 from Britefury.ImportExportFilter.Obj import ObjImport
 
 import gtk

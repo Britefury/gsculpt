@@ -5,26 +5,21 @@
 //##* version 2 can be found in the file named 'COPYING' that accompanies this
 //##* program. This source code is (C)copyright Geoffrey French 1999-2007.
 //##************************
-#ifndef PYBACKGROUNDMESH_CPP__
-#define PYBACKGROUNDMESH_CPP__
+#ifndef PYBACKGROUNDMESHLIB_CPP__
+#define PYBACKGROUNDMESHLIB_CPP__
 
 #include <boost/python.hpp>
 using namespace boost::python;
 
 
 
-#include <Background/Model/BackgroundMesh.h>
+void export_BackgroundMesh();
 
 
-void export_BackgroundMesh()
+
+BOOST_PYTHON_MODULE(BackgroundMesh)
 {
-	class_<BackgroundMesh>( "BackgroundMesh", init<>() )
-		.def( "readFromFile", &BackgroundMesh::readFromFile )
-		.def( "writeToFile", &BackgroundMesh::writeToFile )
-		.def( "initGL", &BackgroundMesh::initGL )
-		.def( "shutdownGL", &BackgroundMesh::shutdownGL )
-		.def( "drawGL", &BackgroundMesh::drawGL )
-		.def( "raytrace", &BackgroundMesh::py_raytrace );
+	export_BackgroundMesh();
 }
 
 

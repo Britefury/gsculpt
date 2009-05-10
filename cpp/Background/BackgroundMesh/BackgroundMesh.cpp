@@ -16,7 +16,7 @@
 #include <Model/ModelDraw.h>
 
 
-#include <Background/Model/BackgroundMesh.h>
+#include <Background/BackgroundMesh/BackgroundMesh.h>
 
 
 
@@ -415,7 +415,7 @@ int BackgroundMesh::KDTree::raytrace(const KDSegment &originalSeg, KDSegment &se
 	int triIndex = -1;
 	if ( node.isLeaf() )
 	{
-		float u, v, bestT;
+		float u, v, bestT = 0.0f;
 		for (int triI = node.startIndex; triI < node.endIndex; triI++)
 		{
 			float t;

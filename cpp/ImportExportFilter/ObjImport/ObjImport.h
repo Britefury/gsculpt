@@ -9,7 +9,7 @@
 #define OBJIMPORT_H__
 
 #include <Mesh/MMesh/MImportMesh.h>
-#include <Background/Model/BackgroundMesh.h>
+#include <Background/BackgroundMesh/BackgroundMesh.h>
 
 #include <ImportExportFilter/ObjImport/ObjData.h>
 

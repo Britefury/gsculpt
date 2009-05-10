@@ -104,8 +104,8 @@ pyGraphViewHelperFiles = cppPrefixPaths( 'GraphViewHelper', [ 'pyGraphViewWidget
 cppBrushFiles = cppPrefixPaths( 'Brush', [ 'Brush.cpp', 'SphericalBoundaryBrush.cpp', 'GaussianBrush.cpp', 'SphericalBrush.cpp', 'LinearBrush.cpp', 'FlatBrush.cpp', 'CubicSCurveBrush.cpp' ] )
 pyBrushFiles = cppPrefixPaths( 'Brush', [ 'pyBrushModule.cpp', 'pyBrush.cpp', 'pySphericalBoundaryBrush.cpp', 'pyGaussianBrush.cpp', 'pySphericalBrush.cpp', 'pyLinearBrush.cpp', 'pyFlatBrush.cpp', 'pyCubicSCurveBrush.cpp' ] )
 
-cppBackgroundModelFiles = cppPrefixPaths( 'Background', prefixPaths( 'Model', [ 'BackgroundMesh.cpp' ] ) )
-pyBackgroundModelFiles = cppPrefixPaths( 'Background', prefixPaths( 'Model', [ 'PyBackgroundModel.cpp', 'PyBackgroundMesh.cpp' ] ) )
+cppBackgroundMeshFiles = cppPrefixPaths( 'Background', prefixPaths( 'BackgroundMesh', [ 'BackgroundMesh.cpp' ] ) )
+pyBackgroundMeshFiles = cppPrefixPaths( 'Background', prefixPaths( 'BackgroundMesh', [ 'PyBackgroundMeshLib.cpp', 'PyBackgroundMesh.cpp' ] ) )
 
 cppImportExportFilterObjImportFiles = cppPrefixPaths( 'ImportExportFilter', prefixPaths( 'ObjImport', [ 'ObjStringUtils.cpp', 'ObjLayout.cpp', 'ObjData.cpp', 'LineReader.cpp', 'ObjImport.cpp' ] ) )
 pyImportExportFilterObjImportFiles = cppPrefixPaths( 'ImportExportFilter', prefixPaths( 'ObjImport', [ 'PyObjImport.cpp' ] ) )
@@ -128,6 +128,9 @@ if platform == PLATFORM_WIN32:
 	_pythonPath = sys.prefix
 	_pythonIncPath = os.path.join( _pythonPath, 'include' )
 	_pythonLibPath = os.path.join( _pythonPath, 'libs' )
+
+	_gthreadIncPaths = [ 'C:\\packages\\gtk+-2.16.1\\include\\glib-2.0', 'C:\\packages\\gtk+-2.16.1\\lib\\glib-2.0\\include' ]
+	_gtkLibPaths = [ 'C:\\packages\\gtk+-2.16.1\\lib' ]
 
 	assert os.path.exists( _pythonIncPath ), 'Could not get path for python include files, tried %s'  %  ( _pythonIncPath, )
 	assert os.path.exists( _pythonLibPath ), 'Could not get path for python library files, tried %s'  %  ( _pythonLibPath, )
@@ -172,8 +175,8 @@ if platform == PLATFORM_WIN32:
 	localIncPaths = [ 'cpp' ]
 	pyIncPaths = [ _pythonIncPath ]
 	boostPyIncPaths = [ _boostIncPath ]
-	standardIncPaths = _vc8IncPaths  +  [ _platformSDKIncPath ]
-	localLibPaths = [ '.' ]
+	standardIncPaths = _vc8IncPaths  +  [ _platformSDKIncPath ]  +  _gthreadIncPaths
+	localLibPaths = [ '.' ]  +  _gtkLibPaths
 	pyLibPaths = [ _pythonLibPath ]
 	boostPyLibPaths = [ _boostLibPath ]
 	standardLibPaths = _vc8LibPaths  +  [ _platformSDKLibPath ]
@@ -181,11 +184,12 @@ if platform == PLATFORM_WIN32:
 	pyLibs = [ 'python%s%s'  %  ( sys.version_info[0], sys.version_info[1] ) ]
 	boostPyLibs = [ 'boost_python' ]
 	glLibs = [ 'OpenGL32', 'GLU32' ]
-	standardLibs = []
+	standardLibs = [ 'gthread-2.0', 'glib-2.0' ]
 	ccFlags = [ '/nologo', '/EHsc', '/DLL', '/MD', '"/DGS_DllExport=__declspec(dllexport)"', '/DGSCULPT_PLATFORM_WIN32', '/DGSCULPT_FPU_X86' ]
 	linkFlags = [ '/NOLOGO' ]
 
-	envPath = os.environ['PATH'].split( ';' )
+	#envPath = os.environ['PATH'].split( ';' )
+	envPath = os.environ['PATH']
 
 	pathSplitChar = ';'
 
@@ -299,10 +303,10 @@ cppGraphViewHelperLib = env.SharedLibrary( 'GraphViewHelper', cppGraphViewHelper
 							LIBS=extLibs + shLibsForShLib( [ 'Math', 'Util' ] ) )
 cppBrushLib = env.SharedLibrary( 'Brush', cppBrushFiles, LIBPATH=libPaths, LINKFLAGS=linkFlags,
 							LIBS=extLibs + shLibsForShLib( [ 'Math', 'Util', 'RTType' ] ) )
-cppBackgroundModelLib = env.SharedLibrary( 'BackgroundModel', cppBackgroundModelFiles, LIBPATH=libPaths, LINKFLAGS=linkFlags,
-							LIBS=extLibs + shLibsForShLib( [ 'Math', 'Util' ] ) )
+cppBackgroundMeshLib = env.SharedLibrary( 'BackgroundMesh', cppBackgroundMeshFiles, LIBPATH=libPaths, LINKFLAGS=linkFlags,
+							LIBS=extLibs + shLibsForShLib( [ 'Math', 'Util', 'Model' ] ) )
 cppImportExportFilterObjImportLib = env.SharedLibrary( 'ImportExportFilterObjImport', cppImportExportFilterObjImportFiles, LIBPATH=libPaths, LINKFLAGS=linkFlags,
-							LIBS=extLibs + shLibsForShLib( [ 'Math', 'Util' ] ) )
+							LIBS=extLibs + shLibsForShLib( [ 'Math', 'Util', 'Mesh', 'BackgroundModel' ] ) )
 cppPlatformSpecificLib = env.SharedLibrary( 'PlatformSpecific', cppPlatformSpecificFiles, LIBPATH=libPaths, LINKFLAGS=linkFlags,
 							LIBS=extLibs + shLibsForShLib( [] ) )
 
@@ -331,7 +335,7 @@ env.SharedLibrary( os.path.join( 'Britefury', 'Transformation', 'Transformation'
 
 env.SharedLibrary( os.path.join( 'Britefury', 'Brush', 'Brush' ), pyBrushFiles, LIBS=extLibs + cppLibs, LINKFLAGS=linkFlags, LIBPATH=libPaths, SHLIBPREFIX='', SHLIBSUFFIX=pyExtSuffix )
 
-env.SharedLibrary( os.path.join( 'Britefury', 'Background', 'Model' ), pyBackgroundModelFiles, LIBS=extLibs + cppLibs, LINKFLAGS=linkFlags, LIBPATH=libPaths, SHLIBPREFIX='', SHLIBSUFFIX=pyExtSuffix )
+env.SharedLibrary( os.path.join( 'Britefury', 'Background', 'BackgroundMesh' ), pyBackgroundMeshFiles, LIBS=extLibs + cppLibs, LINKFLAGS=linkFlags, LIBPATH=libPaths, SHLIBPREFIX='', SHLIBSUFFIX=pyExtSuffix )
 
 env.SharedLibrary( os.path.join( 'Britefury', 'ImportExportFilter', 'Obj', 'ObjImport' ), pyImportExportFilterObjImportFiles, LIBS=extLibs + cppLibs, LINKFLAGS=linkFlags, LIBPATH=libPaths, SHLIBPREFIX='', SHLIBSUFFIX=pyExtSuffix )
 

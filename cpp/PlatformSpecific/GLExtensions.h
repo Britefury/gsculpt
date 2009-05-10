@@ -17,10 +17,10 @@
 class GLExtensions
 {
 public:
-	PFNGLGENBUFFERSPROC glGenBuffers;
-	PFNGLBINDBUFFERPROC glBindBuffer;
-	PFNGLBUFFERDATAPROC glBufferData;
-	PFNGLDELETEBUFFERSPROC glDeleteBuffers;
+	//PFNGLGENBUFFERSPROC glGenBuffers;
+	//PFNGLBINDBUFFERPROC glBindBuffer;
+	//PFNGLBUFFERDATAPROC glBufferData;
+	//PFNGLDELETEBUFFERSPROC glDeleteBuffers;
 
 
 	GLExtensions();

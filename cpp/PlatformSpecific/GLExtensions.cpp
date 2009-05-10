@@ -42,10 +42,10 @@ static GLFnPtr glExtGetProcAddress(const char *name)
 
 GLExtensions::GLExtensions()
 {
-	glGenBuffers = NULL;
-	glBindBuffer = NULL;
-	glBufferData = NULL;
-	glDeleteBuffers = NULL;
+	//glGenBuffers = NULL;
+	//glBindBuffer = NULL;
+	//glBufferData = NULL;
+	//glDeleteBuffers = NULL;
 }
 
 
@@ -62,13 +62,14 @@ GS_DllExport GLExtensions * getGLExtensions()
 	{
 		bInitialised = true;
 
-		extensions.glGenBuffers = (PFNGLGENBUFFERSPROC)glExtGetProcAddress( "glGenBuffers" );
-		extensions.glBindBuffer = (PFNGLBINDBUFFERPROC)glExtGetProcAddress( "glBindBuffer" );
-		extensions.glBufferData = (PFNGLBUFFERDATAPROC)glExtGetProcAddress( "glBufferData" );
-		extensions.glDeleteBuffers = (PFNGLDELETEBUFFERSPROC)glExtGetProcAddress( "glDeleteBuffers" );
+		//extensions.glGenBuffers = (PFNGLGENBUFFERSPROC)glExtGetProcAddress( "glGenBuffers" );
+		//extensions.glBindBuffer = (PFNGLBINDBUFFERPROC)glExtGetProcAddress( "glBindBuffer" );
+		//extensions.glBufferData = (PFNGLBUFFERDATAPROC)glExtGetProcAddress( "glBufferData" );
+		//extensions.glDeleteBuffers = (PFNGLDELETEBUFFERSPROC)glExtGetProcAddress( "glDeleteBuffers" );
 	}
 
-	if ( extensions.glGenBuffers != NULL  &&  extensions.glBindBuffer != NULL  &&  extensions.glBufferData != NULL  &&  extensions.glDeleteBuffers != NULL )
+	//if ( extensions.glGenBuffers != NULL  &&  extensions.glBindBuffer != NULL  &&  extensions.glBufferData != NULL  &&  extensions.glDeleteBuffers != NULL )
+	if ( true )
 	{
 		return &extensions;
 	}

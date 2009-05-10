@@ -7,7 +7,7 @@
 ##-*************************
 import os
 
-from Britefury.Background.Model import BackgroundMesh
+from Britefury.Background.BackgroundMesh import BackgroundMesh
 
 from Britefury.FileIO.IOXml import ioXmlReadStringProp, ioXmlWriteStringProp, ioObjectFactoryRegister
 

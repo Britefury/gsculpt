@@ -24,6 +24,9 @@ localeDir = 'locale'
 docDir = 'doc'
 
 
+print 'Found GTK 2.0 at: %s'  %  ( gtkDir, )
+
+
 
 def _filterFilename(filename, exts, excludeExts):
     base, ext = os.path.splitext( filename )

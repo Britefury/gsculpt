@@ -22,7 +22,7 @@ class ObjData;
 
 
 
-class ObjVertex
+class GS_DllExport ObjVertex
 {
 public:
 	float v[4];
@@ -34,7 +34,7 @@ public:
 	}
 };
 
-class ObjVNormal
+class GS_DllExport ObjVNormal
 {
 public:
 	float v[3];
@@ -45,7 +45,7 @@ public:
 	}
 };
 
-class ObjVTexture
+class GS_DllExport ObjVTexture
 {
 public:
 	float v[3];
@@ -56,7 +56,7 @@ public:
 	}
 };
 
-class ObjFaceVertex
+class GS_DllExport ObjFaceVertex
 {
 public:
 	int v, vt, vn;
@@ -67,7 +67,7 @@ public:
 	}
 };
 
-class ObjFace
+class GS_DllExport ObjFace
 {
 public:
 	int numFV;
@@ -83,7 +83,7 @@ public:
 
 
 
-class ObjModel
+class GS_DllExport ObjModel
 {
 private:
 	class ModelIndexBuffer
@@ -131,7 +131,7 @@ private:
 
 
 
-class ObjData
+class GS_DllExport ObjData
 {
 private:
 	class ObjReaderState

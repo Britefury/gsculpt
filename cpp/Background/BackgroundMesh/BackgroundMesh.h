@@ -55,7 +55,7 @@ public:
 
 
 private:
-	class KDTree
+	class GS_DllExport KDTree
 	{
 	public:
 		class KDSegment
@@ -175,7 +175,7 @@ private:
 		};
 
 	private:
-		class KDTreeNode
+		class GS_DllExport KDTreeNode
 		{
 		public:
 			BBox3f box;

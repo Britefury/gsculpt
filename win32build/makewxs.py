@@ -125,6 +125,8 @@ componentIds = {
 	'dist\\lib\\gtk-2.0\\2.10.0\\engines':                           '1abbb1c4-ddad-11da-8ad9-0800200c9a66',
 	'dist\\lib\\gtk-2.0\\2.10.0\\immodules':                         '1abbb1c5-ddad-11da-8ad9-0800200c9a66',
 	'dist\\lib\\gtk-2.0\\2.10.0\\loaders':                           '1abbb1c6-ddad-11da-8ad9-0800200c9a66',
+        'dist\\lib\\gtk-2.0\\modules':				'1abbb1c7-ddad-11da-8ad9-0800200c9a66',
+        'dist\\lib\\gtk-2.0\\modules\\modules':		'1abbb1c8-ddad-11da-8ad9-0800200c9a66',
 	'dist\\lib\\pango':                                           '08ec2b93-fe38-11da-92e3-0800200c9a66',
 	'dist\\lib\\pango\\1.5.0':                                     '1ab80849-ddad-11da-8ad9-0800200c9a66',
 	'dist\\lib\\pango\\1.5.0\\modules':                             '1ab8084a-ddad-11da-8ad9-0800200c9a66',
@@ -335,6 +337,8 @@ componentIds = {
 	'dist\\share\\locale\\af\\LC_MESSAGES':                         '08ec52aa-fe38-11da-92e3-0800200c9a66',
 	'dist\\share\\locale\\am':                                     '08ec52ab-fe38-11da-92e3-0800200c9a66',
 	'dist\\share\\locale\\am\\LC_MESSAGES':                         '08ec52ac-fe38-11da-92e3-0800200c9a66',
+	'dist\\share\\locale\\ang':						'1abbb1c9-ddad-11da-8ad9-0800200c9a66',
+	'dist\\share\\locale\\ang\\LC_MESSAGES':			'1abbb1ca-ddad-11da-8ad9-0800200c9a66',
 	'dist\\share\\locale\\ar':                                     '08ec52ad-fe38-11da-92e3-0800200c9a66',
 	'dist\\share\\locale\\ar\\LC_MESSAGES':                         '08ec79b0-fe38-11da-92e3-0800200c9a66',
 	'dist\\share\\locale\\as':                                     '08ec79b1-fe38-11da-92e3-0800200c9a66',
@@ -522,7 +526,41 @@ componentIds = {
 	'dist\\locale\\tr\\LC_MESSAGES':			'1ab8084d-ddad-11da-8ad9-0800200c9a66',
 	'dist\\locale\\hu':							'1abb8abc-ddad-11da-8ad9-0800200c9a66',
 	'dist\\locale\\hu\\LC_MESSAGES':			'1abbb1c0-ddad-11da-8ad9-0800200c9a66',
-	'dist\\doc':								'1abb8abb-ddad-11da-8ad9-0800200c9a66'
+	'dist\\doc':								'1abb8abb-ddad-11da-8ad9-0800200c9a66',
+	'dist\\share\\locale\\ast':			'1abc26f4-ddad-11da-8ad9-0800200c9a66',
+	'dist\\share\\locale\\ast\\lc_messages':			'1abc26f5-ddad-11da-8ad9-0800200c9a66',
+	'dist\\share\\locale\\be@latin':			'1abc26f6-ddad-11da-8ad9-0800200c9a66',
+	'dist\\share\\locale\\be@latin\\lc_messages':			'1abc26f7-ddad-11da-8ad9-0800200c9a66',
+	'dist\\share\\locale\\bn_in':			'1abc26f8-ddad-11da-8ad9-0800200c9a66',
+	'dist\\share\\locale\\bn_in\\lc_messages':			'1abc26f9-ddad-11da-8ad9-0800200c9a66',
+	'dist\\share\\locale\\ca@valencia':			'1abc26fa-ddad-11da-8ad9-0800200c9a66',
+	'dist\\share\\locale\\ca@valencia\\lc_messages':			'1abc26fb-ddad-11da-8ad9-0800200c9a66',
+	'dist\\share\\locale\\crh':			'1abc26fc-ddad-11da-8ad9-0800200c9a66',
+	'dist\\share\\locale\\crh\\lc_messages':			'1abc26fd-ddad-11da-8ad9-0800200c9a66',
+	'dist\\share\\locale\\dz':			'1abc26fe-ddad-11da-8ad9-0800200c9a66',
+	'dist\\share\\locale\\dz\\lc_messages':			'1abc4e00-ddad-11da-8ad9-0800200c9a66',
+	'dist\\share\\locale\\io':			'1abc4e01-ddad-11da-8ad9-0800200c9a66',
+	'dist\\share\\locale\\io\\lc_messages':			'1abc4e02-ddad-11da-8ad9-0800200c9a66',
+	'dist\\share\\locale\\ka':			'1abc4e03-ddad-11da-8ad9-0800200c9a66',
+	'dist\\share\\locale\\ka\\lc_messages':			'1abc4e04-ddad-11da-8ad9-0800200c9a66',
+	'dist\\share\\locale\\mai':			'1abc4e05-ddad-11da-8ad9-0800200c9a66',
+	'dist\\share\\locale\\mai\\lc_messages':			'1abc4e06-ddad-11da-8ad9-0800200c9a66',
+	'dist\\share\\locale\\mg':			'1abc4e07-ddad-11da-8ad9-0800200c9a66',
+	'dist\\share\\locale\\mg\\lc_messages':			'1abc4e08-ddad-11da-8ad9-0800200c9a66',
+	'dist\\share\\locale\\oc':			'1abc4e09-ddad-11da-8ad9-0800200c9a66',
+	'dist\\share\\locale\\oc\\lc_messages':			'1abc4e0a-ddad-11da-8ad9-0800200c9a66',
+	'dist\\share\\locale\\ps':			'1abc4e0b-ddad-11da-8ad9-0800200c9a66',
+	'dist\\share\\locale\\ps\\lc_messages':			'1abc4e0c-ddad-11da-8ad9-0800200c9a66',
+	'dist\\share\\locale\\si':			'1abc4e0d-ddad-11da-8ad9-0800200c9a66',
+	'dist\\share\\locale\\si\\lc_messages':			'1abc4e0e-ddad-11da-8ad9-0800200c9a66',
+	'dist\\share\\locale\\sr@latin':			'1abc4e0f-ddad-11da-8ad9-0800200c9a66',
+	'dist\\share\\locale\\sr@latin\\lc_messages':			'1abc7510-ddad-11da-8ad9-0800200c9a66',
+	'dist\\share\\locale\\tt':			'1abc7511-ddad-11da-8ad9-0800200c9a66',
+	'dist\\share\\locale\\tt\\lc_messages':			'1abc7512-ddad-11da-8ad9-0800200c9a66',
+	'dist\\share\\locale\\ur':			'1abc7513-ddad-11da-8ad9-0800200c9a66',
+	'dist\\share\\locale\\ur\\lc_messages':			'1abc7514-ddad-11da-8ad9-0800200c9a66',
+	'dist\\share\\locale\\uz@cyrillic':			'1abc7515-ddad-11da-8ad9-0800200c9a66',
+	'dist\\share\\locale\\uz@cyrillic\\lc_messages':			'1abc7516-ddad-11da-8ad9-0800200c9a66',
 }
 
 componentIds = dict( [ ( dir.lower(), id )   for dir, id in componentIds.items() ] )
@@ -536,6 +574,8 @@ if len( sys.argv ) != 2:
     print 'Usage:'
     print '\t%s <out_filename>' % ( sys.argv[0], )
 else:
+    _pathsWithNoGUID = set()
+    
     def gatherExamples(gSculptExamplesComponent):
         for dirpath, dirnames, filenames in os.walk( os.path.join( 'dist', 'examples' ) ):
             filenames = [ filename   for filename in filenames   if filename.endswith( '.gpx' ) ]
@@ -550,13 +590,19 @@ else:
                 gSculptRootComponent.File( Id=fixId( base ) + '_' + ext[1:], Name=base[:8]+ext[:4], LongName=filename, Source=os.path.join( os.getcwd(), 'dist', filename ), Vital='yes', DiskId='1' )
 
     def gatherRecursive(parentDirNode, dirName, id, dirPath):
+        global _pathsWithNoGUID
         if len( dirName ) > 8:
             dirNode = parentDirNode.Directory( Id=fixId( id ), Name=dirName[:8], LongName=dirName )
         else:
             dirNode = parentDirNode.Directory( Id=fixId( id ), Name=dirName )
         componentId = id + 'Component'
         componentId = fixId( componentId )
-        componentNode = dirNode.Component( Id=componentId , Guid=componentIds[dirPath.lower()] )
+        try:
+            guid = componentIds[dirPath.lower()]
+        except KeyError:
+            _pathsWithNoGUID.add( dirPath.lower() )
+            guid = '$$missing$$'
+        componentNode = dirNode.Component( Id=componentId , Guid=guid )
         componentIdList = [ componentId ]
         for entry in os.listdir( dirPath ):
             entryPath = os.path.join( dirPath, entry )
@@ -656,93 +702,39 @@ else:
     installExecuteSequence.Custom( Action='AlreadyUpdated', After='FindRelatedProducts' )  <<  'PATCHFOUND'
     installExecuteSequence.Custom( Action='NoDowngrade', After='FindRelatedProducts' )  <<  'NEWERFOUND'
     installExecuteSequence.RemoveExistingProducts( After='InstallFinalize' )
+    
+    if len( _pathsWithNoGUID ) == 0:
+        f = open( sys.argv[1], 'w' )
+        generator = xml.sax.saxutils.XMLGenerator( f )
+        generator.startDocument()
+        wix._writeXml( generator )
+        generator.endDocument()
+        f.close()
+    else:
+        f = open( sys.argv[0], 'r' )
+        guids = []
+        bAtGUIDs = False
+        for line in f:
+            if bAtGUIDs:
+                guid = line.strip()
+                if guid.startswith( '##' ):
+                    guid = guid[2:]
+                    guids.append( guid )
+            if line.strip() == '# A bunch of GUIDs. Take one and remove it from the list each time one is needed.':
+                bAtGUIDs = True
+        paths = list( _pathsWithNoGUID )
+        print 'Paste what is below into the path->GUID dictionary'
+        print 'Then remove %d guids; up to %s'  %  ( len( paths ), guids[len(paths)] )
+        paths.sort()
+        for path, guid in zip( paths, guids[:len(paths)] ):
+            print '\t%s:\t\t\t%s,'  %  ( repr( path ), repr( guid ) )
 
-    f = open( sys.argv[1], 'w' )
-    generator = xml.sax.saxutils.XMLGenerator( f )
-    generator.startDocument()
-    wix._writeXml( generator )
-    generator.endDocument()
-    f.close()
 
 
 
 
 
-
-# A bunch of GUIDs.
-# Take one and remove it from the list each time one is needed.
-##1abbb1c7-ddad-11da-8ad9-0800200c9a66
-##1abbb1c8-ddad-11da-8ad9-0800200c9a66
-##1abbb1c9-ddad-11da-8ad9-0800200c9a66
-##1abbb1ca-ddad-11da-8ad9-0800200c9a66
-##1abbd8d0-ddad-11da-8ad9-0800200c9a66
-##1abbd8d1-ddad-11da-8ad9-0800200c9a66
-##1abbd8d2-ddad-11da-8ad9-0800200c9a66
-##1abbd8d3-ddad-11da-8ad9-0800200c9a66
-##1abbd8d4-ddad-11da-8ad9-0800200c9a66
-##1abbd8d5-ddad-11da-8ad9-0800200c9a66
-##1abbd8d6-ddad-11da-8ad9-0800200c9a66
-##1abbd8d7-ddad-11da-8ad9-0800200c9a66
-##1abbd8d8-ddad-11da-8ad9-0800200c9a66
-##1abbd8d9-ddad-11da-8ad9-0800200c9a66
-##1abbd8da-ddad-11da-8ad9-0800200c9a66
-##1abbd8db-ddad-11da-8ad9-0800200c9a66
-##1abbd8dc-ddad-11da-8ad9-0800200c9a66
-##1abbd8dd-ddad-11da-8ad9-0800200c9a66
-##1abbd8de-ddad-11da-8ad9-0800200c9a66
-##1abbd8df-ddad-11da-8ad9-0800200c9a66
-##1abbffe0-ddad-11da-8ad9-0800200c9a66
-##1abbffe1-ddad-11da-8ad9-0800200c9a66
-##1abbffe2-ddad-11da-8ad9-0800200c9a66
-##1abbffe3-ddad-11da-8ad9-0800200c9a66
-##1abbffe4-ddad-11da-8ad9-0800200c9a66
-##1abbffe5-ddad-11da-8ad9-0800200c9a66
-##1abbffe6-ddad-11da-8ad9-0800200c9a66
-##1abbffe7-ddad-11da-8ad9-0800200c9a66
-##1abbffe8-ddad-11da-8ad9-0800200c9a66
-##1abbffe9-ddad-11da-8ad9-0800200c9a66
-##1abbffea-ddad-11da-8ad9-0800200c9a66
-##1abbffeb-ddad-11da-8ad9-0800200c9a66
-##1abbffec-ddad-11da-8ad9-0800200c9a66
-##1abbffed-ddad-11da-8ad9-0800200c9a66
-##1abc26f0-ddad-11da-8ad9-0800200c9a66
-##1abc26f1-ddad-11da-8ad9-0800200c9a66
-##1abc26f2-ddad-11da-8ad9-0800200c9a66
-##1abc26f3-ddad-11da-8ad9-0800200c9a66
-##1abc26f4-ddad-11da-8ad9-0800200c9a66
-##1abc26f5-ddad-11da-8ad9-0800200c9a66
-##1abc26f6-ddad-11da-8ad9-0800200c9a66
-##1abc26f7-ddad-11da-8ad9-0800200c9a66
-##1abc26f8-ddad-11da-8ad9-0800200c9a66
-##1abc26f9-ddad-11da-8ad9-0800200c9a66
-##1abc26fa-ddad-11da-8ad9-0800200c9a66
-##1abc26fb-ddad-11da-8ad9-0800200c9a66
-##1abc26fc-ddad-11da-8ad9-0800200c9a66
-##1abc26fd-ddad-11da-8ad9-0800200c9a66
-##1abc26fe-ddad-11da-8ad9-0800200c9a66
-##1abc4e00-ddad-11da-8ad9-0800200c9a66
-##1abc4e01-ddad-11da-8ad9-0800200c9a66
-##1abc4e02-ddad-11da-8ad9-0800200c9a66
-##1abc4e03-ddad-11da-8ad9-0800200c9a66
-##1abc4e04-ddad-11da-8ad9-0800200c9a66
-##1abc4e05-ddad-11da-8ad9-0800200c9a66
-##1abc4e06-ddad-11da-8ad9-0800200c9a66
-##1abc4e07-ddad-11da-8ad9-0800200c9a66
-##1abc4e08-ddad-11da-8ad9-0800200c9a66
-##1abc4e09-ddad-11da-8ad9-0800200c9a66
-##1abc4e0a-ddad-11da-8ad9-0800200c9a66
-##1abc4e0b-ddad-11da-8ad9-0800200c9a66
-##1abc4e0c-ddad-11da-8ad9-0800200c9a66
-##1abc4e0d-ddad-11da-8ad9-0800200c9a66
-##1abc4e0e-ddad-11da-8ad9-0800200c9a66
-##1abc4e0f-ddad-11da-8ad9-0800200c9a66
-##1abc7510-ddad-11da-8ad9-0800200c9a66
-##1abc7511-ddad-11da-8ad9-0800200c9a66
-##1abc7512-ddad-11da-8ad9-0800200c9a66
-##1abc7513-ddad-11da-8ad9-0800200c9a66
-##1abc7514-ddad-11da-8ad9-0800200c9a66
-##1abc7515-ddad-11da-8ad9-0800200c9a66
-##1abc7516-ddad-11da-8ad9-0800200c9a66
+# A bunch of GUIDs. Take one and remove it from the list each time one is needed.
 ##1abc7517-ddad-11da-8ad9-0800200c9a66
 ##1abc7518-ddad-11da-8ad9-0800200c9a66
 ##1abc7519-ddad-11da-8ad9-0800200c9a66

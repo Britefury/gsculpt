@@ -18,7 +18,7 @@
 
 
 
-class ObjModelLayout
+class GS_DllExport ObjModelLayout
 {
 public:
 	std::string name;
@@ -34,7 +34,7 @@ public:
 
 
 
-class ObjLayout
+class GS_DllExport ObjLayout
 {
 public:
 	// Number of vertices, vertex-texture-coords, vertex-normals, faces, face vertices (sum of face sizes)

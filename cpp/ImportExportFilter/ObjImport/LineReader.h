@@ -14,7 +14,7 @@
 
 
 
-class LineReader
+class GS_DllExport LineReader
 {
 private:
 	FILE *file;
