@@ -1177,6 +1177,13 @@
 - Small bug fixes to the MBBTree.
   MrMeanie / Britefury (19/04/2008)
 
-  
-  
-  
+- Replaced OBJ importer with new C++ version that is significantly faster than the existing Python system.
+  MrMeanie / Britefury (21/06/2009)
+
+- Implemented background mesh system; can draw onto background meshes, in addition to background layers.
+  The mesh representation used is very simple; it contains only what is necessary to display and raytrace, nothing
+  else.
+  MrMeanie / Britefury (21/06/2009)
+
+
+
