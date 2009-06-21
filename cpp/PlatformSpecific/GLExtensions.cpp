@@ -29,14 +29,14 @@
 typedef void (*GLFnPtr)();
 
 
-static GLFnPtr glExtGetProcAddress(const char *name)
+/*static GLFnPtr glExtGetProcAddress(const char *name)
 {
 	#if defined(GSCULPT_PLATFORM_WIN32)
 		return (GLFnPtr)wglGetProcAddress( (LPCSTR)name );
 	#elif defined(GSCULPT_PLATFORM_POSIX)
 		return (GLFnPtr)glXGetProcAddress( (const GLubyte*)name );
 	#endif
-}
+}*/
 
 
 
