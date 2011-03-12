@@ -23,7 +23,10 @@ class ConfigProperty (object):
 
 	def __get__(self, obj, objType):
 		if obj._config.has_section( self._section )  and  obj._config.has_option( self._section, self._option ):
-			return self._valueType( obj._config.get( self._section, self._option ) )
+			try:
+				return self._valueType( obj._config.get( self._section, self._option ) )
+			except ValueError:
+				return self._defaultValue
 		else:
 			return self._defaultValue
 

@@ -306,11 +306,11 @@ cppBrushLib = env.SharedLibrary( 'Brush', cppBrushFiles, LIBPATH=libPaths, LINKF
 cppBackgroundMeshLib = env.SharedLibrary( 'BackgroundMesh', cppBackgroundMeshFiles, LIBPATH=libPaths, LINKFLAGS=linkFlags,
 							LIBS=extLibs + shLibsForShLib( [ 'Math', 'Util', 'Model' ] ) )
 cppImportExportFilterObjImportLib = env.SharedLibrary( 'ImportExportFilterObjImport', cppImportExportFilterObjImportFiles, LIBPATH=libPaths, LINKFLAGS=linkFlags,
-							LIBS=extLibs + shLibsForShLib( [ 'Math', 'Util', 'Mesh', 'BackgroundModel' ] ) )
+							LIBS=extLibs + shLibsForShLib( [ 'Math', 'Util', 'Mesh', 'BackgroundMesh' ] ) )
 cppPlatformSpecificLib = env.SharedLibrary( 'PlatformSpecific', cppPlatformSpecificFiles, LIBPATH=libPaths, LINKFLAGS=linkFlags,
 							LIBS=extLibs + shLibsForShLib( [] ) )
 
-cppLibs = [ 'Math', 'CompGeometry', 'FileIO', 'Graphics', 'LogGrid', 'Mesh', 'Model', 'Painter', 'PolyBlend', 'Polyline', 'Product', 'RTType', 'Transformation', 'Util', 'UVMap', 'View', 'GraphViewHelper', 'Group', 'Brush', 'BackgroundModel',
+cppLibs = [ 'Math', 'CompGeometry', 'FileIO', 'Graphics', 'LogGrid', 'Mesh', 'Model', 'Painter', 'PolyBlend', 'Polyline', 'Product', 'RTType', 'Transformation', 'Util', 'UVMap', 'View', 'GraphViewHelper', 'Group', 'Brush', 'BackgroundMesh',
 		'ImportExportFilterObjImport', 'PlatformSpecific' ]
 
 
