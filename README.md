@@ -8,6 +8,8 @@ The procedural modelling system makes it an excellent choice for making modellin
 
 gSculpt can import and export Wavefront Object (.obj) model files.
 
+## Download
+
 A Windows binary can be downloaded from the [releases](https://github.com/Britefury/gsculpt/releases) page.
 
 ## Documentation / tutorial
